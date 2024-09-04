@@ -1,6 +1,6 @@
 import 'dotenv/config'
 
-const port = process.env.PORT;
+const port = process.env.PORT || 9001; // Default to 3000 if PORT is undefined
 
 import express from 'express';
 import bodyParser from 'body-parser';
@@ -33,11 +33,21 @@ app.post("/", async (req, res) => {
     return res.redirect(`/${result.lastID}`);
 });
 
+// Definierar en POST-rutt på /update som hanterar uppdateringar av dokument
+app.post("/update", async (req, res) => {
+    // id, title och content från requesten (req.body)
+    const { id, title, content } = req.body;
+     // Anropar updateOne-metoden från documents-modulen för att uppdatera dokumentet med det angivna id
+    await documents.updateOne(id, { title, content });
+    // Omdirigerar användaren till dokumentets sida efter att uppdateringen har genomförts
+    // Bygger omdirigeringen baserat på dokumentets id
+    return res.redirect(`/${id}`);
+});
+
 app.get('/:id', async (req, res) => {
-    return res.render(
-        "doc",
-        { doc: await documents.getOne(req.params.id) }
-    );
+    return res.render("doc", {
+        doc: await documents.getOne(req.params.id)
+    });
 });
 
 app.get('/', async (req, res) => {
@@ -45,5 +55,5 @@ app.get('/', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+    console.log(`Example app listening on port ${port}`);
 });
