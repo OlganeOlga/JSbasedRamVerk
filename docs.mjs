@@ -43,6 +43,10 @@ const docs = {
         } finally {
             await db.close();
         }
+    },
+
+    updateOne: async function updateOne(id) {
+
     }
 };
 

@@ -1,4 +1,5 @@
-import 'dotenv/config'
+import React from 'react';
+import 'dotenv/config';
 
 const port = process.env.PORT || 3000;
 
@@ -46,6 +47,8 @@ app.get('/:id', async (req, res) => {
 app.get('/', async (req, res) => {
     return res.render("index", { docs: await documents.getAll() });
 });
+
+app.put()
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

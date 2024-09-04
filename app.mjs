@@ -36,31 +36,36 @@ if (process.env.NODE_ENV !== 'test') {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+/**
+ * Change router posting new document
+ */
+
 // app.post("/", async (req, res) => {
 //     const result = await documents.addOne(req.body);
 
 //     return res.redirect(`/${result.lastID}`);
 // });
 
+app.post('/new_doc', async (req, res) => {
+
+    // Get info from form
+    const body = req.body;
+
+    // Add or update the document
+    const result = await documents.addOne(body);
+
+    return res.render("index", { docs: await documents.getAll()});
+});
+
 app.get('/', async (req, res) => {
 
     return res.render("index", { docs: await documents.getAll()});
 });
 
+/**
+ * Add route that shows view "doc"
+ */
 app.get('/new_doc', async (req, res) => {
-    return res.render("doc");
-});
-
-app.post('/new_doc', async (req, res) => {
-
-    const { title, content } = req.body;
-
-    const result = await documents.addOne(req.body);
-
-    console.log(req.body);
-    // Add or update the document
-    //const result = await documents.addOrUpdate({ title, content });
-
     return res.render("doc");
 });
 
