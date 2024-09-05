@@ -1,14 +1,14 @@
 // import React from 'react';
 import 'dotenv/config';
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3006;
 
 import express from 'express';
 import bodyParser from 'body-parser';
 import path from 'path';
 import morgan from 'morgan';
 import cors from 'cors';
-
+import methodOverride from 'method-override';
 
 import documents from "./docs.mjs";
 
@@ -26,6 +26,22 @@ app.set("view engine", "ejs");
 // app.set("views", path.join(process.cwd(), "init-views")); // Updated line
 
 app.use(express.static(path.join(process.cwd(), "public")));
+app.use(express.urlencoded({ extended: true }));
+
+// Middleware to override the method
+app.use(methodOverride('_method'));
+
+app.get('/test', (req,res) => {
+    return res.render("test");
+})
+// Test route
+app.post('/test', (req, res) => {
+    res.send('POST request received');
+});
+
+app.put('/test', (req, res) => {
+    res.send('PUT request received');
+});
 
 // don't show the log when it is test
 if (process.env.NODE_ENV !== 'test') {
@@ -46,7 +62,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //     return res.redirect(`/${result.lastID}`);
 // });
 
-app.post('/new_doc', async (req, res) => {
+app.post('/doc', async (req, res) => {
 
     // Get info from form
     const body = req.body;
@@ -54,7 +70,20 @@ app.post('/new_doc', async (req, res) => {
     // Add or update the document
     const result = await documents.addOne(body);
 
-    return res.render("index", { docs: await documents.getAll()});
+    res.redirect('/');
+});
+
+app.put('/doc', async (req, res) => {
+    console.log('PUT request received');  // Check if this logs
+    console.log('Form Data:', req.body);
+    const body = req.body;
+    try {
+        await documents.updateOne(body);
+        return res.redirect('/'); // Redirect after update
+    } catch (e) {
+        console.error(e);
+        res.status(500).send('Error updating document');
+    }
 });
 
 app.get('/', async (req, res) => {
@@ -62,36 +91,16 @@ app.get('/', async (req, res) => {
     return res.render("index", { docs: await documents.getAll()});
 });
 
-/**
- * Add route that shows view "doc"
- */
-app.get('/new_doc', async (req, res) => {
-    return res.render("doc");
+app.get('/doc', async (req, res) => {
+    return res.render("doc", {doc: null});
 });
 
-app.get('/:id', async (req, res) => {
+app.get('/doc/:id', async (req, res) => {
+    console.log(req.params.id);
     return res.render(
         "doc",
         { doc: await documents.getOne(req.params.id) }
     );
-});
-
-app.put('/:id', async (req, res) => {
-    const { id } = req.params;
-    const { title, content } = req.body;
-  
-    // Find the document by ID
-    const document = documents.find(doc => doc.id === parseInt(id));
-  
-    if (!document) {
-      return res.status(404).json({ message: 'Document not found' });
-    }
-  
-    // Update the document
-    document.title = title || document.title;
-    document.content = content || document.content;
-  
-    res.status(200).json(document);
 });
 
 app.listen(port, () => {

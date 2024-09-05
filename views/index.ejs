@@ -1,11 +1,11 @@
 <%- include('includes/header'); %>
 
     <h2>Dokument</h2>
-    <h3><a href="/doc">Create a new dockument</a></h3>
     <% if (docs && docs.length > 0) { %>
         <% docs.forEach(function(doc) { %>
-            <h3><a href="/<%= doc.id %>"><%= doc.title %></a></h3>
+            <h3><a href="/doc/<%= doc.id %>"><%= doc.title %> ID: <%= doc.id %> </a></h3>
         <% }); %>
     <% } %>
+    <h3><a href="/doc">Create a new dockument</a></h3>
     
 <%- include('includes/footer'); %>
