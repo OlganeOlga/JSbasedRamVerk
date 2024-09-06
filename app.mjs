@@ -1,22 +1,36 @@
-import 'dotenv/config'
+// import React from 'react';
+import 'dotenv/config';
 
-const port = process.env.PORT || 9001; // Default to 3000 if PORT is undefined
+const port = process.env.PORT || 3006; // Default to 3006 if PORT is undefined
 
 import express from 'express';
 import bodyParser from 'body-parser';
 import path from 'path';
 import morgan from 'morgan';
 import cors from 'cors';
+import methodOverride from 'method-override';
 
 import documents from "./docs.mjs";
 
 const app = express();
 
+
+// Parse application/json
+app.use(bodyParser.json());
+
 app.disable('x-powered-by');
 
 app.set("view engine", "ejs");
 
+// // Set the new views directory
+// app.set("views", path.join(process.cwd(), "init-views")); // Updated line
+
 app.use(express.static(path.join(process.cwd(), "public")));
+/** Try if methodOverride vorks without urlencoded */
+//app.use(express.urlencoded({ extended: true }));
+
+// Middleware to override the method
+app.use(methodOverride('_method'));
 
 // don't show the log when it is test
 if (process.env.NODE_ENV !== 'test') {
@@ -27,33 +41,47 @@ if (process.env.NODE_ENV !== 'test') {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.post("/", async (req, res) => {
-    const result = await documents.addOne(req.body);
+app.post('/doc', async (req, res) => {
 
-    return res.redirect(`/${result.lastID}`);
+    // Get info from form
+    const body = req.body;
+
+    // Add or update the document
+    const result = await documents.addOne(body);
+
+    res.redirect('/');
 });
 
-// Definierar en POST-rutt på /update som hanterar uppdateringar av dokument
-app.post("/update", async (req, res) => {
-    // id, title och content från requesten (req.body)
-    const { id, title, content } = req.body;
-     // Anropar updateOne-metoden från documents-modulen för att uppdatera dokumentet med det angivna id
-    await documents.updateOne(id, { title, content });
-    // Omdirigerar användaren till dokumentets sida efter att uppdateringen har genomförts
-    // Bygger omdirigeringen baserat på dokumentets id
-    return res.redirect(`/${id}`);
-});
-
-app.get('/:id', async (req, res) => {
-    return res.render("doc", {
-        doc: await documents.getOne(req.params.id)
-    });
+app.put('/doc', async (req, res) => {
+    console.log('PUT request received');  // Check if this logs
+    console.log('Type of id:', typeof(req.body.id));
+    const body = req.body;
+    try {
+        await documents.updateOne(body);
+        return res.redirect('/'); // Redirect after update
+    } catch (e) {
+        console.error(e);
+        res.status(500).send('Error updating document');
+    }
 });
 
 app.get('/', async (req, res) => {
-    return res.render("index", { docs: await documents.getAll() });
+
+    return res.render("index", { docs: await documents.getAll()});
+});
+
+app.get('/doc', async (req, res) => {
+    return res.render("doc", {doc: null});
+});
+
+app.get('/doc/:id', async (req, res) => {
+    console.log(req.params.id);
+    return res.render(
+        "doc",
+        { doc: await documents.getOne(req.params.id) }
+    );
 });
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
+  console.log(`Example app listening on port ${port}`)
 });

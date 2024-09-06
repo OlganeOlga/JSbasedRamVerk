@@ -1,14 +1,29 @@
 <%- include('includes/header'); %>
-<h2>Dokument</h2>
-<form method="POST" action="/update" class="new-doc">
-    <input type="hidden" name="id" value="<%= doc.id %>" />
+
+<!-- If there is a document, show its title and make it a clickable link to the doc-->
+<% if (doc) { %>
+    <h2>Document: <%= doc.title ? doc.title : 'No Title' %></h2>
+    <form method="POST" action="/doc?_method=PUT" class="new-doc">
+        <input type="hidden" name="id" value="<%= doc.id %>">
+        <label for="title">Title</label>
+        <input type="text" name="title" value="<%= doc.title %>" />
     
-    <label for="title">Titel</label>
-    <input type="text" name="title" value="<%= doc.title %>" />
+        <label for="content">Content</label>
+        <textarea name="content"><%= doc.content %></textarea>
+    
+        <input type="submit" value="Uppdatera" />
+    </form>   
+<% } else { %>
+    <h2>New Document</h2>
+    <form method="POST" action="/doc" class="new-doc">
+        <label for="title">Title</label>
+        <input type="text" name="title" value="" />
 
-    <label for="content">Innehåll</label>
-    <textarea name="content"><%= doc.content %></textarea>
+        <label for="content">Content</label>
+        <textarea name="content"></textarea>
 
-    <input type="submit" value="Uppdatera" />
-</form>
+        <input type="submit" value="Spara" />
+    </form>
+<%}%>
+
 <%- include('includes/footer'); %>

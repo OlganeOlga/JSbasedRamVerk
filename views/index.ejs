@@ -1,6 +1,18 @@
 <%- include('includes/header'); %>
-    <h2>Dokument</h2>
-    <% docs.forEach(function(doc){ %>
-        <h3><a href="/<%= doc.id %>"><%= doc.title %></a></h3>
-    <% }); %>
+<!-- If there is a document, show its title and make it a clickable link to the doc-->
+<h2>Documents</h2>
+<article class="article"> 
+    <% if (docs && docs.length > 0) { %>
+        <% docs.forEach(function(doc) { %>
+            <h3>
+                <a href="/doc/<%= doc.id %>">
+                    Document: <%= doc.title ? doc.title : 'No Title' %>
+                </a>
+            </h3>
+        <% }); %>
+    <% } %>
+    <h3 class="create-new-doc">
+        <a href="/doc" class="button">Create a new document</a>
+    </h3>        
+</article>   
 <%- include('includes/footer'); %>

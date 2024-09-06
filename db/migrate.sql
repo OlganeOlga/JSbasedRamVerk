@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS documents (
-    title TEXT,
-    content TEXT,
-    created_at DATE DEFAULT (datetime('now','localtime'))
-);
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT,
+                content TEXT,
+                created_at DATE DEFAULT (datetime('now','localtime'))
+            );

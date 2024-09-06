@@ -29,6 +29,10 @@ h1 {
 h2 {
     font-size: 1.6rem;
     margin-bottom: 1.4rem;
+    text-align: center; /* Center align the heading */
+    color: #333; /* Darker color for the heading */
+    margin-top: 2rem; /* Space above the heading */
+    margin-bottom: 1rem; /* Space below the heading */
 }
 
 p {
@@ -37,9 +41,20 @@ p {
 }
 
 header {
-    background-color: #0074D9;
-    color: #fff;
-    padding: 1.4rem 3rem;
+    background-color: #f1f3f4; /* Light gray background similar to Google Docs */
+    color: #202124; /* Dark text color for contrast */
+    padding: 1rem 2rem; /* Slightly adjusted padding for a cleaner look */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    display: flex;
+    align-items: center; /* Center align items vertically */
+    justify-content: space-between; /* Space items apart */
+    border-bottom: 1px solid #e0e0e0; /* Light border at the bottom */
+}
+
+header h1 {
+    font-size: 1.5rem; /* Font size for the header title */
+    font-weight: 500; /* Slightly bold font weight */
+    margin: 0; /* Remove default margin */
 }
 
 main {
@@ -52,18 +67,107 @@ main {
 .new-doc {
     display: flex;
     flex-direction: column;
+    max-width: 600px; /* Restrict form width for readability */
+    margin: 2rem auto; /* Center form horizontally with space above and below */
+    padding: 1.5rem; /* Add padding inside the form */
+    background-color: #fff; /* White background for the form */
 }
 
-input,
-textarea {
-    margin-bottom: 1.4rem;
-    font-size: 1rem;
-    padding: 1.4rem;
+.new-doc label {
+    display: block; /* Make labels block-level for proper spacing */
+    margin-bottom: 0.5rem; /* Space below each label */
+    font-weight: bold; /* Bold labels for better visibility */
+}
+
+.new-doc input[type="text"], 
+.new-doc textarea {
+    width: 100%; /* Full width for inputs and textareas */
+    padding: 0.75rem; /* Padding inside the inputs */
+    margin-bottom: 1rem; /* Space below each input */
+    border: 1px solid #ddd; /* Light border for inputs */
+    border-radius: 4px; /* Rounded corners for inputs */
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
+
+.new-doc textarea {
+    height: 200px; /* Set a height for the textarea */
+    resize: vertical; /* Allow vertical resizing only */
+}
+
+.new-doc input[type="submit"] {
+    display: block; /* Make the submit button block-level */
+    width: 100%; /* Full width for the submit button */
+    padding: 0.75rem; /* Padding inside the button */
+    background-color: #0074D9; /* Blue background color for the button */
+    color: #fff; /* White text color */
+    border: none; /* Remove border */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 1rem; /* Font size for the button */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth transition for background color */
+}
+
+.new-doc input[type="submit"]:hover {
+    background-color: #0056b3; /* Darker blue on hover */
 }
 
 footer {
-    background-color: #333;
-    color: #fff;
-    padding: 1.4rem 8rem;
-    flex-shrink: 0;
+    background-color: #f1f3f4; /* Light gray background similar to Google Docs */
+    color: #202124; /* Dark text color for contrast */
+    padding: 1rem 2rem; /* Consistent padding for spacing */
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    border-top: 1px solid #e0e0e0; /* Light border at the top */
+    text-align: left; /* Left align text */
+}
+
+.article {
+    max-width: 800px; /* Max width for readability */
+    margin: 0 auto; /* Center the article block horizontally */
+    padding: 1rem; /* Padding inside the article block */
+    background-color: #fff; /* White background for the content area */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    text-align: center;
+}
+
+/* Links and document styling */
+.article h3 {
+    margin: 0.5rem 0; /* Space above and below the document titles */
+}
+
+.article a {
+    color: #0074D9; /* Blue color for links */
+    font-weight: 500; /* Slightly bold links */
+}
+
+.article a:hover {
+    text-decoration: underline; /* Underline on hover for links */
+    color: #0056b3; /* Darker blue color on hover */
+}
+
+/* Style for the button */
+.button {
+    display: inline-block; /* Make the link inline-block to apply padding and margins */
+    padding: 0.75rem 1.5rem; /* Add padding inside the button */
+    font-size: 1rem; /* Set the font size */
+    font-weight: bold; /* Bold text for emphasis */
+    background-color: white; /* Blue background color */
+    border: none; /* Remove the default border */
+    border-radius: 4px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    text-align: center; /* Center the text inside the button */
+    text-decoration: none; /* Remove underline from the link */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transition effects */
+    cursor: pointer; /* Pointer cursor on hover */
+    margin-top: 20px;
+}
+
+.button:hover {
+    background-color: rgb(182, 173, 173); /* Darker blue on hover */
+    transform: scale(1.05); /* Slightly scale up the button on hover */
+}
+
+.button:active {
+    background-color: rgb(182, 173, 173); /* Even darker blue on active (click) */
+    transform: scale(0.95); /* Slightly scale down the button on click */
 }
