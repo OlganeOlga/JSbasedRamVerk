@@ -166,6 +166,50 @@ och restartar databas
 
 Nu kan jag skaffa och updatera dokument.
 
+Jag snygga till index.mjs:
+
+Jag skaffar div element som ska innehålla olika dokument:
+
+```<h2>Dokuments</h2>
+<-- container som innehåller alla dokument -->
+<div class="container">
+
+<-- containers med länk till form som skaffar dokument-->
+    <div class="doc">
+        <h3><a href="/doc">New dockument</a></h3>
+    </div>
+    <% if (docs && docs.length > 0) { %>
+        <% docs.forEach(function(doc) { %>
+            <div class="doc">
+                <h3><a href="/doc/<%= doc.id %>"><%= doc.title %></a></h3>
+            </div>
+        <% }); %>
+    <% } %>
+</div> ```
+
+I style.css bifogar jag:
+
+```
+main div.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+    padding: 10px;
+}
+  
+main .container .doc {
+    background: #f4f4f4;
+    border: 1px solid #ccc;
+    padding: 20px;
+    text-align: center;
+    height: 180px;
+}
+
+main .container .doc a {
+    font-size: 0.7em;
+}
+```
+
 Gör ett val av frontend ramverk och beskriv varför ... 
 
 Jag funderar på React (som Emil Folino är bekant med).  

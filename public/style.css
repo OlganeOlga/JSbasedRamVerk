@@ -72,3 +72,22 @@ footer {
     padding: 1.4rem 8rem;
     flex-shrink: 0;
 }
+
+main div.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+    padding: 10px;
+}
+  
+main .container .doc {
+    background: #f4f4f4;
+    border: 1px solid #ccc;
+    padding: 20px;
+    text-align: center;
+    height: 180px;
+}
+
+main .container .doc a {
+    font-size: 0.7em;
+}
