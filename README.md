@@ -79,11 +79,11 @@ app.use(methodOverride('_method'));
             "doc",
             { doc: await documents.getOne(req.params.id) }
         );
-    });
+    });```
 
 put och post routes bifogas i app.mjs:
 
-    app.post('/doc', async (req, res) => {
+   ``` app.post('/doc', async (req, res) => {
 
         // Get info from form
         const body = req.body;
