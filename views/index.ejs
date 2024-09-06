@@ -1,6 +1,11 @@
 <%- include('includes/header'); %>
 <!-- If there is a document, show its title and make it a clickable link to the doc-->
-<h2>Documents</h2>
+<div class="headers">
+    <h2>Documents</h2>
+    <h3 class="create-new-doc">
+        <a href="/doc" class="button">Create a new document</a>
+    </h3>
+</div> 
 <article class="article"> 
     <% if (docs && docs.length > 0) { %>
         <% docs.forEach(function(doc) { %>
@@ -10,9 +15,6 @@
                 </a>
             </h3>
         <% }); %>
-    <% } %>
-    <h3 class="create-new-doc">
-        <a href="/doc" class="button">Create a new document</a>
-    </h3>        
+    <% } %>      
 </article>   
 <%- include('includes/footer'); %>

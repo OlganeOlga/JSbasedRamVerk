@@ -1,7 +1,7 @@
 // import React from 'react';
 import 'dotenv/config';
 
-const port = process.env.PORT || 3006; // Default to 3006 if PORT is undefined
+const port = process.env.PORT || 3000; // Default to 3006 if PORT is undefined
 
 import express from 'express';
 import bodyParser from 'body-parser';
