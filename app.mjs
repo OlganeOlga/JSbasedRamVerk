@@ -26,22 +26,25 @@ app.set("view engine", "ejs");
 // app.set("views", path.join(process.cwd(), "init-views")); // Updated line
 
 app.use(express.static(path.join(process.cwd(), "public")));
-app.use(express.urlencoded({ extended: true }));
+/** Try if methodOverride vorks without urlencoded */
+//app.use(express.urlencoded({ extended: true }));
 
 // Middleware to override the method
 app.use(methodOverride('_method'));
 
-app.get('/test', (req,res) => {
-    return res.render("test");
-})
-// Test route
-app.post('/test', (req, res) => {
-    res.send('POST request received');
-});
+// /** test POST and PUT */
 
-app.put('/test', (req, res) => {
-    res.send('PUT request received');
-});
+// app.get('/test', (req,res) => {
+//     return res.render("test");
+// })
+// // Test route
+// app.post('/test', (req, res) => {
+//     res.send('POST request received');
+// });
+
+// app.put('/test', (req, res) => {
+//     res.send('PUT request received');
+// });
 
 // don't show the log when it is test
 if (process.env.NODE_ENV !== 'test') {
@@ -51,16 +54,6 @@ if (process.env.NODE_ENV !== 'test') {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-/**
- * Change router posting new document
- */
-
-// app.post("/", async (req, res) => {
-//     const result = await documents.addOne(req.body);
-
-//     return res.redirect(`/${result.lastID}`);
-// });
 
 app.post('/doc', async (req, res) => {
 
