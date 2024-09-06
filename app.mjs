@@ -75,7 +75,7 @@ app.post('/doc', async (req, res) => {
 
 app.put('/doc', async (req, res) => {
     console.log('PUT request received');  // Check if this logs
-    console.log('Form Data:', req.body);
+    console.log('Type of id:', typeof(req.body.id));
     const body = req.body;
     try {
         await documents.updateOne(body);
