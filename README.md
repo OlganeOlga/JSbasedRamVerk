@@ -64,7 +64,7 @@ skaffas en if-sats som ska bero på länken:
 
 Även '/doc' och '/doc:id' routes i app.mjs fixas:
 
-```app.get('/doc', async (req, res) => {
+    app.get('/doc', async (req, res) => {
         return res.render("doc", {doc: null});
     });
     app.get('/doc/:id', async (req, res) => {
@@ -73,56 +73,59 @@ skaffas en if-sats som ska bero på länken:
             { doc: await documents.getOne(req.params.id) }
         );
     });
+
 put och post routes bifogas i app.mjs:
 
-app.post('/doc', async (req, res) => {
+    app.post('/doc', async (req, res) => {
 
-    // Get info from form
-    const body = req.body;
+        // Get info from form
+        const body = req.body;
 
-    // Add or update the document
-    const result = await documents.addOne(body);
+        // Add or update the document
+        const result = await documents.addOne(body);
 
-    res.redirect('/');
-});
+        res.redirect('/');
+    });
 
-app.put('/doc', async (req, res) => {
-    const body = req.body;
-    try {
-        await documents.updateOne(body);
-        return res.redirect('/'); // Redirect after update
-    } catch (e) {
-        console.error(e);
-        res.status(500).send('Error updating document');
-    }
-});
+    app.put('/doc', async (req, res) => {
+        const body = req.body;
+        try {
+            await documents.updateOne(body);
+            return res.redirect('/'); // Redirect after update
+        } catch (e) {
+            console.error(e);
+            res.status(500).send('Error updating document');
+        }
+    });
+    
 En updateOne läggs till i docs.mjs för att kunna uppdatera:
 
-updateOne: async function updateOne(body) {
-    let db = await openDb();
+    updateOne: async function updateOne(body) {
+        let db = await openDb();
 
-    try {
-        return await db.run(
-            `UPDATE documents 
-                SET title = ?,content = ?, created_at = datetime('now', 'localtime') 
-                WHERE rowid = ?`,
-            body.title,
-            body.content,
-            body.id
-        );
-    } catch (e) {
-        console.error(e);
-    } finally {
-        await db.close();
-    }
+        try {
+            return await db.run(
+                `UPDATE documents 
+                    SET title = ?,content = ?, created_at = datetime('now', 'localtime') 
+                    WHERE rowid = ?`,
+                body.title,
+                body.content,
+                body.id
+            );
+        } catch (e) {
+            console.error(e);
+        } finally {
+            await db.close();
+        }
+
 Sedan uppdateras db/migrate.sql till:
 
-CREATE TABLE IF NOT EXISTS documents (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT,
-    content TEXT,
-    created_at DATE DEFAULT (datetime('now','localtime'))
-);
+    CREATE TABLE IF NOT EXISTS documents (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT,
+        content TEXT,
+        created_at DATE DEFAULT (datetime('now','localtime'))
+    );
 
 Vi väljer att kika närmre på React då det ses som mest populärt och "enklast" samt att det känns som flest är bekant med detta ramverk
 
@@ -140,6 +143,6 @@ Sedan la vi även till doc.ejs att titeln blir till "Document: (och sedan titeln
 
     <h2>Document: <%= doc.title ? doc.title : 'No Title' %></h2>
 
-är där ingen title så blir det No Title
+är där ingen title så blir det No Title.
 
 Det vi kan tänka på till nästa moment är att exemplevis med två liknande namn titlar så sätts automatiskt en 1a efter. Exempelvis ett doc heter Hej, och om jag sedan döper ett till doc till Hej så bör det automatiskt bli Hej1 och så vidare.
