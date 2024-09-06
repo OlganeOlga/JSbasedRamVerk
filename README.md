@@ -166,7 +166,7 @@ och restartar databas
 
 Nu kan jag skaffa och updatera dokument.
 
-Jag snygga till index.mjs:
+Jag snygga till index.ejs:
 
 Jag skaffar div element som ska innehålla olika dokument:
 
@@ -209,6 +209,7 @@ main .container .doc a {
     font-size: 0.7em;
 }
 ```
+Jag snyggar till doc.ejs:
 
 Gör ett val av frontend ramverk och beskriv varför ... 
 

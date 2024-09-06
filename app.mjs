@@ -89,7 +89,6 @@ app.get('/doc', async (req, res) => {
 });
 
 app.get('/doc/:id', async (req, res) => {
-    console.log(req.params.id);
     return res.render(
         "doc",
         { doc: await documents.getOne(req.params.id) }

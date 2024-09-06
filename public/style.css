@@ -59,17 +59,22 @@ main {
     flex-direction: column;
 }
 
-input,
+main form.document input {
+    margin-bottom: 0.4rem;
+    font-size: 1em;
+    padding: 0.6rem 1.4rem;
+}
+
 textarea {
-    margin-bottom: 1.4rem;
-    font-size: 1rem;
-    padding: 1.4rem;
+    margin-bottom: 1.4em;
+    font-size: 1.2em;
+    padding: 1.4em;
 }
 
 footer {
     background-color: #333;
     color: #fff;
-    padding: 1.4rem 8rem;
+    padding: 1.4em 8em;
     flex-shrink: 0;
 }
 
@@ -90,4 +95,33 @@ main .container .doc {
 
 main .container .doc a {
     font-size: 0.7em;
+}
+
+main form.document {
+    display: grid;
+    grid-template-columns: 1fr 80px;
+    grid-template-rows: 60px 1fr;
+    height: 100%;
+}
+
+main form .title {
+    border-top: none;      /* Remove the top border */
+    border-right: none;    /* Remove the right border */
+    border-bottom: 2px solid #000; /* Keep a visible bottom border */
+    border-left: none;   
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0 80px;
+}
+
+main form .doc-content {
+    border: none;
+    grid-row: 2;
+    grid-column: span 2;
+    height: 100%;
+}
+
+main form .submit { 
+    grid-column: 2;
+    grid-row: 1;
 }

@@ -3,28 +3,26 @@
     <%= JSON.stringify(doc, null, 2) %>
   </pre> -->
 <% if (doc) { %>
-    <h2>Dokument</h2>
-    <form method="POST" action="/doc?_method=PUT" class="new-doc">
+    <form method="POST" action="/doc?_method=PUT" class="document">
         <!-- <input type="hidden" name="_method" value="PUT"> -->
         <input type="hidden" name="id" value="<%= doc.id %>">
-        <label for="title">Doc Titel</label>
-        <input type="text" name="title" value="<%= doc.title %>" />
+        <label for="title"></label>
+        <input class="title" type="text" name="title" value="<%= doc.title %>" />
     
-        <label for="content">Innehåll</label>
-        <textarea name="content"><%= doc.content %></textarea>
+        <label for="content"></label>
+        <textarea class="doc-content" name="content"><%= doc.content %></textarea>
     
-        <input type="submit" value="Uppdatera" />
+        <input class="submit" type="submit" value="Update" />
     </form>   
 <% } else { %>
-    <h2>Dokument</h2>
-        <form method="POST" action="/doc" class="new-doc">
-        <label for="title">Doc Titel</label>
-        <input type="text" name="title" value="" />
+        <form method="POST" action="/doc" class="document">
+        <label for="title"></label>
+        <input class="title" type="text" name="title" value="" placeholder="add name"/>
 
-        <label for="content">Innehåll</label>
-        <textarea name="content"></textarea>
+        <label for="content"></label>
+        <textarea class="doc-content" name="content" placeholder="add content"></textarea>
 
-        <input type="submit" value="Spara" />
+        <input class="submit" type="submit" value="Save" />
     </form>
 <%}%>
 <%- include('includes/footer'); %>
