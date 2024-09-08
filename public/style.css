@@ -120,7 +120,33 @@ footer {
     text-align: left; /* Left align text */
 }
 
+main.main div.headers {
+    margin-top: 0.5rem;
+    display: grid;
+    grid-template-columns: 65% 35%;
+    grid-template-rows: auto;
+}
+
+.main .headers h2 {
+    display: grid;
+    grid-column: span 2;
+    grid-row: 1;
+    margin: 0;
+}
+
+.main .headers h3 {
+    grid-row: 2;
+    grid-column: 2;
+}
+
 .article {
+    /*ändrar fält med dokument*/
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+    padding: 10px;
+    height: 70%;
+
     max-width: 800px; /* Max width for readability */
     margin: 0 auto; /* Center the article block horizontally */
     padding: 1rem; /* Padding inside the article block */
@@ -138,11 +164,26 @@ footer {
 .article a {
     color: #0074D9; /* Blue color for links */
     font-weight: 500; /* Slightly bold links */
+    display: inline-block; /* Make the link inline-block to apply padding and margins */
+    padding: 0.75rem 1.5rem; /* Add padding inside the button */
+    font-size: 1rem; /* Set the font size */
+    font-weight: bold; /* Bold text for emphasis */
+    background-color: white; /* Blue background color */
+    border: none; /* Remove the default border */
+    border-radius: 4px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    text-align: center; /* Center the text inside the button */
+    text-decoration: none; /* Remove underline from the link */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transition effects */
+    cursor: pointer; /* Pointer cursor on hover */
+    margin: 10px 0 20px 0;
 }
 
 .article a:hover {
     text-decoration: underline; /* Underline on hover for links */
     color: #0056b3; /* Darker blue color on hover */
+    background-color: rgb(182, 173, 173); /* Even darker blue on active (click) */
+    transform: scale(0.95); /* Slightly scale down the button on click */
 }
 
 /* Style for the button */
@@ -159,7 +200,7 @@ footer {
     text-decoration: none; /* Remove underline from the link */
     transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transition effects */
     cursor: pointer; /* Pointer cursor on hover */
-    margin-top: 20px;
+    margin: 10px 0 20px 0;
 }
 
 .button:hover {

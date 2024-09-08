@@ -1,10 +1,10 @@
 # SSR Editor
 
-Starter project for DV1677 JSRamverk
+Project for DV1677 JSRamverk
 
-Satt port på 3006 på  const port = process.env.PORT || 3006; // Default to 3006 if PORT is undefined i app.mjs, för att kunna öppna appen. Annars får man felmeddelade "app listening on port undefined"
+Satt port på 3006 på  const port = process.env.PORT || 3000; // Default to 3006 if PORT is undefined i app.mjs, för att kunna öppna appen. Annars får man felmeddelade "app listening on port undefined"
 
-När jag öppnar appen senare får jag felmeddelande:
+Nytt försök att öppan appen leder till felmeddelande:
 
     [Error: SQLITE_ERROR: no such table: documents] {
       errno: 1,
@@ -12,22 +12,22 @@ När jag öppnar appen senare får jag felmeddelande:
     }
     ::1 - - [04/Sep/2024:12:41:35 +0000] "GET / HTTP/1.1" 200 461 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:130.0) Gecko/20100101 Firefox/130.0"
 
-fix:
-    cat db/migrate.sql | sqlite3 db/docs.sqlite 
+FIxas med:
+    `cat db/migrate.sql | sqlite3 db/docs.sqlite`
 i terminalen. Detta är en reset på databasen.
 cat db/migrate.sql läser innehållet i filen db/migrate.sql.
 | (pipe) skickar innehållet från cat till sqlite3.
 sqlite3 db/docs.sqlite kör SQLite3-verktyget och tillämpar SQL-kommandona från migrate.sql på databasen db/docs.sqlite.
 
-Nu får jag inga felmeddelanden.
+Nu kommer inga felmeddelanden när appen startas.
 
 För att sedan få appen att fungera tillämpar vi:
 
-I index.ejs
+I index.ejs:
 
-bifoga länk som ska skaffar nya dokument till index.ejs:
+bifogar länk som skaffar nya dokument
 
-    <h3><a href="/doc">Create a new dockument</a></h3>
+    `<h3><a href="/doc">Create a new dockument</a></h3>`
 
 och anpassa länken av befintliga dokumant:
 
@@ -35,9 +35,9 @@ och anpassa länken av befintliga dokumant:
 
 I doc.ejs:
 
-skaffas en if-sats som ska bero på länken:
+skaffas en if-sats som ska bero på länken
 
-    <h2>Dokument</h2>
+    ```<h2>Dokument</h2>
     <form method="POST" action="/doc?_method=PUT" class="doc-form">
         <!-- <input type="hidden" name="_method" value="PUT"> -->
         <input type="hidden" name="id" value="<%= doc.id %>">
@@ -60,10 +60,17 @@ skaffas en if-sats som ska bero på länken:
 
             <input type="submit" value="Spara" />
         </form>
-    <%}%>"
+    <%}%>
+    ```
+I app.mjs använder vi methodOverride som tillåter använda PUT method i HTML-form
+`
+import methodOverride from 'method-override';
 
+app.use(methodOverride('_method'));
+`
 Även '/doc' och '/doc:id' routes i app.mjs fixas:
 
+    ```
     app.get('/doc', async (req, res) => {
         return res.render("doc", {doc: null});
     });
@@ -72,11 +79,11 @@ skaffas en if-sats som ska bero på länken:
             "doc",
             { doc: await documents.getOne(req.params.id) }
         );
-    });
+    });```
 
 put och post routes bifogas i app.mjs:
 
-    app.post('/doc', async (req, res) => {
+   ``` app.post('/doc', async (req, res) => {
 
         // Get info from form
         const body = req.body;
@@ -97,35 +104,41 @@ put och post routes bifogas i app.mjs:
             res.status(500).send('Error updating document');
         }
     });
-    
-En updateOne läggs till i docs.mjs för att kunna uppdatera:
+```
+I docs.mjs skapar vi ny method:
 
-    updateOne: async function updateOne(body) {
-        let db = await openDb();
+```
+updateOne: async function updateOne(body) {
+    let db = await openDb();
 
-        try {
-            return await db.run(
-                `UPDATE documents 
-                    SET title = ?,content = ?, created_at = datetime('now', 'localtime') 
-                    WHERE rowid = ?`,
-                body.title,
-                body.content,
-                body.id
-            );
-        } catch (e) {
-            console.error(e);
-        } finally {
-            await db.close();
-        }
+    try {
+        return await db.run(
+            `UPDATE documents 
+                SET title = ?,content = ?, created_at = datetime('now', 'localtime') 
+                WHERE rowid = ?`,
+            body.title,
+            body.content,
+            body.id
+        );
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await db.close();
+    }
+```
 
-Sedan uppdateras db/migrate.sql till:
+Vi ändrar table i db/migrate.sql till:
 
+```
     CREATE TABLE IF NOT EXISTS documents (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT,
         content TEXT,
         created_at DATE DEFAULT (datetime('now','localtime'))
     );
+```
+
+och skapar databas igen
 
 Vi väljer att kika närmre på React då det ses som mest populärt och "enklast" samt att det känns som flest är bekant med detta ramverk
 
@@ -133,15 +146,17 @@ Nu har vi en fungerande app. Återstående är finslipning av själva sidan. Hä
 
 Vi lägger till i index.ejs att om där inte är någon title på dokumentent visas då "Document: No Title".
 
+                ```
                 <a href="/doc/<%= doc.id %>">
                     Document: <%= doc.title ? doc.title : 'No Title' %>
                 </a>
+                ```
 
 Vi har stylat sidan enkelt nu i början och tänker jobba vidare med det. Då det inte var något krav slängde vi in allt i style.css men har ambitionerna på att dela upp det mycket mer snyggt och lättläst, samt ge en mer proffesionell bild av arbetet. Det leder även till att det blir enklare att hitta för någon som aldrig sett koden innan. Vi kommer tillämpa saker vi lärt oss från design kursen.
 
 Sedan la vi även till doc.ejs att titeln blir till "Document: (och sedan titelns namn.)"
 
-    <h2>Document: <%= doc.title ? doc.title : 'No Title' %></h2>
+    ```<h2>Document: <%= doc.title ? doc.title : 'No Title' %></h2>```
 
 är där ingen title så blir det No Title.
 
