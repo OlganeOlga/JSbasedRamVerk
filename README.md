@@ -177,10 +177,10 @@ Bifogar `"type": "module"` till package.json att tillåta importera ES moduler o
 
 Kör `npm install mongodb@6.8` in command line för att skaffa moduller nödvändiga för MongoDB.
 
-Modifierar database.mjs enligt code from MongoDB 
+Bofogar to database.mjs enligt code from MongoDB 
 
 `const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://texteditor1:<db_password>@cluster0.wf5vm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = "mongodb+srv://texteditor1:dbwebb@cluster0.wf5vm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";rue&w=majority&appName=Cluster0";w=majority&appName=Cluster0";
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
@@ -208,7 +208,10 @@ Kör:
 
 Får varning om packages vulnerabilety, fixa den med `npm audit fix`
 
+Nu fiungerar database connection.
+
 Skapar filen .env i rootcatalog:
 `touch .env`
+sparar i env min anvandarenamn och lösenord
 
-sparar i env min anvandarenamn och läsenord
+Fixa .env ...

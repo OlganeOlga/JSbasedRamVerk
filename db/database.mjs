@@ -18,7 +18,8 @@ async function openDb() {
 export default openDb;
 
 import { MongoClient, ServerApiVersion } from 'mongodb';
-const uri = "mongodb+srv://texteditor1:<db_password>@cluster0.wf5vm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+//Connect to database
+const uri = "mongodb+srv://texteditor1:dbwebb@cluster0.wf5vm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
