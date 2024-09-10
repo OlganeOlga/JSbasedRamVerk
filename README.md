@@ -166,12 +166,20 @@ Det vi kan tänka på till nästa moment är att exemplevis med två liknande na
 
 ## Refactorering
 
+### Express JSON
 För att slippa omstarta app vid varje förandring installerar jag nodemon
 `npm install -g nodemon`
 
 Bifogar `"start": "nodemon app.mjs"` till scripts i the pakage.json
 
 Bifogar `"production": "NODE_ENV='production' node app.js"` till scripts in the pakage.json att kunna starta i productions lage.
+
+I app.mjs bifogar route `/json` som ska visa jsons innehåll och andra routes ifrån Emils Express-artikeln.
+
+Flytta routes från forsta momentet till routes/sql.mjs och JSON-relaterade routes i routes/json.mjs
+
+
+### MongoDB
 
 Bifogar `"type": "module"` till package.json att tillåta importera ES moduler och använda MongoDB.
 
@@ -215,4 +223,4 @@ Skapar filen .env i rootcatalog:
 sparar i env min anvandarenamn och lösenord
 
 Fixa .env ...
-Implementera Json istället av vyer...
+
