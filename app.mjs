@@ -6,7 +6,7 @@ const port = process.env.PORT || 3006; // Default to 3006 if PORT is undefined
 import express from 'express';
 import bodyParser from 'body-parser';
 import path from 'path';
-import morgan from 'morgan';
+import morgan from 'morgan'; // logging med tredjepart modules
 import cors from 'cors';
 import methodOverride from 'method-override';
 
@@ -26,8 +26,10 @@ app.set("view engine", "ejs");
 // app.set("views", path.join(process.cwd(), "init-views")); // Updated line
 
 app.use(express.static(path.join(process.cwd(), "public")));
-/** Try if methodOverride vorks without urlencoded */
-//app.use(express.urlencoded({ extended: true }));
+
+app.use(express.json()); // in plase of bodyParser.urlencoded and bodyParser.json
+// app.use(bodyParser.json()); // for parsing application/json
+// app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 // Middleware to override the method
 app.use(methodOverride('_method'));
@@ -38,8 +40,8 @@ if (process.env.NODE_ENV !== 'test') {
     app.use(morgan('combined')); // 'combined' outputs the Apache style LOGs
 }
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 app.post('/doc', async (req, res) => {
 

@@ -1,6 +1,8 @@
 # SSR Editor
-
+---
 Project for DV1677 JSRamverk
+
+## Specification
 
 Satt port på 3006 på  const port = process.env.PORT || 3000; // Default to 3006 if PORT is undefined i app.mjs, för att kunna öppna appen. Annars får man felmeddelade "app listening on port undefined"
 
@@ -161,3 +163,52 @@ Sedan la vi även till doc.ejs att titeln blir till "Document: (och sedan titeln
 är där ingen title så blir det No Title.
 
 Det vi kan tänka på till nästa moment är att exemplevis med två liknande namn titlar så sätts automatiskt en 1a efter. Exempelvis ett doc heter Hej, och om jag sedan döper ett till doc till Hej så bör det automatiskt bli Hej1 och så vidare.
+
+## Refactorering
+
+För att slippa omstarta app vid varje förandring installerar jag nodemon
+`npm install -g nodemon`
+
+Bifogar `"start": "nodemon app.mjs"` till scripts i the pakage.json
+
+Bifogar `"production": "NODE_ENV='production' node app.js"` till scripts in the pakage.json att kunna starta i productions lage.
+
+Bifogar `"type": "module"` till package.json att tillåta importera ES moduler och använda MongoDB.
+
+Kör `npm install mongodb@6.8` in command line för att skaffa moduller nödvändiga för MongoDB.
+
+Modifierar database.mjs enligt code from MongoDB 
+
+`const { MongoClient, ServerApiVersion } = require('mongodb');
+const uri = "mongodb+srv://texteditor1:<db_password>@cluster0.wf5vm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
+async function run() {
+  try {
+    // Connect the client to the server	(optional starting in v4.7)
+    await client.connect();
+    // Send a ping to confirm a successful connection
+    await client.db("admin").command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+}
+run().catch(console.dir);`
+
+Kör:
+`npm install --save dotenv`
+
+Får varning om packages vulnerabilety, fixa den med `npm audit fix`
+
+Skapar filen .env i rootcatalog:
+`touch .env`
+
+sparar i env min anvandarenamn och läsenord

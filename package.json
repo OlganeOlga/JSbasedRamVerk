@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "description": "Starter project for DV1677 JSRamverk",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npm app.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "production": "NODE_ENV='production' node app.js"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +18,7 @@
     "ejs": "^3.1.10",
     "express": "^4.19.2",
     "method-override": "^3.0.0",
+    "mongodb": "6.8",
     "morgan": "^1.10.0",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7"
