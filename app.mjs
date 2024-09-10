@@ -1,7 +1,8 @@
 // import React from 'react';
+import 'dotenv';
 import 'dotenv/config';
 
-const port = process.env.PORT || 3006; // Default to 3006 if PORT is undefined
+const port = process.env.PORT || 3007; // Default to 3006 if PORT is undefined
 
 import express from 'express';
 import bodyParser from 'body-parser';
@@ -83,6 +84,17 @@ app.get('/doc/:id', async (req, res) => {
         "doc",
         { doc: await documents.getOne(req.params.id) }
     );
+});
+
+// Add a route
+app.get("/json", (req, res) => {
+  const data = {
+    data: {
+        msg: "Hello World wia JSON"
+    }
+  };
+
+  res.json(data);
 });
 
 app.listen(port, () => {
