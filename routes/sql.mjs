@@ -10,7 +10,7 @@ router.post('/doc', async (req, res) => {
     const body = req.body;
 
     // Add or update the document
-    const result = await documents.addOne(body);
+   await documents.addOne(body);
 
     res.redirect('/');
 });
