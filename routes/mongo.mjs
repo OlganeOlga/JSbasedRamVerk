@@ -16,7 +16,7 @@ const colName = 'document';
 
 //const client = await localMongo();
 
-// get all dcuments as SJON
+// get all dcuments as JSON
 router.get("/", async(req, res) => {
     try {
         const collection = await documents.getAll(dbName, colName);
