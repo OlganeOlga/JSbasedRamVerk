@@ -5,18 +5,20 @@
  <div class="headers">
     <h2>Documents</h2>
     <h3 class="create-new-doc">
-        <a href="/doc" class="button">Create a new document</a>
+        <a href="/sql/doc" class="button">Create a new document</a>
     </h3>
 </div> 
-<article class="article"> 
+<article class="article">
     <% if (docs && docs.length > 0) { %>
         <% docs.forEach(function(doc) { %>
             <h3>
-                <a href="/doc/<%= doc.id %>">
+                <a href="/sql/doc/<%= doc.id %>">
                     Document: <%= doc.title ? doc.title : 'No Title' %>
                 </a>
             </h3>
         <% }); %>
     <% } %>      
+    <pre id="json-container"></pre>
+    <script src="app.js"></script>
 </article>   
 <%- include('includes/footer'); %>

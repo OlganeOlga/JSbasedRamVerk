@@ -2,7 +2,7 @@
 import 'dotenv';
 import 'dotenv/config';
 
-const port = process.env.PORT || 3006; // Default to 3006 if PORT is undefined
+const port = process.env.PORT || 3005; // Default to 3006 if PORT is undefined
 
 import express from 'express';
 import bodyParser from 'body-parser';
@@ -53,31 +53,10 @@ if (process.env.NODE_ENV !== 'test') {
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-app.use('/', sqlRoutes); // import routes from the first moment
+app.use('/sql', sqlRoutes); // import routes from the first moment that use SQLite
 app.use('/json', jsonRoutes); // import json routes, routes will have url: localhose:3006/json/...
 app.use('/mongo', mongoRoutes); // import routes using mongoDB
 
-app.get("/jsonMongo", async(req, res) => {
-  let dsn = `mongodb://localhost:27017/mummin`;
-  let colname = `crowd`;
-  const criteria2 = {
-      namn: /^Sn/
-  };
-  const projection2 = {
-      _id: 1,
-      namn: 1
-  };
-  const limit2 = 3;
-  try {
-      const data = {
-          docs: await documents.findInCollection(dsn, colname, criteria2, projection2, limit2)
-      };
-      res.json(data);
-  } catch (error) {
-      console.error("Error fetching documents:", error);
-      res.status(500).json({ error: "Failed to fetch documents" });
-  };
-});
 // Add routes for 404 and error handling
 // Catch 404 and forward to error handler
 // Put this last
