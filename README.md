@@ -222,5 +222,8 @@ Skapar filen .env i rootcatalog:
 `touch .env`
 sparar i env min anvandarenamn och lösenord
 
-Fixa .env ...
+Fixar local MongoDB connection: med `localMongo()` in db/mongoDB.mjs;
+Standard db name är 'docs'.
 
+fixar JSON-routes som använder MongoDb.
+Routes visar alla document, skaffar document, söker document efter _id, 

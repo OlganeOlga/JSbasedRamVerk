@@ -13,36 +13,67 @@ const dbName = 'docs';
 
 const colName = 'document';
 
-/**
- * get connection to database
- * @asynk
- * 
- * @param {string} uri : connection port
- * @param {string} dbName : database name
- * 
- * @returns {object} database : database
- */
-async function getMongo(uri, dbName) {
-    const client = new MongoClient(uri);
-    await client.connect();
-    const db = client.db(dbName);
-    return db;
-}
 
 // get all dcuments as SJON
 router.get("/", async(req, res) => {
     const client = new MongoClient(uri);
     await client.connect();
-    const db = client.db(dbName);
-
-    //get database
-    const collection = await db.collection(colName).find().toArray();
-    await client.close()
-    res.json({ documents: collection });
+    const db = client.db('docs');
+    try {
+        //get database
+        const collection = await db.collection(colName).find().toArray();
+        await client.close()
+        res.json({ documents: collection });
+    } catch (error) {
+        console.log('error in inserting: ', error);
+        res.json({ error: error});
+    }
 });
 
-// get all dcuments as SJON
-router.get("/:title/:content", async(req, res) => {
+// remove one dcument as JSON with given _id
+router.get("/mongo/deleat/:id", async(req, res) => {
+    //get database
+    const client = new MongoClient(uri);
+    await client.connect();
+    const db = client.db(dbName);
+    console.log(req.params.id)
+    try {
+        const document = await db.collection(colName).deleteOne({_id: new ObjectId(`${req.params.id}`)});
+        res.json({document: document});
+    } catch (error) {
+        console.log('error in deleating document by _id: ', error);
+        res.json({error: error});
+    } finally {
+        await client.close();
+    }
+});
+
+// remove one dcuments as JSON with given title
+router.get("/mongo/deleatByTitle/:title", async(req, res) => {
+    //get database
+    const client = new MongoClient(uri);
+    await client.connect();
+    const db = client.db(dbName);
+    console.log(req.params.title)
+    try {
+        const document = await db.collection(colName).deleteOne({'data.title': req.params.title});
+        res.json({document: document});
+    } catch (error) {
+        console.log('error in deleating document by title: ', error);
+        res.json({error: error});
+    } finally {
+        await client.close();
+    }
+});
+
+
+
+// add new document
+router.get("/add/:title/:content", async(req, res) => {
+     // Prevent conflict with the 'deleat' route
+     if (req.params.title === "deleat") {
+        return res.status(400).json({ error: "Invalid route usage." });
+    }
     const data = {
         data: {
             title: req.params.title,
@@ -53,12 +84,11 @@ router.get("/:title/:content", async(req, res) => {
     await client.connect();
     const db = client.db(dbName);
     try {
-        
         const resut = await db.collection(colName).insertOne(data);
-        return res.redirect('/');
+        return res.redirect('/mongo/');
     } catch (error) {
         console.log('error in inserting: ', error);
-        return res.redirect('/');
+        res.json({ error: error});
     } finally {
         await client.close()
     }
@@ -74,44 +104,29 @@ router.get("/:id", async(req, res) => {
         const document = await db.collection(colName).findOne({_id: new ObjectId(`${req.params.id}`)});
         res.json({document: document});
     } catch (error) {
-        console.log('error in inserting: ', error);
-
+        console.log('error in searching document by _id: ', error);
         res.json({error: error});
     } finally {
         await client.close();
     }
 });
 
-// remove one dcument as JSON with given _id
-router.get("/deleet/:id", async(req, res) => {
-    //get database
-    const client = new MongoClient(uri);
-    await client.connect();
-    const db = client.db(dbName);
-    console.log(req.params.id)
-    try {
-        const document = await dbcollection(colName).deleteOne({_id: new ObjectId(`${req.params.id}`)});
-        res.json({document: document});
-    } catch (error) {
-        console.log('error in inserting: ', error);
 
-        res.json({error: error});
-    } finally {
-        await client.close();
+router.get('/mongo/getByTitle/:title', async (req, res) => {
+    const searched = req.params.title;
+    const query = {'data.title': searched};
+
+    const options = {
+        projection: { _id: 1, 'data.title': 0, 'data.content': 0 }
     }
-});
-
-router.get('/:title', async (req, res) => {
-    const data = req.body;
-    const filter = { title: data.title };
     const client = new MongoClient(uri);
     await client.connect();
     const db = client.db(dbName);
     try {
-        const document = await db.collection(colName).find({title: title});
-        res.json({ document: document });
+        const result = await db.collection(colName).find(query, options).toArray();
+        res.json({ document: result });
     } catch (error) {
-        console.log('error in inserting: ', error);
+        console.log('error in searching document by title: ', error);
         res.json({ error: error });
     } finally {
         await client.close()
@@ -120,24 +135,25 @@ router.get('/:title', async (req, res) => {
 
 
 // uppdate or add a new document with title and content
-router.get('/:title/:content', async (req, res) => {
-    const data = req.body;
-    const filter = { title: data.title };
+router.get('/add/:title/:content', async (req, res) => {
+    const data = req.params;
+ 
+    const filter = { 'data.title': data.title };
 
     const options = { upsert: true }; // add document if the docuent with this title is note found
     const updateDoc = {
         $set: {
           title: data.title,
-          body: data.body
+          content: data.content
         },
       };
     const client = new MongoClient(uri);
     await client.connect();
     const db = client.db(dbName);
     try {
-        const result = await db.updateOne(filter, updateDoc, options);
+        const result = await db.collection(colName).updateOne(filter, updateDoc, options);
         console.log("result: ", result);
-        res.json({ document: document });
+        res.json({ result: result });
     } catch (error) {
         console.log('error in inserting: ', error);
         res.json({ error: error });
@@ -166,7 +182,7 @@ router.get('/new', async (req, res) => {
         const document = await db.collection(colName).addOne(data);
         res.json({ document: document });
     } catch (error) {
-        console.log('error in inserting: ', error);
+        console.log('error in adding empty document: ', error);
         res.json({ error: error });
     } finally {
         await client.close()

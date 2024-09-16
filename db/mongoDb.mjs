@@ -32,23 +32,22 @@ async function mongoDb() {
   
 /**
  * Create connection to local MongoDB
- * 
- * @param dtb : database name
+ * @param {string} dtb : database name
+ * @param {string} dsn : mongo-port
  * @returns {Promise<object>}: local mongo db
  */
-export async function localMongo (dtb = 'docs') {
-  let dsn = `mongodb://localhost:27017`;
-
+export async function localMongo (dtb = 'docs', dsn = `mongodb://localhost:27017`) {
+  
   const client = new MongoClient(dsn);
   
-  // if (process.env.NODE_ENV === 'test') {
-  //     dsn = "mongodb://localhost:27017/test";
-  // }
+  if (process.env.NODE_ENV === 'test') {
+      dsn = "mongodb://localhost:27017/test";
+  }
 
   try {
     await client.connect();
     console.log('Client connected');
-    return client.db(dtb); // Ensure you are returning the DB instance
+    return client.db(dtb); // returning the DB instance
   } catch (error) {
       console.error("Error connecting to MongoDB:", error);
       throw error; // Re-throw error for proper handling
