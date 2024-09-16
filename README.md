@@ -225,5 +225,5 @@ sparar i env min anvandarenamn och lösenord
 Fixar local MongoDB connection: med `localMongo()` in db/mongoDB.mjs;
 Standard db name är 'docs'.
 
-fixar JSON-routes som använder MongoDb.
-Routes visar alla document, skaffar document, söker document efter _id, 
+fixar JSON-routes i `routes/mogo.mjs` som använder MongoDb.
+Routes visar alla document, skaffar document, söker document efter _id, title, uppdaterar document med title, skafar nya document med title "unnamed"
