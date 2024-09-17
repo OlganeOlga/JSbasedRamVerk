@@ -40,7 +40,7 @@ router.get("/json", (req, res) => {
   
   router.delete("/user", (req, res) => {
     // DELETE requests should return 204 No Content
-    res.status(204).send();
+    res.status(200).send();
   });
   
   // Add dinamic route
