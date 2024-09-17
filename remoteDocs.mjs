@@ -1,47 +1,29 @@
 import mongoDb from './db/mongoDb.mjs'
 import { ServerApiVersion, ObjectId } from 'mongodb';
-//const uri = 'mongodb://localhost:27017';
 
-const remoteMongo = mongoDb.remoteMongo();
 
 // Functionality
 const mongoDocs = {
 
     /**
-     * See list of collecions
-     * @async
-     * 
-     * @param {string} dbName
-     * 
-     * @return {Promise<array>} collections
-     */
-    getCollections: async function getCollections(dbName) {
-        
-    },
-
-    /**
      * Show all documents in an collection.
      *
      * @async
-     * 
-     * @param {string} dbName   name of database
-     * @param {string} colName    collection to search
+     *
      * @throws Error when database operation fails.
      *
      * @return {Promise<array>} The resultset as an promis.
      */
-      getAll: async function getAll(dbName, colName) {
-        const client = await remoteMongo();
-        const db = client.db(dbName);
+      getAll: async function getAll() {
+        const remoteMongo = await mongoDb.remoteMongo();
         try {
-            //get database
-            const collection = await db.collection(colName).find().toArray();
-            return collection;
+            //get database         
+            const documents = await remoteMongo.collection.find().toArray();
+            return documents;
         } catch (error) {
-            console.log("ERROR with geting colleciont")
-            throw error;
+            return error;
         } finally {
-            await client.close();
+            await remoteMongo.client.close();
         }
     },
 
@@ -50,29 +32,25 @@ const mongoDocs = {
      *
      * @async
      *
-     * @param {string} dbName     name of database.
-     * @param {string} colName    collection to search
      * @param {string} title      title of document 
      *
      * @throws Error when database operation fails.
      *
      * @return {Promise<object>} The resultset as an array.
      */
-    findTitles: async function findTitles(dbName, colName, searched) {
+    findTitles: async function findTitles(searched) {
         const query = {title: searched};
 
         const options = {
             projection: { _id: 1, title: 1, content: 1 }
         }
-        const client = await remoteMongo();
-        const db = client.db(dbName);
+        const remoteMongo = await mongoDb.remoteMongo();
         try {
-            const result = await db.collection(colName).find(query, options).toArray();
-            return result;
+            return await remoteMongo.collection.find(query, options).toArray()       
         } catch (error) {
             throw error;
         } finally {
-            await client.close()
+            await remoteMongo.client.close();
         }
     },
 
@@ -81,9 +59,7 @@ const mongoDocs = {
      * or create one if doc does not exists.
      *
      * @async
-     * 
-     * @param {string} dbName       name of database.
-     * @param {string} colName      collection to search
+     *
      * @param {string} title        documents title
      * @param {string} content      documents content
      *
@@ -91,7 +67,7 @@ const mongoDocs = {
      *
      * @return {Promise<object>} The resultset as an array.
      */
-    uppdateOne: async function uppdateOne(dbName, colName, title, content) {
+    uppdateOne: async function uppdateOne(title, content) {
 
         //const data = req.params;
  
@@ -104,15 +80,13 @@ const mongoDocs = {
               content: content
             },
           };
-        const client = await remoteMongo();
-        const db = client.db(dbName);
+        const remoteMongo = await mongoDb.remoteMongo();
         try {
-            const result = await db.collection(colName).updateOne(filter, updateDoc, options);
-            return result;
+            return await remoteMongo.collection.updateOne(filter, updateDoc, options);
         } catch (error) {
             throw error;
         } finally {
-            await client.close();
+            await remoteMongo.client.close();
         }
     },
 
@@ -120,28 +94,24 @@ const mongoDocs = {
      * add empty document in the collection 
      *
      * @async
-     * 
-     * @param {string} dbName       name of database.
-     * @param {string} colName      collection to searched
      *
      * @throws Error when database operation fails.
      *
      * @return {Promise<object>} The resultset as an array.
      */
-    addNew: async function addNew(dbName, colName) {
-        const client = await remoteMongo();
-        const db = client.db(dbName);
+    addNew: async function addNew() {
+        const remoteMongo = await mongoDb.remoteMongo();
         const data = {
             title: "unnamed",
             content: ""
         };
         try {
-            const document = await db.collection(colName).insertOne(data);
+            const document = await remoteMongo.collection.insertOne(data);
             return document;
         } catch (error) {
             throw error;
         } finally {
-            await client.close()
+            await remoteMongo.client.close();
         }
     },
 
@@ -149,27 +119,21 @@ const mongoDocs = {
      * add empty document in the collection 
      *
      * @async
-     * 
-     * @param {string} dbName       name of database.
-     * @param {string} colName      collection to searched
      * @param {string} id           documents id (_id)
      *
      * @throws Error when database operation fails.
      *
      * @return {Promise<object>} The resultset as an array.
      */
-    removeById: async function removeById(dbName, colName, id) {
+    removeById: async function removeById(id) {
         //get database
-        const client = await remoteMongo();
-        const db = client.db(dbName);
+        const remoteMongo = await mongoDb.remoteMongo();
         try {
-            const result = await db.collection(colName).deleteOne({_id: new ObjectId(`${id}`)});
-            return result;
-        
+            return await remoteMongo.collection.deleteOne({_id: new ObjectId(`${id}`)})       
         } catch (error) {
             throw error;
         } finally {
-            await client.close()
+            await remoteMongo.client.close();
         }
     },
 
@@ -177,27 +141,20 @@ const mongoDocs = {
      * add empty document in the collection 
      *
      * @async
-     * 
-     * @param {string} dbName       name of database.
-     * @param {string} colName      collection to searched
      * @param {string} title           documents title
      *
      * @throws Error when database operation fails.
      *
      * @return {Promise<object>} The resultset as an array.
      */
-        removeByTitle: async function removeByTitle(dbName, colName, title) {
-            //get database
-            const client = await remoteMongo();
-            const db = client.db(dbName);
+        removeByTitle: async function removeByTitle(title) {
+            const remoteMongo = await mongoDb.remoteMongo();
             try {
-                const result = await db.collection(colName).deleteOne({title: title});
-                return result;
-            
+                return await remoteMongo.collection.deleteOne({title: title});           
             } catch (error) {
                 throw error;
             } finally {
-                await client.close()
+                await remoteMongo.client.close();
             }
         },
 
@@ -205,174 +162,41 @@ const mongoDocs = {
      * fiend document in the collection by _id
      *
      * @async
-     * 
-     * @param {string} dbName       name of database.
-     * @param {string} colName      collection to searched
      * @param {string} id           documents id (_id)
      *
      * @throws Error when database operation fails.
      *
      * @return {Promise<object>} The resultset as an array.
      */
-        getByID: async function getByID(dbName, colName, id) {
-            //get database
-            const client = await remoteMongo();
-            const db = client.db(dbName);
+        getByID: async function getByID(id) {
+            const remoteMongo = await mongoDb.remoteMongo();
             try {
-                const result = await db.collection(colName).findOne({_id: new ObjectId(`${id}`)});
-                return result;
-            
+                return await remoteMongo.collection.findOne({_id: new ObjectId(`${id}`)});           
             } catch (error) {
                 throw error;
             } finally {
-                await client.close()
+                await remoteMongo.client.close();
             }
         },
-    /**
-     * Find documents in an collection by matching search criteria.
-     *
-     * @async
-     *
-     * @param {string} col        Collection.
-     * @param {object} criteria   Search criteria.
-     * @param {object} projection What to project in results.
-     * @param {number} limit      Limit the number of documents to retrieve.
-     *
-     * @throws Error when database operation fails.
-     *
-     * @return {Promise<array>} The resultset as an array.
-     */
+//     /**
+//      * Find documents in an collection by matching search criteria.
+//      *
+//      * @async
+//      *
+//      * @param {string} col        Collection.
+//      * @param {object} criteria   Search criteria.
+//      * @param {object} projection What to project in results.
+//      * @param {number} limit      Limit the number of documents to retrieve.
+//      *
+//      * @throws Error when database operation fails.
+//      *
+//      * @return {Promise<array>} The resultset as an array.
+//      */
     
-    findInCollection: async function findInCollection(col, criteria, projection, limit) {
+//     findInCollection: async function findInCollection(col, criteria, projection, limit) {
         
-        const res = await col.find(criteria, projection).limit(limit).toArray();
-
-        return res;
-    },
-
- 
-
-// // remove one dcument as JSON with given _id
-// router.get("/mongo/deleat/:id", async(req, res) => {
-//     //get database
-//     const client = await remoteMongo();
-//     const db = client.db(dbName);
-//     try {
-//         const document = await db.collection(colName).deleteOne({_id: new ObjectId(`${req.params.id}`)});
-//         res.json({document: document});
-//     } catch (error) {
-//         res.json({error: error});
-//     } finally {
-//         await client.close();
-//     }
-// });
-
-// // remove one dcuments as JSON with given title
-// router.get("/mongo/deleatByTitle/:title", async(req, res) => {
-//     //get database
-//     const client = await remoteMongo();
-//     const db = client.db(dbName);
-//     try {
-//         const document = await db.collection(colName).deleteOne({title: req.params.title});
-//         res.json({document: document});
-//     } catch (error) {
-//         console.log('error in deleating document by title: ', error);
-//         res.json({error: error});
-//     } finally {
-//         await client.close();
-//     }
-// });
-
-// // get one dcument as JSON
-// router.get("/:id", async(req, res) => {
-//     //get database
-//     const client = await remoteMongo();
-//     const db = client.db(dbName);
-//     try {
-//         const document = await db.collection(colName).findOne({_id: new ObjectId(`${req.params.id}`)});
-//         res.json({document: document});
-//     } catch (error) {
-//         console.log('error in searching document by _id: ', error);
-//         res.json({error: error});
-//     } finally {
-//         await client.close();
-//     }
-// });
-
-
-// router.get('/mongo/getByTitle/:title', async (req, res) => {
-//     const searched = req.params.title;
-//     const query = {title: searched};
-
-//     const options = {
-//         projection: { _id: 1, title: 0, content: 0 }
-//     }
-//     const client = await remoteMongo();
-//     const db = client.db(dbName);
-//     try {
-//         const result = await db.collection(colName).find(query, options).toArray();
-//         res.json({ document: result });
-//     } catch (error) {
-//         console.log('error in searching document by title: ', error);
-//         res.json({ error: error });
-//     } finally {
-//         await client.close()
-//     }
-// });
-
-
-// // uppdate or add a new document with title and content
-// router.get('/mongo/uppdate/:title/:content', async (req, res) => {
-//     const data = req.params;
- 
-//     const filter = { title: data.title };
-
-//     const options = { upsert: true }; // add document if the docuent with this title is note found
-//     const updateDoc = {
-//         $set: {
-//           title: data.title,
-//           content: data.content
-//         },
-//       };
-//       const client = await remoteMongo();
-//     const db = client.db(dbName);
-//     try {
-//         const result = await db.collection(colName).updateOne(filter, updateDoc, options);
-//         console.log("result: ", result);
-//         res.json({ result: result });
-//     } catch (error) {
-//         console.log('error in inserting: ', error);
-//         res.json({ error: error });
-//     } finally {
-//         await client.close();
-//     }
-// });
-
-// // add an new unnamed document
-// router.get('/mongo/new', async (req, res) => {
-//     const client = await remoteMongo();
-//     const db = client.db(dbName);
-//     const query = {title: /^unnamed\d+$/};
-//     const options = {
-//         projection: { _id: 1, title: 0, content: 0 }
-//     }
-//     try {
-//         //give number for the unnamed document
-//         const data = {
-//                 //title: "unnamed" + number,
-//                 title: "unnamed",
-//                 content: ""
-//         };
-//         const document = await db.collection(colName).insertOne(data);
-//         res.json({ document: document });
-//     } catch (error) {
-//         console.log('error in adding empty document: ', error);
-//         res.json({ error: error });
-//     } finally {
-//         await client.close()
-//     }
-// });
-
-};
+//         return await col.find(criteria, projection).limit(limit).toArray();
+//     },
+// };
 
 export default mongoDocs;

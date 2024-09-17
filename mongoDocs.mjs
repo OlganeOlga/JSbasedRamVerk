@@ -194,25 +194,25 @@ const mongoDocs = {
                 await localMongo.client.close();
             }
         },
-    /**
-     * Find documents in an collection by matching search criteria.
-     *
-     * @async
-     *
-     * @param {string} col        Collection.
-     * @param {object} criteria   Search criteria.
-     * @param {object} projection What to project in results.
-     * @param {number} limit      Limit the number of documents to retrieve.
-     *
-     * @throws Error when database operation fails.
-     *
-     * @return {Promise<array>} The resultset as an array.
-     */
+    // /**
+    //  * Find documents in an collection by matching search criteria.
+    //  *
+    //  * @async
+    //  *
+    //  * @param {string} col        Collection.
+    //  * @param {object} criteria   Search criteria.
+    //  * @param {object} projection What to project in results.
+    //  * @param {number} limit      Limit the number of documents to retrieve.
+    //  *
+    //  * @throws Error when database operation fails.
+    //  *
+    //  * @return {Promise<array>} The resultset as an array.
+    //  */
     
-    findInCollection: async function findInCollection(col, criteria, projection, limit) {
+    // findInCollection: async function findInCollection(col, criteria, projection, limit) {
         
-        return await col.find(criteria, projection).limit(limit).toArray();
-    },
+    //     return await col.find(criteria, projection).limit(limit).toArray();
+    // },
 };
 
 export default mongoDocs;

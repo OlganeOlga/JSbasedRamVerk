@@ -201,7 +201,7 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
-    // Send a ping to confirm a successful connection
+    // Send a ping to confirm a successful anslutning
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
@@ -216,13 +216,13 @@ Kör:
 
 Får varning om packages vulnerabilety, fixa den med `npm audit fix`
 
-Nu fiungerar database connection.
+Nu fiungerar database anslutning.
 
 Skapar filen .env i rootcatalog:
 `touch .env`
 sparar i env min anvandarenamn och lösenord
 
-Fixar local MongoDB connection: med `localMongo()` in db/mongoDB.mjs;
+Fixar local MongoDB anslutning: med `localMongo()` in db/mongoDB.mjs;
 Standard db name är 'docs'.
 
 fixar JSON-routes i `routes/mogo.mjs` som använder MongoDb.
@@ -230,3 +230,8 @@ Routes visar alla document, skaffar document, söker document efter _id, title, 
 
 Moved functionality to `mongoDocs.mjs`.
 
+Det ser ut som jag fick rätt anslutning till remote database, skapade en likanande db som på lokal nivå.
+
+Just nu finns det många routes: från första inlämningen, för lokal mongo och för remote mongo.
+Nu är det dags att skagga Azure ... 
+Och overföra app till Ract...

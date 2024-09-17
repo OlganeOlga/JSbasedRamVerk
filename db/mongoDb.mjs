@@ -1,12 +1,13 @@
 import { MongoClient, ServerApiVersion, ObjectId } from 'mongodb';
 //Connect to remote mongo-database
 //const uri = `mongodb+srv://oleg22:DEyTL0mOhfjdcK8g@texteditor.topue.mongodb.net/?retryWrites=true&w=majority&appName=texteditor`;
-const username = encodeURIComponent("oleg22");
-const password = encodeURIComponent("DEyTL0mOhfjdcK8g");
+const username = process.env.ATLAS_USERNAME;
+const password = process.env.ATLAS_PASSWORS;
 const cluster = "texteditor";
 const authSource = "<authSource>";
 const authMechanism = "<authMechanism>";
-const uri = `mongodb+srv://${username}:${password}@${cluster}.topue.mongodb.net/?retryWrites=true&w=majority&appName=texteditor`;
+const uri = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORS}g@texteditor.topue.mongodb.net/?retryWrites=true&w=majority&appName=texteditor`;
+
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const dsn = `${process.env.LOCAL_DSN}`;
 
@@ -16,26 +17,18 @@ const localCollection = "document";
 //console.log(dsn);
 const mongo = {
   /**
-   * Connect to database remote
+   * Connect to remote database
    * 
    * @returns object: mongo database
    */
   remoteMongo: async function remoteMongo() {
-    const client = new MongoClient(uri, {
-      serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true,
-      }
-    });
-
+    const client = new MongoClient(uri);
+    await client.connect();
     try {
-      // Connect the client to the server	(optional starting in v4.7)
-      const connectedClient= await client.connect();
-      // Send a ping to confirm a successful connection
-      await client.db("admin").command({ ping: 1 });
-      console.log("Pinged your deployment. You successfully connected to MongoDB!");
-      return connectedClient;
+      const database = client.db('docs');
+      const documents = database.collection('document');
+
+      return {client: client, documents: documents};
     } catch (error) {
       console.log("error by remote connection : ", error);
     }
@@ -48,7 +41,7 @@ const mongo = {
    */
   localMongo: async function localMongo () {
     console.log("start localMOngo")
-    //const dsn = `mongodb://localhost:27017`
+    
     if (process.env.NODE_ENV === 'test') {
         dsn = "mongodb://localhost:27017/test";
     }

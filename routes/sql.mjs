@@ -27,7 +27,7 @@ router.put('/doc', async (req, res) => {
 });
 
 // old '/' route to view
-router.get('/inactive', async (req, res) => {
+router.get('/', async (req, res) => {
 
     return res.render("index", { docs: await documents.getAll()});
 });
@@ -40,7 +40,7 @@ router.get('/inactive', async (req, res) => {
  * 302
  * ser vidate MND: HTTP status code
 */
-router.get('/', async (req, res) => {
+router.get('/json', async (req, res) => {
 
     return res.json( { docs: await documents.getAll()});
 });

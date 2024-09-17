@@ -1,25 +1,24 @@
 import express from 'express';
-import { BSON, MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
-//import mongo from '../db/mongoDb.mjs';
-import documents from '../remoteDocs.mjs';
+// import { BSON, MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
+import documents from '../mongoDocs.mjs';
+
 
 const router = express.Router();
 
 //parse JSON bodies
 router.use(express.json());
 
-//const uri = 'mongodb://localhost:27017';
-
 const dbName = 'docs';
 
 const colName = 'document';
 
-//const client = await localMongo();
 
 // get all dcuments as JSON
 router.get("/", async(req, res) => {
     try {
-        const collection = await documents.getAll(dbName, colName);
+        console.log("start getting documents");
+        const collection = await documents.getAll();
+        console.log("finish getting documents");
         res.json({ documents: collection });
     } catch (error) {
         res.json({ error: error });
@@ -63,7 +62,6 @@ router.get('/mongo/getByTitle/:title', async (req, res) => {
         const result = await documents.findTitles(dbName, colName, searched);
         res.json(result);
     } catch (error) {
-        console.log('error in searching document by title: ', error);
         res.json({ error: error });
     }
 });

@@ -2,12 +2,6 @@ import express from 'express';
 // import { BSON, MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
 import documents from '../mongoDocs.mjs';
 
-import mongoDb from '../db/mongoDb.mjs';
-import { ServerApiVersion, ObjectId } from 'mongodb';
-//const uri = 'mongodb://localhost:27017';
-
-const localMongo = await mongoDb.localMongo();
-
 const router = express.Router();
 
 //parse JSON bodies

@@ -56,7 +56,6 @@ app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 app.use('/posts', posts); // import routes from the first moment that use SQLite
-app.use('/json', jsonRoutes); // import json routes, routes will have url: localhose:3006/json/...
 app.use('/mongo', mongoLocal); // import routes using local mongoDB
 app.use('/rm', mongoRemote); // import routes using remote mongoDB
 
