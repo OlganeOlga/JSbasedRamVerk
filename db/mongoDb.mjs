@@ -1,18 +1,8 @@
-import { MongoClient, ServerApiVersion, ObjectId } from 'mongodb';
+import { MongoClient} from 'mongodb';
 //Connect to remote mongo-database
-//const uri = `mongodb+srv://oleg22:DEyTL0mOhfjdcK8g@texteditor.topue.mongodb.net/?retryWrites=true&w=majority&appName=texteditor`;
-const username = process.env.ATLAS_USERNAME;
-const password = process.env.ATLAS_PASSWORS;
-const cluster = "texteditor";
-const authSource = "<authSource>";
-const authMechanism = "<authMechanism>";
-const uri = `mongodb+srv://oleg22:DEyTL0mOhfjdcK8g@texteditor.topue.mongodb.net/admin?retryWrites=true&w=majority&appName=texteditor`;
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const dsn = `${process.env.LOCAL_DSN}`;
+const uri = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@${process.env.DB_CLUSTER}.topue.mongodb.net/admin?retryWrites=true&w=majority&appName=texteditor`;
 
-const localDB = "docs";
-const localCollection = "document";
 
 //console.log(dsn);
 const mongo = {
@@ -29,11 +19,11 @@ const mongo = {
     console.log(" connected client")
     try {
       console.log("try to get/create database")
-      const database = client.db('docs');
+      const database = client.db(process.env.DB_NAME);
       console.log("try to get/create collection")
-      const documents = database.collection('document');
+      const documents = database.collection(process.env.COLLECTION_NAME);
       console.log("try to return collection")
-      return {client: client, documents: documents};
+      return {client: client, collection: documents};
     } catch (error) {
       console.log("error by remote connection : ", error);
     }
@@ -50,14 +40,14 @@ const mongo = {
   //   if (process.env.NODE_ENV === 'test') {
   //       dsn = "mongodb://localhost:27017/test";
   //   }
-  //   const client = new MongoClient(dsn);
+  //   const client = new MongoClient({process.env.LOCAL_DSN);
   //   console.log("after getting clietn")
   //   try {
   //     console.log('Client will be connected');
   //     await client.connect();
 
-  //     const db = client.db(localDB);
-  //     const collection = db.collection(localCollection);
+  //     const db = client.db(process.env.DB_NAME);
+  //     const collection = db.collection(process.env.COLLECTION_NAME);
 
   //     return {client: client, collection: collection};
 

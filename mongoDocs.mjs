@@ -1,5 +1,5 @@
 import mongoDb from './db/mongoDb.mjs'
-import { ServerApiVersion, ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 
 
 // Functionality
@@ -99,14 +99,11 @@ const mongoDocs = {
      *
      * @async
      * 
-     * @param {string} dbName       name of database.
-     * @param {string} colName      collection to searched
-     *
      * @throws Error when database operation fails.
      *
      * @return {Promise<object>} The resultset as an array.
      */
-    addNew: async function addNew(dbName, colName) {
+    addNew: async function addNew() {
         const localMongo = await mongoDb.localMongo();
         const data = {
             title: "unnamed",
@@ -127,8 +124,6 @@ const mongoDocs = {
      *
      * @async
      * 
-     * @param {string} dbName       name of database.
-     * @param {string} colName      collection to searched
      * @param {string} id           documents id (_id)
      *
      * @throws Error when database operation fails.
@@ -152,8 +147,6 @@ const mongoDocs = {
      *
      * @async
      * 
-     * @param {string} dbName       name of database.
-     * @param {string} colName      collection to searched
      * @param {string} title           documents title
      *
      * @throws Error when database operation fails.
@@ -176,8 +169,6 @@ const mongoDocs = {
      *
      * @async
      * 
-     * @param {string} dbName       name of database.
-     * @param {string} colName      collection to searched
      * @param {string} id           documents id (_id)
      *
      * @throws Error when database operation fails.

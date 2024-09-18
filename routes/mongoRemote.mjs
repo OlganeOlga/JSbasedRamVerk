@@ -28,7 +28,7 @@ router.get("/", async(req, res) => {
 // remove one dcument as JSON with given _id
 router.get("/mongo/deleat/:id", async(req, res) => {
     try {
-        const result = await documents.removeById(dbName, colName, req.params.id);
+        const result = await documents.removeById(req.params.id);
         res.json({result: result});
     } catch (error) {
         res.json({error: error});
@@ -38,7 +38,7 @@ router.get("/mongo/deleat/:id", async(req, res) => {
 // remove one dcuments as JSON with given title
 router.get("/mongo/deleatByTitle/:title", async(req, res) => {
     try {
-        const result = await documents.removeById(dbName, colName, req.params.title);
+        const result = await documents.removeById(req.params.title);
         res.json({result: result});
     } catch (error) {
         res.json({error: error});
@@ -48,7 +48,7 @@ router.get("/mongo/deleatByTitle/:title", async(req, res) => {
 // get one dcument as JSON
 router.get("/:id", async(req, res) => {
     try {
-        const result = await documents.getByID(dbName, colName, req.params.id);
+        const result = await documents.getByID(req.params.id);
         res.json({result: result});
     } catch (error) {
         res.json({error: error});
@@ -59,7 +59,7 @@ router.get("/:id", async(req, res) => {
 router.get('/mongo/getByTitle/:title', async (req, res) => {
     const searched = req.params.title;
     try {
-        const result = await documents.findTitles(dbName, colName, searched);
+        const result = await documents.findTitles(searched);
         res.json(result);
     } catch (error) {
         res.json({ error: error });
@@ -67,11 +67,11 @@ router.get('/mongo/getByTitle/:title', async (req, res) => {
 });
 
 // uppdate or add a new document with title and content
-router.get('/mongo/uppdate/:title/:content', async (req, res) => {
+router.get('/mongo/update/:title/:content', async (req, res) => {
     const title = req.params.title;
     const content = req.params.content;
     try {
-        const result = await documents.uppdateOne(dbName, colName, title, content);
+        const result = await documents.uppdateOne(title, content);
         res.json({ result: result });
     } catch (error) {
         res.json({ error: error });
@@ -81,7 +81,7 @@ router.get('/mongo/uppdate/:title/:content', async (req, res) => {
 // add an new unnamed document
 router.get('/mongo/new', async (req, res) => {
     try {
-        const result = await documents.addNew(dbName, colName);
+        const result = await documents.addNew();
         res.json({ result: result });
     } catch (error) {
         console.log('error in adding empty document: ', error);

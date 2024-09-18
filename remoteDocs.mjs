@@ -106,6 +106,7 @@ const mongoDocs = {
             content: ""
         };
         try {
+            console.log("try to insert doc")
             const document = await remoteMongo.collection.insertOne(data);
             return document;
         } catch (error) {
