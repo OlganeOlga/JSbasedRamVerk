@@ -1,12 +1,12 @@
 // import React from 'react';
-import { createRoot } from 'react-dom/client';
+// import { createRoot } from 'react-dom/client';
 
-// Clear the existing HTML content
-document.body.innerHTML = '<div id="app"></div>';
+// // Clear the existing HTML content
+// document.body.innerHTML = '<div id="app"></div>';
 
-// Render your React component instead
-const root = createRoot(document.getElementById('app'));
-root.render(<h1>Hello, world</h1>);
+// // Render your React component instead
+// const root = createRoot(document.getElementById('app'));
+// root.render(<h1>Hello, world</h1>);
 
 import 'dotenv';
 import 'dotenv/config';
@@ -20,7 +20,6 @@ import cors from 'cors';
 import morgan from 'morgan'; // logging med tredjepart modules
 import methodOverride from 'method-override';
 
-import posts from "./routes/sql.mjs";
 //import mongoLocal from "./routes/mongo.mjs";
 import mongoRemote from "./routes/mongoRemote.mjs";
 
@@ -60,10 +59,9 @@ if (process.env.NODE_ENV !== 'test') {
     app.use(morgan('combined')); // 'combined' outputs the Apache style LOGs
 }
 
-app.use(bodyParser.json()); // for parsing application/json
-app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+// app.use(bodyParser.json()); // for parsing application/json
+// app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-app.use('/posts', posts); // import routes from the first moment that use SQLite
 //app.use('/mongo', mongoLocal); // import routes using local mongoDB
 app.use('/rm', mongoRemote); // import routes using remote mongoDB
 
