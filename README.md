@@ -233,5 +233,13 @@ Moved functionality to `mongoDocs.mjs`.
 Det ser ut som jag fick rätt anslutning till remote database, skapade en likanande db som på lokal nivå.
 
 Just nu finns det många routes: från första inlämningen, för lokal mongo och för remote mongo.
-Nu är det dags att skagga Azure ... 
+
+Functionalitet för remote mongoDB ligger i `remoteDocs.mjs`. Allt fungerar.
+Jag raderar sql database och routes som tillhör till den.
+
+### Överföring till React
+
 Och overföra app till Ract...
+
+
+Nu är det dags att skagga Azure ... 

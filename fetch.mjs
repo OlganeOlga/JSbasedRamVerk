@@ -1,5 +1,5 @@
 // Fetch JSON data from an API
-fetch('https://localhost:3006')
+fetch('https://localhost:3000')
 .then(response => response.json())
 .then(data => {
     // Convert JSON data to a string
