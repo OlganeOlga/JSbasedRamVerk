@@ -2,7 +2,7 @@
 import 'dotenv';
 import 'dotenv/config';
 
-const port = process.env.PORT || 3006; // Default to 3006 if PORT is undefined
+const port = process.env.PORT || 3000; // Default to 3000 if PORT is undefined
 
 import express from 'express';
 import bodyParser from 'body-parser';
@@ -12,8 +12,7 @@ import morgan from 'morgan'; // logging med tredjepart modules
 import methodOverride from 'method-override';
 
 import posts from "./routes/sql.mjs";
-import jsonRoutes from "./routes/json.mjs";
-import mongoLocal from "./routes/mongo.mjs";
+//import mongoLocal from "./routes/mongo.mjs";
 import mongoRemote from "./routes/mongoRemote.mjs";
 
 const app = express();
@@ -56,7 +55,7 @@ app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 app.use('/posts', posts); // import routes from the first moment that use SQLite
-app.use('/mongo', mongoLocal); // import routes using local mongoDB
+//app.use('/mongo', mongoLocal); // import routes using local mongoDB
 app.use('/rm', mongoRemote); // import routes using remote mongoDB
 
 // Add routes for 404 and error handling

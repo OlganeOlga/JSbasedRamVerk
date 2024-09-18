@@ -1,6 +1,6 @@
 import express from 'express';
 // import { BSON, MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
-import documents from '../mongoDocs.mjs';
+import documents from '../remoteDocs.mjs';
 
 
 const router = express.Router();
