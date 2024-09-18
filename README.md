@@ -239,7 +239,27 @@ Jag raderar sql database och routes som tillhör till den.
 
 ### Överföring till React
 
-Och overföra app till Ract...
+Jag borjar med att instalera react modules in the project med
+` npm install react react-dom`
 
+och vite-moduler: 
+ `npm install --save-dev vite`
 
-Nu är det dags att skagga Azure ... 
+Jag installerar också botstrap:
+`npm install bootstrap@5.2.3`
+
+Jag copierar sturt-up React-code i texteditor-react med
+`npm create vite@4.1.0` det går också bara med `npm create vite`.
+
+Jag använder filer i texteditor-react som mål för reactor-componenter i vart projekt. 
+
+Jag kopierar `index.html` i projektets root, och skapar i `src` filer: `main.tsx` och `App.tsx`.
+
+Nu arbetar jag med componenter.
+Jag skapar componenter för footer och headers i `components/includes`, jag skapar där även `ErrorBoundary.tsx` som hjälper med felsökning i React-componenter och samtidigt visar meddelande om fel i browser.
+
+Just nu finns det funktionalitet som tillåter visa alla dokument samt skapa nya tomma dokument.
+
+Jag planerar vidare arbeta med mojlighet att visa och redigera enskilda dokument samt att ta bort dokument....
+
+Jag har inte skapad Azure än ... 

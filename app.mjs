@@ -1,13 +1,3 @@
-// import React from 'react';
-// import { createRoot } from 'react-dom/client';
-
-// // Clear the existing HTML content
-// document.body.innerHTML = '<div id="app"></div>';
-
-// // Render your React component instead
-// const root = createRoot(document.getElementById('app'));
-// root.render(<h1>Hello, world</h1>);
-
 import 'dotenv';
 import 'dotenv/config';
 
@@ -20,12 +10,11 @@ import cors from 'cors';
 import morgan from 'morgan'; // logging med tredjepart modules
 import methodOverride from 'method-override';
 
-//import mongoLocal from "./routes/mongo.mjs";
 import mongoRemote from "./routes/mongoRemote.mjs";
 
 const app = express();
 
-//app.use(cors()); // tillåter nå app från olika platformer. Det finns mäjlighet att presissera varifån appen can nås
+app.use(cors()); // tillåter nå app från olika platformer. Det finns mäjlighet att presissera varifån appen can nås
 
 // Parse application/json
 app.use(bodyParser.json());
@@ -33,9 +22,6 @@ app.use(bodyParser.json());
 app.disable('x-powered-by');
 
 app.set("view engine", "ejs");
-
-// // Set the new views directory
-// app.set("views", path.join(process.cwd(), "init-views")); // Updated line
 
 // middelwear showing working route
 app.use((req, res, next) => {
@@ -47,8 +33,6 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(process.cwd(), "public")));
 
 app.use(express.json()); // in plase of bodyParser.urlencoded and bodyParser.json
-// app.use(bodyParser.json()); // for parsing application/json
-// app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 // Middleware to override the method
 app.use(methodOverride('_method'));
@@ -59,10 +43,6 @@ if (process.env.NODE_ENV !== 'test') {
     app.use(morgan('combined')); // 'combined' outputs the Apache style LOGs
 }
 
-// app.use(bodyParser.json()); // for parsing application/json
-// app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
-
-//app.use('/mongo', mongoLocal); // import routes using local mongoDB
 app.use('/rm', mongoRemote); // import routes using remote mongoDB
 
 // Add routes for 404 and error handling

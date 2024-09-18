@@ -1,5 +1,4 @@
 import express from 'express';
-// import { BSON, MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
 import documents from '../remoteDocs.mjs';
 
 

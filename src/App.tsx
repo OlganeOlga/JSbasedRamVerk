@@ -1,15 +1,18 @@
-// 
-import React from "react";
+//
+import React from 'react';
 import AppFooter from "../components/includes/AppFooter";
 import AppHeader from "../components/includes/AppHeader";
 import AppMain from "../components/AppMain";
+import ErrorBoundary from '../components/includes/ErrorBoundary';
 
 
 function App() {
   
   return <>
             <AppHeader />
-            <AppMain />
+            <ErrorBoundary>
+              <AppMain />
+            </ErrorBoundary>
             <AppFooter />
         </>
 }
