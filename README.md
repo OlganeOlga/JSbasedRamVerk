@@ -2,7 +2,7 @@
 ---
 Project for DV1677 JSRamverk
 
-## Specification
+Project for DV1677 JSRamverk
 
 Satt port på 3006 på  const port = process.env.PORT || 3000; // Default to 3006 if PORT is undefined i app.mjs, för att kunna öppna appen. Annars får man felmeddelade "app listening on port undefined"
 
@@ -127,6 +127,7 @@ updateOne: async function updateOne(body) {
     } finally {
         await db.close();
     }
+}
 ```
 
 Vi ändrar table i db/migrate.sql till:
