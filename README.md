@@ -255,10 +255,17 @@ Jag använder filer i texteditor-react som mål för reactor-componenter i vart 
 
 Jag kopierar `index.html` i projektets root, och skapar i `src` filer: `main.tsx` och `App.tsx`.
 
-Nu arbetar jag med componenter.
-Jag skapar componenter för footer och headers i `components/includes`, jag skapar där även `ErrorBoundary.tsx` som hjälper med felsökning i React-componenter och samtidigt visar meddelande om fel i browser.
+Kommand för att köra reakt-app är `npm run dev`. Refrech cole med `r`.
+Det gär fortfarande köra express-app med `npm start` och `rs` för att refrecha.
 
-Just nu finns det funktionalitet som tillåter visa alla dokument samt skapa nya tomma dokument.
+Nu arbetar jag med componenter.
+Jag skapar componenter för footer och headers i `components/includes`.
+
+Jag skapar där även `ErrorBoundary.tsx` som hjälper med felsökning i React-componenter och samtidigt visar meddelande om fel i browser.
+
+Just nu finns det funktionalitet som tillåter visa alla dokument. Ser kode i `components/AppMain.tsx`.
+
+Det finns funktionalitet som skapa nya tomma dokument i  i `components/ArtickleHead.tsx`.
 
 Jag planerar vidare arbeta med mojlighet att visa och redigera enskilda dokument samt att ta bort dokument....
 
