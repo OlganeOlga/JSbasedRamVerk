@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import utils from '../utils.mjs';
 
+// element props
 interface DeleteDocumentProps {
     id: string;
     clearSelection: () => void; 
@@ -10,6 +11,7 @@ interface DeleteDocumentProps {
 
 function DeleteDocument({ id, clearSelection }: DeleteDocumentProps) {
     
+    // fetch DELETE route
     const handleDelete = async (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault(); 
         try {

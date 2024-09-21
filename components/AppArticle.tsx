@@ -25,7 +25,7 @@ function AppArticle({ documents, reloadDocuments }: AppArticleProps) {
         reloadDocuments();
     };
 
-    // element
+    // element saved onchange only if sybmitt button added. changes klost if returns viwout submit.
     return (
         <div>
             {selectedIndex === null ? ( // if no document selected
