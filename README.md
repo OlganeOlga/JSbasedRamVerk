@@ -275,6 +275,10 @@ jag installerar font-awsom:
 
 Finns funktionalitet som redigerar och ta bort dokument
 
+Flyttar create-button till `AppHeaders.tsx`, 
+`ArticleHead.tsx` används inte just nu,
+Flyttar function "locadDocuments" i `utisl.mjs`
+
 ### Det ska vara bra att arbeta mera med style ...
 
 ### Funderar på att plasera deleat-button in headers. Det ska visas ifal dokument selected....

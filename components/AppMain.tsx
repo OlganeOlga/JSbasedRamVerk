@@ -1,46 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import ArtickleHead from './ArticleHead';
+import React, { useEffect } from 'react';
 import AppArticle from './AppArticle';
-import utils from '../utils.mjs';
-import Document from '../interfase'; // import interfase for object Document
 
-// interface Result {
-//     douments: Document;
-// };
+function AppMain({ documents, loading, reloadDocuments }) { // Access documents and loading props
 
-function AppMain() {
-    const [documents, setDocuments] = useState<Document[]>([]); // Initialize as an empty array
-    const [loading, setLoading] = useState(true);
-
-    const loadDocuments = async () => {
-        try {
-            const result = await utils.fetchAll();
-            console.log(result)
-            if(result.documents) {
-                setDocuments(result.documents);
-            }
-        } catch (error) {
-            console.log(error);
-            setDocuments([]);
-        } finally {
-            setLoading(false);
-        }
-    };
-
+    // Load documents on component mount
     useEffect(() => {
-        loadDocuments();
-    }, []);
-    
-    // Handle loading state
+        reloadDocuments(); // Call the passed-in function to load documents
+    }, [reloadDocuments]);
 
+    // Handle loading state
     if (loading) {
         return <div>Loading...</div>;
-    };
+    }
 
     return (
         <>
-            <ArtickleHead reloadDocuments={loadDocuments} />
-            <AppArticle documents={documents} reloadDocuments={loadDocuments} />
+            <AppArticle documents={documents} reloadDocuments={reloadDocuments} />
         </>
     );
 }

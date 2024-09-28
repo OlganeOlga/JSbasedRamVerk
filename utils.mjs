@@ -1,20 +1,5 @@
 const localBackend = "http://localhost:3000";
 const utils = {
-        /**
-    * Fetch route functionality to the React component
-    * @async
-    * 
-    * @returns {Promise<array>}: returns one ore more dokuments as array
-    */
-    fetchAll : async function fetchAll() {
-        try {
-            const response = await fetch(localBackend);
-            return await response.json();
-        } catch (error) {
-            //throw error;
-            return([]);
-        }     
-    },
 
     /**
      * Fetch route functionality to the React component
@@ -33,8 +18,6 @@ const utils = {
         const defaultHeaders = { 'Content-Type': 'application/json'};
         const mergeHeaders = {...defaultHeaders, ...headers};
 
-        //console.log("body by processRoute =", body, "with type = ", typeof(body));
-        //console.log("req.params by processRoute =", req.params, "with type = ", typeof(req.params));
         const options = {
             method: passedMethod,
             headers: mergeHeaders,
@@ -56,6 +39,31 @@ const utils = {
         } catch (error) {
             console.log('Failed to fetch documents in processRoute.processRoute:', error);
             return error;
+        }
+    },
+
+    /**
+     * Reload documents on the page
+     * @async
+     * 
+     * @param {function} setDocuments 
+     * @param {function} setLoading 
+     * 
+     * @returns {void}
+     */
+    loadDocuments: async function loadDocuments(setDocuments, setLoading) {
+        try {
+            const result = await this.processRoute('GET'); // Call fetch function here
+            if (result.documents) {
+                setDocuments(result.documents); // Update documents state
+            } else {
+                setDocuments([]); // Handle no documents case
+            }
+        } catch (error) {
+            console.error("Error loading documents:", error);
+            setDocuments([]); // Reset documents on error
+        } finally {
+            setLoading(false); // Stop loading state
         }
     },
 }
