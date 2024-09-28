@@ -1,24 +1,46 @@
-//
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react'; 
 import AppFooter from "../components/includes/AppFooter";
 import AppHeader from "../components/includes/AppHeader";
 import AppMain from "../components/AppMain";
 import ErrorBoundary from '../components/includes/ErrorBoundary';
 import utils from '../utils.mjs';
+import Document from '../interfase'; // import interface for object Document
 
 function App() {
-    const [documents, setDocuments] = useState([]); // Initialize state for documents
+    const [documents, setDocuments] = useState<Document[]>([]); // Initialize state for documents
     const [loading, setLoading] = useState(true); // Initialize loading state
-    
-    return <>
+    const [selectedIndex, setSelectedIndex] = useState<number | null>(null); // Initialize selected index
+
+    // Use useCallback to prevent re-creation of the function on each render
+    const loadDocuments = useCallback(() => {
+        utils.loadDocuments(setDocuments, setLoading);
+    }, []);
+
+    // Get the selected document ID
+    const selectedDocumentId = selectedIndex !== null ? documents[selectedIndex]?._id : null;
+
+    return (
+        <>
             <ErrorBoundary>
-                <AppHeader reloadDocuments={() => utils.loadDocuments(setDocuments, setLoading)} />
+                <AppHeader 
+                    selectedIndex={selectedIndex} 
+                    handleClose={() => setSelectedIndex(null)} // Reset selected index on close
+                    selectedDocumentId={selectedDocumentId || ""} // Pass the selected document ID
+                    reloadDocuments={loadDocuments}
+                />
             </ErrorBoundary>
             <ErrorBoundary>
-              <AppMain documents={documents} reloadDocuments={() => utils.loadDocuments(setDocuments, setLoading)} />
+                <AppMain 
+                    documents={documents} 
+                    loading={loading} 
+                    reloadDocuments={loadDocuments} 
+                    selectedIndex={selectedIndex} 
+                    setSelectedIndex={setSelectedIndex} 
+                />
             </ErrorBoundary>
             <AppFooter />
         </>
+    );
 }
 
 export default App;

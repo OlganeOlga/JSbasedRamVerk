@@ -275,14 +275,16 @@ jag installerar font-awsom:
 
 Finns funktionalitet som redigerar och ta bort dokument
 
-Flyttar create-button till `AppHeaders.tsx`, 
+Flyttar create-button och delete-button till `AppHeaders.tsx`, 
 `ArticleHead.tsx` används inte just nu,
-Flyttar function "locadDocuments" i `utisl.mjs`
+Flyttar function "locadDocuments" i `utisl.mjs`.
+Submitt-button återvänder oss till dokumentlista
 
-### Det ska vara bra att arbeta mera med style ...
 
-### Funderar på att plasera deleat-button in headers. Det ska visas ifal dokument selected....
+### Arbetar med style
+Ny är style ungefär samma som vid första inlämningen. Jag tycker att vi nöja oss med det så länge.
 
-### Det ska vara bra att kunna updatera dokument utan att klicka på "Submit" ....
+Botstrap-style importeras from `src/main.tsx` lokal style importeras from `public/style.css` i `index.html`
 
-### Jag har inte skapad Azure än ... 
+### Återstår tester ...
+### och publisera på Azure ... 

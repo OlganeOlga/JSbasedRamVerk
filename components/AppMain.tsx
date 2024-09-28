@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
+import ArticleHead from './ArticleHead';
 import AppArticle from './AppArticle';
 
-function AppMain({ documents, loading, reloadDocuments }) { // Access documents and loading props
-
+function AppMain({ documents, loading, reloadDocuments, selectedIndex, setSelectedIndex }) {
     // Load documents on component mount
     useEffect(() => {
         reloadDocuments(); // Call the passed-in function to load documents
@@ -14,9 +14,13 @@ function AppMain({ documents, loading, reloadDocuments }) { // Access documents 
     }
 
     return (
-        <>
-            <AppArticle documents={documents} reloadDocuments={reloadDocuments} />
-        </>
+        <div className="main">
+            <ArticleHead />
+            <AppArticle documents={documents} 
+                        reloadDocuments={reloadDocuments} 
+                        selectedIndex={selectedIndex} 
+                        setSelectedIndex={setSelectedIndex} />
+        </div>
     );
 }
 

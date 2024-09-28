@@ -1,52 +1,52 @@
-import React, { useState } from 'react';
+import React from 'react';
 import OneDocument from './OneDocument';
-import Document from '../interfase'; // import interfase for object Document
+import Document from '../interfase'; // import interface for object Document
 
 // element properties
 interface AppArticleProps {
     documents: Document[];
     reloadDocuments: () => void;
+    selectedIndex: number | null; // Selected document index from parent
+    setSelectedIndex: (index: number | null) => void; // Function to update selectedIndex in parent
 }
 
-function AppArticle({ documents, reloadDocuments }: AppArticleProps) {
+function AppArticle({ documents, reloadDocuments, selectedIndex, setSelectedIndex }: AppArticleProps) {
 
-    // declare variables and function that change them
-    const [selectedIndex, setSelectedIndex] = useState<number | null>(null); // Null means no document is selected
-
-
-    // select dokument
+    // select document
     const handleSelect = (index: number) => {
-        setSelectedIndex(index);
+        setSelectedIndex(index); // Update the parent component's selectedIndex
     };
 
-    // remove selection
+    // remove selection and reload documents
     const handleClose = () => {
         setSelectedIndex(null);
         reloadDocuments();
     };
+    const selectedDocument = selectedIndex !== null && documents[selectedIndex];
 
-    // element saved onchange only if sybmitt button added. changes klost if returns viwout submit.
     return (
-        <div>
-            {selectedIndex === null ? ( // if no document selected
+        <div className='article'>
+            {selectedIndex === null || !selectedDocument ? ( // if no document is selected or invalid selection
                 <ul className='list-group'>
                     {documents.length === 0 ? <p>No documents found</p> : null}
                     {documents.map((doc, index) => (
-                       
                         <li
                             className="list-group-item"
                             key={doc._id}
-                            onClick={() => handleSelect(index)} // select dokument by click on te element
+                            onClick={() => handleSelect(index)} // select document by click on the element
                         >
                             <h3>{doc.title}</h3>
                         </li>
                     ))}
                 </ul>
-            ) : ( // incase if document selected
-                <OneDocument id={documents[selectedIndex]._id}
+            ) : ( // if a document is selected, render OneDocument component
+                
+                <OneDocument 
+                    id={documents[selectedIndex]._id}
                     title={documents[selectedIndex].title}
                     content={documents[selectedIndex].content}
-                    handleClose={handleClose}/>
+                    handleClose={handleClose}
+                />
             )}
         </div>
     );
