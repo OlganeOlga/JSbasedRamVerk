@@ -1,19 +1,23 @@
-// import React from 'react';
-import 'dotenv/config';
+import 'dotenv/config'
 
-const port = process.env.PORT || 3006;
+let port = process.env.PORT || 3000;
 
 import express from 'express';
 import bodyParser from 'body-parser';
 import path from 'path';
-import morgan from 'morgan';
 import cors from 'cors';
+import morgan from 'morgan'; // logging med tredjepart modules
 import methodOverride from 'method-override';
 
-import documents from "./docs.mjs";
+import mongoRemote from "./routes/mongoRemote.mjs";
+//import mongo from "./routes/mongo.mjs";
 
+if (process.env.NODE_ENV = 'test') {
+  port = 4000;
+}
 const app = express();
 
+app.use(cors()); // tillåter nå app från olika platformer. Det finns mäjlighet att presissera varifån appen can nås
 
 // Parse application/json
 app.use(bodyParser.json());
@@ -22,29 +26,19 @@ app.disable('x-powered-by');
 
 app.set("view engine", "ejs");
 
-// // Set the new views directory
-// app.set("views", path.join(process.cwd(), "init-views")); // Updated line
+// middelwear showing working route
+app.use((req, res, next) => {
+  console.log(req.method);
+  console.log(req.path);
+  next();
+});
 
 app.use(express.static(path.join(process.cwd(), "public")));
-/** Try if methodOverride vorks without urlencoded */
-//app.use(express.urlencoded({ extended: true }));
+
+app.use(express.json()); // in plase of bodyParser.urlencoded and bodyParser.json
 
 // Middleware to override the method
 app.use(methodOverride('_method'));
-
-// /** test POST and PUT */
-
-// app.get('/test', (req,res) => {
-//     return res.render("test");
-// })
-// // Test route
-// app.post('/test', (req, res) => {
-//     res.send('POST request received');
-// });
-
-// app.put('/test', (req, res) => {
-//     res.send('PUT request received');
-// });
 
 // don't show the log when it is test
 if (process.env.NODE_ENV !== 'test') {
@@ -52,49 +46,39 @@ if (process.env.NODE_ENV !== 'test') {
     app.use(morgan('combined')); // 'combined' outputs the Apache style LOGs
 }
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use('/', mongoRemote); // import routes using remote mongoDB
+//app.use('/', mongo); // import routes using local mongoDB
 
-app.post('/doc', async (req, res) => {
-
-    // Get info from form
-    const body = req.body;
-
-    // Add or update the document
-    const result = await documents.addOne(body);
-
-    res.redirect('/');
+// Add routes for 404 and error handling
+// Catch 404 and forward to error handler
+// Put this last
+app.use((req, res, next) => {
+  var err = new Error("Not Found");
+  err.status = 404;
+  next(err);
 });
 
-app.put('/doc', async (req, res) => {
-    console.log('PUT request received');  // Check if this logs
-    console.log('Type of id:', typeof(req.body.id));
-    const body = req.body;
-    try {
-        await documents.updateOne(body);
-        return res.redirect('/'); // Redirect after update
-    } catch (e) {
-        console.error(e);
-        res.status(500).send('Error updating document');
-    }
+// Error handler
+app.use((err, req, res, next) => {
+  if (res.headersSent) {
+      return next(err);
+  }
+
+  res.status(err.status || 500).json({
+      "errors": [
+          {
+              "status": err.status,
+              "title":  err.message,
+              "detail": err.message
+          }
+      ]
+  });
 });
-
-app.get('/', async (req, res) => {
-
-    return res.render("index", { docs: await documents.getAll()});
-});
-
-app.get('/doc', async (req, res) => {
-    return res.render("doc", {doc: null});
-});
-
-app.get('/doc/:id', async (req, res) => {
-    return res.render(
-        "doc",
-        { doc: await documents.getOne(req.params.id) }
-    );
-});
-
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 });
+
+
+// ES module-style code (Correct)
+export { app, server};
+
