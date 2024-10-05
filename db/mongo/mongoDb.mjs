@@ -38,33 +38,33 @@ const mongo = {
         }
     },
     
-  // /**
-  //  * Create connection to local MongoDB
-  //  * 
-  //  * @returns {Promise<object>}: local mongo db
-  //  */
-  // localMongo: async function localMongo () {
-  //   console.log("start localMOngo")
+  /**
+   * Create connection to local MongoDB
+   * 
+   * @returns {Promise<object>}: local mongo db
+   */
+  localMongo: async function localMongo () {
+    console.log("start localMOngo")
     
-  //   if (process.env.NODE_ENV === 'test') {
-  //       dsn = "mongodb://localhost:27017/test";
-  //   }
-  //   const client = new MongoClient({process.env.LOCAL_DSN);
-  //   console.log("after getting clietn")
-  //   try {
-  //     console.log('Client will be connected');
-  //     await client.connect();
+    if (process.env.NODE_ENV === 'test') {
+        dsn = "mongodb://localhost:27017/test";
+    }
+    const client = new MongoClient({process.env.LOCAL_DSN);
+    console.log("after getting clietn")
+    try {
+      console.log('Client will be connected');
+      await client.connect();
 
-  //     const db = client.db(process.env.DB_NAME);
-  //     const collection = db.collection(process.env.COLLECTION_NAME);
+      const db = client.db(process.env.DB_NAME);
+      const collection = db.collection(process.env.COLLECTION_NAME);
 
-  //     return {client: client, collection: collection};
+      return {client: client, collection: collection};
 
-  //   } catch (error) {
-  //       console.error("Error connecting to MongoDB:", error);
-  //       throw error; // Re-throw error for proper handling
-  //   }
-  // }
+    } catch (error) {
+        console.error("Error connecting to MongoDB:", error);
+        throw error; // Re-throw error for proper handling
+    }
+  }
 }
   
 export default mongo;

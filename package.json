@@ -9,9 +9,10 @@
   },
   "scripts": {
     "test": "NODE_ENV=test nyc --reporter=html --reporter=text --reporter=clover mocha ./test/**/*.test.mjs --exit --timeout 10000",
+    "coverage": "nyc npm test",
     "start": "nodemon app.js",
     "clean": "rm -rf node_modules package-lock.json",
-    "coverage": "nyc npm test",
+    
     "eslint": "eslint"
   },
   "keywords": [],
