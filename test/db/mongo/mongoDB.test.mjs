@@ -82,7 +82,7 @@ describe('MongoDocs TESTS', ()  => {
 
     // After all tests, cleanup
     after(async () => {
-        const localMongo = await mongoDocs.localMongo();
-        await localMongo.collection.deleteMany({}); // Clear the collection after tests
+        const localMongo = await mongo();
+        await mongo.deleteMany({}); // Clear the collection after tests
     });
 });

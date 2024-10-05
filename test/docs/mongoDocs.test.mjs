@@ -13,10 +13,10 @@ describe('MongoDocs TESTS', ()  => {
     let testDocId; // To store the ID of the document we add
 
     // Before all tests, create a test database and collection
-    before(async () => {
-        const localMongo = await mongo.localMongo();
-        await localMongo.collection.deleteMany({}); // Clear the collection
-    });
+    // before(async () => {
+    //     const localMongo = await mongo.localMongo();
+    //     await localMongo.collection.deleteMany({}); // Clear the collection
+    // });
 
     // Test for addNew function
     it('should add a new document', async () => {
@@ -81,10 +81,10 @@ describe('MongoDocs TESTS', ()  => {
     });
 
     // After all tests, cleanup
-    after(async () => {
-        const localMongo = await mongoDocs.localMongo();
-        await localMongo.collection.deleteMany({}); // Clear the collection after tests
-    });
+    // after(async () => {
+    //     const localMongo = await mongoDocs.localMongo();
+    //     await localMongo.collection.deleteMany({}); // Clear the collection after tests
+    // });
 });
     
     // describe( 'Get all dicuments', () => {

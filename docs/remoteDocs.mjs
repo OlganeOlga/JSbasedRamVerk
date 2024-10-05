@@ -5,6 +5,7 @@ import { ObjectId } from 'mongodb';
 let database = mongoDb.remoteMongo;
 if (process.env.NODE_ENV === "test") {
     database = mongoDb.localMongo;
+    console.log("use local DB");
 }
 // Functionality
 const mongoDocs = {
@@ -23,6 +24,7 @@ const mongoDocs = {
         try {
             //get database         
             const documents = await action.collection.find().toArray();
+            console.log(documents)
             return documents;
         } catch (error) {
             return error;
@@ -48,7 +50,7 @@ const mongoDocs = {
         const options = {
             projection: { _id: 1, title: 1, content: 1 }
         }
-        action = await database();
+        const action = await database();
         try {
             return await action.collection.find(query, options).toArray()       
         } finally {
@@ -82,7 +84,7 @@ const mongoDocs = {
               content: content
             },
           };
-        action = await database();
+        const action = await database();
         try {
             return await action.collection.updateOne(filter, updateDoc, options);
         } finally {
@@ -100,7 +102,7 @@ const mongoDocs = {
      * @return {Promise<object>} The resultset as an array.
      */
     addNew: async function addNew() {
-        action = await database();
+        const action = await database();
         const data = {
             title: "New document",
             content: "New content"
@@ -125,7 +127,7 @@ const mongoDocs = {
      */
     removeById: async function removeById(id) {
         //get database
-        action = await database();
+        const action = await database();
         try {
             console.log("try to delete by removeByID, id =", id);
             return await action.collection.deleteOne({_id: new ObjectId(`${id}`)})       
@@ -145,7 +147,7 @@ const mongoDocs = {
      * @return {Promise<object>} The resultset as an array.
      */
         removeByTitle: async function removeByTitle(title) {
-            action = await database();
+            const action = await database();
             try {
                 return await action.collection.deleteOne({title: title});           
             } finally {
@@ -164,7 +166,7 @@ const mongoDocs = {
      * @return {Promise<object>} The resultset as an array.
      */
         getByID: async function getByID(id) {
-            action = await database();
+            const action = await database();
             try {
                 return await action.collection.findOne({_id: new ObjectId(`${id}`)});           
             } finally {
