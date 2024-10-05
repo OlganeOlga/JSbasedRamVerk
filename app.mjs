@@ -1,6 +1,6 @@
 import 'dotenv/config'
 
-let port = process.env.PORT || 3000;
+let port = process.env.NODE_ENV === 'test'? process.env.PORT : 3000;
 
 import express from 'express';
 import bodyParser from 'body-parser';
@@ -12,9 +12,9 @@ import methodOverride from 'method-override';
 import mongoRemote from "./routes/mongoRemote.mjs";
 //import mongo from "./routes/mongo.mjs";
 
-if (process.env.NODE_ENV = 'test') {
-  port = 4000;
-}
+// if (process.env.NODE_ENV = 'test') {
+//   port = 4000;
+// }
 const app = express();
 
 app.use(cors()); // tillåter nå app från olika platformer. Det finns mäjlighet att presissera varifån appen can nås

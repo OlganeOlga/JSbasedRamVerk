@@ -1,4 +1,4 @@
-import mongoDb from './db/mongo/mongoDb.mjs'
+import mongoDb from '../db/mongo/mongoDb.mjs'
 import { ObjectId } from 'mongodb';
 
 

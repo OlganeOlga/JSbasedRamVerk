@@ -1,5 +1,5 @@
 import express from 'express';
-import documents from '../remoteDocs.mjs';
+import documents from '../docs/remoteDocs.mjs';
 
 
 const router = express.Router();

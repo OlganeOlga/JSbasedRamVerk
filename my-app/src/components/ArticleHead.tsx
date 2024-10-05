@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import Document from '../functions/interfase';
 
 // element properties

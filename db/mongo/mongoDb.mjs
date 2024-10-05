@@ -25,9 +25,9 @@ const mongo = {
     remoteMongo: async function remoteMongo() {
         if (process.env.NODE_ENV === 'test') {
             uri = "mongodb://localhost:27017/test";
-            console.log('USE LOCAL DATABASE');
+            //console.log('USE LOCAL DATABASE');
         }
-        console.log(uri);
+        console.log("USE URI: ", uri);
         await client.connect();
         try {
             const database = client.db(process.env.DB_NAME);

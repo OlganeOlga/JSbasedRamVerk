@@ -1,4 +1,4 @@
-import openDb from './db/database.mjs';
+import openDb from '../db/database.mjs';
 
 const docs = {
     getAll: async function getAll() {
