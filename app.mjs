@@ -1,6 +1,6 @@
 import 'dotenv/config'
 
-let port = process.env.NODE_ENV === 'test'? process.env.PORT : 3000;
+let port = process.env.NODE_ENV === 'test'? process.env.TESTPORT : 3000;
 
 import express from 'express';
 import bodyParser from 'body-parser';

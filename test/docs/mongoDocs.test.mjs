@@ -1,9 +1,9 @@
 process.env.NODE_ENV = "test";
 import * as chaiModule from "chai"; 
-import chaiHttp from "chai-http";
-import mongo from '../../db/mongo/mongoDb.mjs'
-import mongoDocs from '../../docs/remoteDocs.mjs';
+import chaiHttp from "chai-http/index.js";
 import { describe } from "node:test";
+import mongo from '../../db/mongoDb.mjs'
+import mongoDocs from '../../docs/remoteDocs.mjs';
 
 const chai = chaiModule.use(chaiHttp);
 
@@ -21,51 +21,51 @@ describe('MongoDocs TESTS', ()  => {
     // Test for addNew function
     it('should add a new document', async () => {
         const result = await mongoDocs.addNew();
-        expect(result).to.have.property('acknowledged', true);
-        expect(result).to.have.property('insertedId');
+        chai.expect(result).to.have.property('acknowledged', true);
+        chai.expect(result).to.have.property('insertedId');
         testDocId = result.insertedId; // Save the ID for later tests
     });
 
     // Test for getAll function
     it('should retrieve all documents', async () => {
         const documents = await mongoDocs.getAll();
-        expect(documents).to.be.an('array');
-        expect(documents.length).to.be.greaterThan(0); // Assuming at least one document was added
+        chai.expect(documents).to.be.an('array');
+        chai.expect(documents.length).to.be.greaterThan(0); // Assuming at least one document was added
     });
 
     // Test for findTitles function
     it('should find documents by title', async () => {
         const documents = await mongoDocs.findTitles('New document');
-        expect(documents).to.be.an('array');
-        expect(documents.length).to.be.greaterThan(0);
-        expect(documents[0]).to.have.property('title', 'New document');
+        chai.expect(documents).to.be.an('array');
+        chai.expect(documents.length).to.be.greaterThan(0);
+        chai.expect(documents[0]).to.have.property('title', 'New document');
     });
 
     // Test for getByID function
     it('should retrieve a document by ID', async () => {
         const document = await mongoDocs.getByID(testDocId);
-        expect(document).to.have.property('_id');
-        expect(document._id.toString()).to.equal(testDocId.toString());
+        chai.expect(document).to.have.property('_id');
+        chai.expect(document._id.toString()).to.equal(testDocId.toString());
     });
 
     // Test for updateOne function
     it('should update a document by ID', async () => {
         const updatedDocument = await mongoDocs.updateOne(testDocId, 'Updated Document', 'Updated content');
-        expect(updatedDocument).to.have.property('acknowledged', true);
+        chai.expect(updatedDocument).to.have.property('acknowledged', true);
 
         // Verify the update
         const document = await mongoDocs.getByID(testDocId);
-        expect(document).to.have.property('title', 'Updated Document');
+        chai.expect(document).to.have.property('title', 'Updated Document');
     });
 
     // Test for removeById function
     it('should remove a document by ID', async () => {
         const result = await mongoDocs.removeById(testDocId);
-        expect(result).to.have.property('acknowledged', true);
+        chai.expect(result).to.have.property('acknowledged', true);
 
         // Verify removal
         const document = await mongoDocs.getByID(testDocId);
-        expect(document).to.be.null; // Expecting null if the document was removed
+        chai.expect(document).to.be.null; // Expecting null if the document was removed
     });
 
     // Test for removeByTitle function
@@ -77,12 +77,12 @@ describe('MongoDocs TESTS', ()  => {
 
         // Verify removal
         const documents = await mongoDocs.findTitles(title);
-        expect(documents.length).to.equal(0); // Should not find any documents with this title
+        chai.expect(documents.length).to.equal(0); // Should not find any documents with this title
     });
 
     // After all tests, cleanup
     after(async () => {
-        const localMongo = await mongoDb.localMongo();
+        const localMongo = await mongoDocs.localMongo();
         await localMongo.collection.deleteMany({}); // Clear the collection after tests
     });
 });

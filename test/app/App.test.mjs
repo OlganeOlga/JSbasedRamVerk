@@ -1,5 +1,5 @@
 import * as chaiModule from "chai";
-import chaiHttp from "chai-http";
+import chaiHttp from "chai-http/index.js";
 import {server} from "../../app.mjs";
 
 

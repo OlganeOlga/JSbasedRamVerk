@@ -1,7 +1,11 @@
-import mongoDb from '../db/mongo/mongoDb.mjs'
+
+import mongoDb from '../db/mongoDb.mjs'
 import { ObjectId } from 'mongodb';
 
-
+let database = mongoDb.remoteMongo;
+if (process.env.NODE_ENV === "test") {
+    database = mongoDb.localMongo;
+}
 // Functionality
 const mongoDocs = {
 
@@ -15,15 +19,15 @@ const mongoDocs = {
      * @return {Promise<array>} The resultset as an promis.
      */
       getAll: async function getAll() {
-        const remoteMongo = await mongoDb.remoteMongo();
+        const action = await database();
         try {
             //get database         
-            const documents = await remoteMongo.collection.find().toArray();
+            const documents = await action.collection.find().toArray();
             return documents;
         } catch (error) {
             return error;
         } finally {
-            await remoteMongo.client.close();
+            await action.client.close();
         }
     },
 
@@ -44,11 +48,11 @@ const mongoDocs = {
         const options = {
             projection: { _id: 1, title: 1, content: 1 }
         }
-        const remoteMongo = await mongoDb.remoteMongo();
+        action = await database();
         try {
-            return await remoteMongo.collection.find(query, options).toArray()       
+            return await action.collection.find(query, options).toArray()       
         } finally {
-            await remoteMongo.client.close();
+            await action.client.close();
         }
     },
 
@@ -78,11 +82,11 @@ const mongoDocs = {
               content: content
             },
           };
-        const remoteMongo = await mongoDb.remoteMongo();
+        action = await database();
         try {
-            return await remoteMongo.collection.updateOne(filter, updateDoc, options);
+            return await action.collection.updateOne(filter, updateDoc, options);
         } finally {
-            await remoteMongo.client.close();
+            await action.client.close();
         }
     },
 
@@ -96,16 +100,16 @@ const mongoDocs = {
      * @return {Promise<object>} The resultset as an array.
      */
     addNew: async function addNew() {
-        const remoteMongo = await mongoDb.remoteMongo();
+        action = await database();
         const data = {
             title: "New document",
             content: "New content"
         };
         try {
-            const document = await remoteMongo.collection.insertOne(data);
+            const document = await action.collection.insertOne(data);
             return document;
         } finally {
-            await remoteMongo.client.close();
+            await action.client.close();
         }
     },
 
@@ -121,12 +125,12 @@ const mongoDocs = {
      */
     removeById: async function removeById(id) {
         //get database
-        const remoteMongo = await mongoDb.remoteMongo();
+        action = await database();
         try {
             console.log("try to delete by removeByID, id =", id);
-            return await remoteMongo.collection.deleteOne({_id: new ObjectId(`${id}`)})       
+            return await action.collection.deleteOne({_id: new ObjectId(`${id}`)})       
         } finally {
-            await remoteMongo.client.close();
+            await action.client.close();
         }
     },
 
@@ -141,11 +145,11 @@ const mongoDocs = {
      * @return {Promise<object>} The resultset as an array.
      */
         removeByTitle: async function removeByTitle(title) {
-            const remoteMongo = await mongoDb.remoteMongo();
+            action = await database();
             try {
-                return await remoteMongo.collection.deleteOne({title: title});           
+                return await action.collection.deleteOne({title: title});           
             } finally {
-                await remoteMongo.client.close();
+                await action.client.close();
             }
         },
 
@@ -160,11 +164,11 @@ const mongoDocs = {
      * @return {Promise<object>} The resultset as an array.
      */
         getByID: async function getByID(id) {
-            const remoteMongo = await mongoDb.remoteMongo();
+            action = await database();
             try {
-                return await remoteMongo.collection.findOne({_id: new ObjectId(`${id}`)});           
+                return await action.collection.findOne({_id: new ObjectId(`${id}`)});           
             } finally {
-                await remoteMongo.client.close();
+                await action.client.close();
             }
         },
 };

@@ -2,7 +2,7 @@
 import { MongoClient, ServerApiVersion } from 'mongodb';
 //Connect to remote mongo-database
 
-//import migrate from '../migrate.mjs'
+import migrate from './migrate.mjs'
 
 let uri = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@${process.env.DB_CLUSTER}.topue.mongodb.net/admin?retryWrites=true&w=majority&appName=texteditor`;
 //const testUri = "mongodb://localhost:27017/test";
@@ -47,7 +47,7 @@ const mongo = {
    */
   localMongo: async function localMongo () {
     console.log("start localMOngo");
-    //await migrate();
+    await migrate();
     
     // if (process.env.NODE_ENV === 'test') {
     //     dsn = "mongodb://localhost:27017/test";
@@ -59,7 +59,6 @@ const mongo = {
       await client.connect();
 
       const db = client.db(process.env.DB_NAME);
-
       const collection = db.collection(process.env.COLLECTION_NAME);
 
       return {client: client, collection: collection};
