@@ -2,7 +2,7 @@ import React from 'react';
 import logo from './../../functions/logo.svg';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
-import utils from './../../utils.mjs';
+import utils from '../../utils.mjs';
 
 // Accept reloadDocuments as a prop
 interface AppHeaderProps {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import utils from './../utils.mjs';
+import utils from '../utils.mjs';
 
 // interfase for element
 interface OneDocumentProps {
