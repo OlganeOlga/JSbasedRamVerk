@@ -1,0 +1,27 @@
+{
+  "reporter": ["html", "text", "lcov", "json-summary"],
+  "all": true,
+  "include": [
+    "db/**/*.mjs",
+    "docs/**/*.mjs",
+    "public/**/*.mjs",
+    "routes/**/*.mjs",
+    "views/**/*.mjs",
+    "app.mjs"
+  ],
+  "exclude": [
+    "test/**/*.mjs",
+    "config/**/*.mjs",
+    "node_modules/**/*.mjs",
+    "logs/**/*.mjs",
+    "coverage/**/*.mjs"
+  ],
+  "cache": true,
+  "check-coverage": true,
+  "branches": 90,
+  "lines": 90,
+  "functions": 90,
+  "statements": 90,
+  "sourceMap": true,
+  "instrument": true
+}
