@@ -4,9 +4,6 @@
   "description": "Starter project for DV1677 JSRamverk",
   "main": "app.mjs",
   "type": "module",
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
     "test": "NODE_ENV=test nyc --reporter=html --reporter=text --reporter=clover mocha ./test/**/*.test.mjs --exit --timeout 10000",
     "start": "nodemon app.js",
@@ -44,5 +41,8 @@
     "nyc": "^17.1.0",
     "sinon": "^19.0.2",
     "typescript-eslint": "^8.8.0"
+  },
+  "directories": {
+    "test": "test"
   }
 }
