@@ -313,4 +313,15 @@ npm install --save-dev @types/chai
 
 Ändrar struktur så att all frontend ligger i my-app
 
-### och publisera på Azure ... 
+### Deployment på Azyre
+
+Det gick fel flera gånger. Men ny hoppas jag att fa rätt.
+
+Ideen är att frontend blir publicerad på studentserver och fungera där, medan backend är runner på Azyre.
+
+Eftersom jag rensade och gjörde om mitt projekt träd, behöver jag ta bort det som jag deployar tidigar och göra om
+
+Det är viktigt att koden öppet på backend när den ska deployas på azyre, dvs det deployas bara backend.
+
+Frontend (av samma branch ??) ska publiseras på studentserver.
+
