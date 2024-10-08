@@ -311,7 +311,13 @@ i app.mjs
 
 npm install --save-dev @types/chai
 
-Ändrar struktur så att all frontend ligger i my-app
+
+### Ändringar i app-tree
+Ändrar struktur så att all frontend ligger i root/frontend och backend  ligger i root/backend
+
+App fortfarande fungerar på mitt dator även med remote databas.
+
+
 
 ### Deployment på Azyre
 
