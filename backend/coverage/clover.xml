@@ -1,94 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1728413915336" clover="3.2.0">
-  <project timestamp="1728413915336" name="All files">
-    <metrics statements="193" coveredstatements="0" conditionals="14" coveredconditionals="0" methods="31" coveredmethods="0" elements="238" coveredelements="0" complexity="0" loc="193" ncloc="193" packages="5" files="10" classes="10"/>
+<coverage generated="1728488496536" clover="3.2.0">
+  <project timestamp="1728488496536" name="All files">
+    <metrics statements="101" coveredstatements="39" conditionals="10" coveredconditionals="3" methods="16" coveredmethods="7" elements="127" coveredelements="49" complexity="0" loc="101" ncloc="101" packages="4" files="4" classes="4"/>
     <package name="backend">
-      <metrics statements="26" coveredstatements="0" conditionals="8" coveredconditionals="0" methods="4" coveredmethods="0"/>
-      <file name="app.mjs" path="/home/oleg22/BTH/dbwebb-kurser/JSbasedRamVerk/jsramverk-Noach/backend/app.mjs">
-        <metrics statements="26" coveredstatements="0" conditionals="8" coveredconditionals="0" methods="4" coveredmethods="0"/>
-        <line num="3" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="18" count="0" type="stmt"/>
-        <line num="20" count="0" type="stmt"/>
-        <line num="23" count="0" type="stmt"/>
-        <line num="25" count="0" type="stmt"/>
-        <line num="27" count="0" type="stmt"/>
-        <line num="30" count="0" type="stmt"/>
-        <line num="31" count="0" type="stmt"/>
-        <line num="32" count="0" type="stmt"/>
-        <line num="33" count="0" type="stmt"/>
-        <line num="36" count="0" type="stmt"/>
-        <line num="38" count="0" type="stmt"/>
-        <line num="41" count="0" type="stmt"/>
-        <line num="44" count="0" type="cond" truecount="0" falsecount="2"/>
+      <metrics statements="26" coveredstatements="19" conditionals="8" coveredconditionals="2" methods="4" coveredmethods="2"/>
+      <file name="app.mjs" path="/home/noahhjelm/jsramverk/backend/app.mjs">
+        <metrics statements="26" coveredstatements="19" conditionals="8" coveredconditionals="2" methods="4" coveredmethods="2"/>
+        <line num="3" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="18" count="1" type="stmt"/>
+        <line num="20" count="1" type="stmt"/>
+        <line num="23" count="1" type="stmt"/>
+        <line num="25" count="1" type="stmt"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="30" count="1" type="stmt"/>
+        <line num="31" count="4" type="stmt"/>
+        <line num="32" count="4" type="stmt"/>
+        <line num="33" count="4" type="stmt"/>
+        <line num="36" count="1" type="stmt"/>
+        <line num="38" count="1" type="stmt"/>
+        <line num="41" count="1" type="stmt"/>
+        <line num="44" count="1" type="cond" truecount="1" falsecount="1"/>
         <line num="46" count="0" type="stmt"/>
-        <line num="49" count="0" type="stmt"/>
-        <line num="55" count="0" type="stmt"/>
+        <line num="49" count="1" type="stmt"/>
+        <line num="55" count="1" type="stmt"/>
         <line num="56" count="0" type="stmt"/>
         <line num="57" count="0" type="stmt"/>
         <line num="58" count="0" type="stmt"/>
-        <line num="62" count="0" type="stmt"/>
+        <line num="62" count="1" type="stmt"/>
         <line num="63" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="64" count="0" type="stmt"/>
         <line num="67" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="77" count="0" type="stmt"/>
-        <line num="78" count="0" type="stmt"/>
-      </file>
-    </package>
-    <package name="backend.db">
-      <metrics statements="20" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="4" coveredmethods="0"/>
-      <file name="database.mjs" path="/home/oleg22/BTH/dbwebb-kurser/JSbasedRamVerk/jsramverk-Noach/backend/db/database.mjs">
-        <metrics statements="4" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="1" coveredmethods="0"/>
-        <line num="5" count="0" type="stmt"/>
-        <line num="7" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="8" count="0" type="stmt"/>
-        <line num="11" count="0" type="stmt"/>
-      </file>
-      <file name="dbinit.mjs" path="/home/oleg22/BTH/dbwebb-kurser/JSbasedRamVerk/jsramverk-Noach/backend/db/dbinit.mjs">
-        <metrics statements="10" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>
-        <line num="4" count="0" type="stmt"/>
-        <line num="7" count="0" type="stmt"/>
-        <line num="8" count="0" type="stmt"/>
-        <line num="17" count="0" type="stmt"/>
-        <line num="19" count="0" type="stmt"/>
-        <line num="23" count="0" type="stmt"/>
-        <line num="24" count="0" type="stmt"/>
-        <line num="26" count="0" type="stmt"/>
-        <line num="29" count="0" type="stmt"/>
-        <line num="30" count="0" type="stmt"/>
-      </file>
-      <file name="docadd.mjs" path="/home/oleg22/BTH/dbwebb-kurser/JSbasedRamVerk/jsramverk-Noach/backend/db/docadd.mjs">
-        <metrics statements="6" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
-        <line num="4" count="0" type="stmt"/>
-        <line num="5" count="0" type="stmt"/>
-        <line num="6" count="0" type="stmt"/>
-        <line num="11" count="0" type="stmt"/>
-        <line num="13" count="0" type="stmt"/>
-        <line num="15" count="0" type="stmt"/>
+        <line num="77" count="1" type="stmt"/>
+        <line num="78" count="1" type="stmt"/>
       </file>
     </package>
     <package name="backend.db.mongo">
-      <metrics statements="21" coveredstatements="0" conditionals="4" coveredconditionals="0" methods="2" coveredmethods="0"/>
-      <file name="database.mjs" path="/home/oleg22/BTH/dbwebb-kurser/JSbasedRamVerk/jsramverk-Noach/backend/db/mongo/database.mjs">
-        <metrics statements="9" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="1" coveredmethods="0"/>
-        <line num="4" count="0" type="stmt"/>
-        <line num="6" count="0" type="stmt"/>
-        <line num="8" count="0" type="stmt"/>
-        <line num="10" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="12" count="0" type="stmt"/>
-        <line num="15" count="0" type="stmt"/>
-        <line num="19" count="0" type="stmt"/>
-        <line num="20" count="0" type="stmt"/>
-        <line num="22" count="0" type="stmt"/>
-      </file>
-      <file name="mongoDb.mjs" path="/home/oleg22/BTH/dbwebb-kurser/JSbasedRamVerk/jsramverk-Noach/backend/db/mongo/mongoDb.mjs">
-        <metrics statements="12" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="1" coveredmethods="0"/>
-        <line num="5" count="0" type="stmt"/>
-        <line num="10" count="0" type="stmt"/>
-        <line num="19" count="0" type="stmt"/>
-        <line num="26" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="27" count="0" type="stmt"/>
-        <line num="30" count="0" type="stmt"/>
-        <line num="31" count="0" type="stmt"/>
+      <metrics statements="12" coveredstatements="7" conditionals="2" coveredconditionals="1" methods="1" coveredmethods="1"/>
+      <file name="mongoDb.mjs" path="/home/noahhjelm/jsramverk/backend/db/mongo/mongoDb.mjs">
+        <metrics statements="12" coveredstatements="7" conditionals="2" coveredconditionals="1" methods="1" coveredmethods="1"/>
+        <line num="5" count="2" type="stmt"/>
+        <line num="10" count="2" type="stmt"/>
+        <line num="19" count="2" type="stmt"/>
+        <line num="26" count="9" type="cond" truecount="1" falsecount="1"/>
+        <line num="27" count="9" type="stmt"/>
+        <line num="30" count="9" type="stmt"/>
+        <line num="31" count="9" type="stmt"/>
         <line num="32" count="0" type="stmt"/>
         <line num="33" count="0" type="stmt"/>
         <line num="34" count="0" type="stmt"/>
@@ -97,32 +53,11 @@
       </file>
     </package>
     <package name="backend.docs">
-      <metrics statements="57" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="10" coveredmethods="0"/>
-      <file name="docs.mjs" path="/home/oleg22/BTH/dbwebb-kurser/JSbasedRamVerk/jsramverk-Noach/backend/docs/docs.mjs">
-        <metrics statements="18" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="0"/>
-        <line num="3" count="0" type="stmt"/>
-        <line num="5" count="0" type="stmt"/>
-        <line num="7" count="0" type="stmt"/>
-        <line num="8" count="0" type="stmt"/>
-        <line num="10" count="0" type="stmt"/>
-        <line num="12" count="0" type="stmt"/>
-        <line num="14" count="0" type="stmt"/>
-        <line num="19" count="0" type="stmt"/>
-        <line num="21" count="0" type="stmt"/>
-        <line num="22" count="0" type="stmt"/>
-        <line num="24" count="0" type="stmt"/>
-        <line num="26" count="0" type="stmt"/>
-        <line num="28" count="0" type="stmt"/>
-        <line num="33" count="0" type="stmt"/>
-        <line num="35" count="0" type="stmt"/>
-        <line num="36" count="0" type="stmt"/>
-        <line num="42" count="0" type="stmt"/>
-        <line num="44" count="0" type="stmt"/>
-      </file>
-      <file name="remoteDocs.mjs" path="/home/oleg22/BTH/dbwebb-kurser/JSbasedRamVerk/jsramverk-Noach/backend/docs/remoteDocs.mjs">
-        <metrics statements="39" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="7" coveredmethods="0"/>
-        <line num="6" count="0" type="stmt"/>
-        <line num="18" count="0" type="stmt"/>
+      <metrics statements="39" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="7" coveredmethods="2"/>
+      <file name="remoteDocs.mjs" path="/home/noahhjelm/jsramverk/backend/docs/remoteDocs.mjs">
+        <metrics statements="39" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="7" coveredmethods="2"/>
+        <line num="6" count="2" type="stmt"/>
+        <line num="18" count="8" type="stmt"/>
         <line num="19" count="0" type="stmt"/>
         <line num="21" count="0" type="stmt"/>
         <line num="22" count="0" type="stmt"/>
@@ -141,7 +76,7 @@
         <line num="82" count="0" type="stmt"/>
         <line num="83" count="0" type="stmt"/>
         <line num="85" count="0" type="stmt"/>
-        <line num="99" count="0" type="stmt"/>
+        <line num="99" count="1" type="stmt"/>
         <line num="100" count="0" type="stmt"/>
         <line num="104" count="0" type="stmt"/>
         <line num="105" count="0" type="stmt"/>
@@ -163,76 +98,28 @@
       </file>
     </package>
     <package name="backend.routes">
-      <metrics statements="69" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="11" coveredmethods="0"/>
-      <file name="mongo.mjs" path="/home/oleg22/BTH/dbwebb-kurser/JSbasedRamVerk/jsramverk-Noach/backend/routes/mongo.mjs">
-        <metrics statements="45" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="7" coveredmethods="0"/>
-        <line num="5" count="0" type="stmt"/>
-        <line num="8" count="0" type="stmt"/>
-        <line num="10" count="0" type="stmt"/>
-        <line num="12" count="0" type="stmt"/>
-        <line num="16" count="0" type="stmt"/>
-        <line num="17" count="0" type="stmt"/>
-        <line num="18" count="0" type="stmt"/>
-        <line num="19" count="0" type="stmt"/>
-        <line num="20" count="0" type="stmt"/>
-        <line num="21" count="0" type="stmt"/>
-        <line num="23" count="0" type="stmt"/>
-        <line num="28" count="0" type="stmt"/>
-        <line num="29" count="0" type="stmt"/>
-        <line num="30" count="0" type="stmt"/>
-        <line num="31" count="0" type="stmt"/>
-        <line num="33" count="0" type="stmt"/>
-        <line num="38" count="0" type="stmt"/>
-        <line num="39" count="0" type="stmt"/>
-        <line num="40" count="0" type="stmt"/>
-        <line num="41" count="0" type="stmt"/>
-        <line num="43" count="0" type="stmt"/>
-        <line num="48" count="0" type="stmt"/>
-        <line num="49" count="0" type="stmt"/>
-        <line num="50" count="0" type="stmt"/>
-        <line num="51" count="0" type="stmt"/>
-        <line num="53" count="0" type="stmt"/>
-        <line num="58" count="0" type="stmt"/>
-        <line num="59" count="0" type="stmt"/>
-        <line num="60" count="0" type="stmt"/>
-        <line num="61" count="0" type="stmt"/>
-        <line num="62" count="0" type="stmt"/>
-        <line num="64" count="0" type="stmt"/>
-        <line num="69" count="0" type="stmt"/>
-        <line num="70" count="0" type="stmt"/>
-        <line num="71" count="0" type="stmt"/>
-        <line num="72" count="0" type="stmt"/>
-        <line num="73" count="0" type="stmt"/>
-        <line num="74" count="0" type="stmt"/>
-        <line num="76" count="0" type="stmt"/>
-        <line num="81" count="0" type="stmt"/>
-        <line num="82" count="0" type="stmt"/>
-        <line num="83" count="0" type="stmt"/>
-        <line num="84" count="0" type="stmt"/>
-        <line num="86" count="0" type="stmt"/>
-        <line num="87" count="0" type="stmt"/>
-      </file>
-      <file name="mongoRemote.mjs" path="/home/oleg22/BTH/dbwebb-kurser/JSbasedRamVerk/jsramverk-Noach/backend/routes/mongoRemote.mjs">
-        <metrics statements="24" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="0"/>
-        <line num="5" count="0" type="stmt"/>
-        <line num="8" count="0" type="stmt"/>
-        <line num="11" count="0" type="stmt"/>
-        <line num="12" count="0" type="stmt"/>
-        <line num="13" count="0" type="stmt"/>
+      <metrics statements="24" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="2"/>
+      <file name="mongoRemote.mjs" path="/home/noahhjelm/jsramverk/backend/routes/mongoRemote.mjs">
+        <metrics statements="24" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="2"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="11" count="1" type="stmt"/>
+        <line num="12" count="3" type="stmt"/>
+        <line num="13" count="3" type="stmt"/>
         <line num="14" count="0" type="stmt"/>
         <line num="16" count="0" type="stmt"/>
-        <line num="21" count="0" type="stmt"/>
-        <line num="22" count="0" type="stmt"/>
-        <line num="23" count="0" type="stmt"/>
+        <line num="21" count="1" type="stmt"/>
+        <line num="22" count="1" type="stmt"/>
+        <line num="23" count="1" type="stmt"/>
         <line num="24" count="0" type="stmt"/>
         <line num="26" count="0" type="stmt"/>
-        <line num="31" count="0" type="stmt"/>
+        <line num="31" count="1" type="stmt"/>
         <line num="32" count="0" type="stmt"/>
         <line num="33" count="0" type="stmt"/>
         <line num="34" count="0" type="stmt"/>
         <line num="35" count="0" type="stmt"/>
         <line num="37" count="0" type="stmt"/>
-        <line num="42" count="0" type="stmt"/>
+        <line num="42" count="1" type="stmt"/>
         <line num="43" count="0" type="stmt"/>
         <line num="44" count="0" type="stmt"/>
         <line num="45" count="0" type="stmt"/>
