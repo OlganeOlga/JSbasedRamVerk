@@ -9,10 +9,11 @@ export default {
   ],
   coverageDirectory: 'coverage',
   collectCoverage: true,
+  coverageReporters: ['html', 'text'],
   transform: {
     '^.+\\.m?js$': 'babel-jest', // Transform .js and .mjs files using Babel
   },
   transformIgnorePatterns: [
     '/node_modules/(?!your-module-to-transform)', // Customize this if you need to transform specific node_modules
-  ],
+  ]
 };

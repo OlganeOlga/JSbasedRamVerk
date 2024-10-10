@@ -1,5 +1,5 @@
 import 'dotenv/config'
-process.env.NODE_ENV = 'test'
+
 let port = process.env.NODE_ENV === 'test'? process.env.TEST_PORT : process.env.PORT;
 
 import express from 'express';

@@ -31,14 +31,29 @@ describe('MongoDB Connection Test', () => {
     let collection;
   
     beforeAll(async () => {
-      // Ensure that NODE_ENV is set to 'test' to use the local MongoDB
-      process.env.NODE_ENV = 'test';
-    //   process.env.DB_NAME = 'testdb'; // Set your test DB name
-    //   process.env.COLLECTION_NAME = 'testcollection'; // Set your test collection name
-  
-      const dbConnection = await database.connect();
-      dbClient = dbConnection.client;
-      collection = dbConnection.collection;
+        // Ensure that NODE_ENV is set to 'test' to use the local MongoDB
+        process.env.NODE_ENV = 'test';
+        //   process.env.DB_NAME = 'testdb'; // Set your test DB name
+        //   process.env.COLLECTION_NAME = 'testcollection'; // Set your test collection name
+    
+        const dbConnection = await database.connect();
+        // dbConnection.db.listCollections(
+        //     { name: collectionName }
+        // )
+        // .next()
+        //     .then(async function(info) {
+        //         if (info) {
+        //             await db.collection.drop();
+        //         }
+        //     })
+        //     .catch(function(err) {
+        //         console.error(err);
+        //     })
+        //     .finally(async function() {
+        //         await db.client.close();
+        //     });
+        dbClient = dbConnection.client;
+        collection = dbConnection.collection;
     });
   
     afterAll(async () => {

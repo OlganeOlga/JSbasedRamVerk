@@ -33,7 +33,7 @@ const database = {
             console.log("try to get/create collection")
         const documents = database.collection(process.env.COLLECTION_NAME);
             console.log("try to return collection")
-        return {client: client, collection: documents};
+        return {database:database, client: client, collection: documents};
         } catch (error) {
             console.log("error by remote connection : ", error);
         }

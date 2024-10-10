@@ -339,6 +339,25 @@ Hittar issue att Moch och nyc fungerar inte med sista Node.js version.
 
 Bytar till Jest.
 
+`npm install mocha nyc`
+
+remove .nyckrc
+
 `npm install jest --save-dev`
 
-Nu visas coverage, men tester går inte igenom 
+Nu visas coverage, men tester går inte igenom
+
+Anpassar environment. 
+Jag använder .env fil för att ange environment variables, Den publiceras int på remote repo. så partner skaffade en config fil att sätta variabler.
+Du ska då har 'import 'dotenv/config' uppe i alla filer där finns process.env
+
+Rättat "const uri" till "let uri" i mongoDb.mjs, så url can ändras vid tester.
+
+Bifogar  `server.close()` i slutet av varje test-file, så slipper vi fel: `port .... redan används av en processor ...`.
+Ny tester går igenom och coverage visas i terminal, men index.html i coverage dir visar zero coverage.
+
+Bifogar `coverageReporters: ['html', 'text'],` i `jset.config.js`. Nu visas coverage även i HTML-fil.
+
+Tar bort .deployment and .vscode/ ifrån projekt-root. Detta fil och dir skaffades formodligen när jag försökte deploya från root istället av backend/.
+
+### Arbetar med VIdareutveckling/Autentisering
