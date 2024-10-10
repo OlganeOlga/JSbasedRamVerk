@@ -29,13 +29,15 @@ const database = {
             //console.log(" connected client")
         try {
             //console.log("try to get/create database")
-        const database = client.db(process.env.DB_NAME);
+        const db = client.db(process.env.DB_NAME);
             //console.log("try to get/create collection")
-        const documents = database.collection(process.env.COLLECTION_NAME);
+        const documents = db.collection(process.env.COLLECTION_NAME);
             //console.log("try to return collection")
-        return {client: client, collection: documents};
+        return {db:db, client: client, collection: documents};
         } catch (error) {
-            console.log("error by remote connection : ", error);
+            console.error("Error by remote connection: ", error);
+            await client.close(); // Close client on error
+            throw error; // Rethrow the error for proper handling
         }
   }
 }
