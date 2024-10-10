@@ -286,7 +286,28 @@ Ny är style ungefär samma som vid första inlämningen. Jag tycker att vi nöj
 
 Botstrap-style importeras from `src/main.tsx` lokal style importeras from `public/style.css` i `index.html`
 
+
+### Ändringar i app-tree
+Ändrar struktur så att all frontend ligger i root/frontend och backend  ligger i root/backend
+
+App fortfarande fungerar på mitt dator även med remote databas.
+
+
+
+### Deployment på Azyre
+
+Det gick fel flera gånger. Men ny hoppas jag att fa rätt.
+
+Ideen är att frontend blir publicerad på studentserver och fungera där, medan backend är runner på Azyre.
+
+Eftersom jag rensade och gjörde om mitt projekt träd, behöver jag ta bort det som jag deployar tidigar och göra om
+
+Det är viktigt att koden öppet på backend när den ska deployas på azyre, dvs det deployas bara backend.
+
+Frontend (av samma branch ??) ska publiseras på studentserver.
+
 ### Återstår tester ...
+
 npm install mocha
 npm install chai chai-http --save-dev
 "const server" = app.listen(port, () => {
@@ -311,23 +332,13 @@ i app.mjs
 
 npm install --save-dev @types/chai
 
+### Bytat till Jest
 
-### Ändringar i app-tree
-Ändrar struktur så att all frontend ligger i root/frontend och backend  ligger i root/backend
+Tester med Mocha och nyc visar inte coverage.
+Hittar issue att Moch och nyc fungerar inte med sista Node.js version.
 
-App fortfarande fungerar på mitt dator även med remote databas.
+Bytar till Jest.
 
+`npm install jest --save-dev`
 
-
-### Deployment på Azyre
-
-Det gick fel flera gånger. Men ny hoppas jag att fa rätt.
-
-Ideen är att frontend blir publicerad på studentserver och fungera där, medan backend är runner på Azyre.
-
-Eftersom jag rensade och gjörde om mitt projekt träd, behöver jag ta bort det som jag deployar tidigar och göra om
-
-Det är viktigt att koden öppet på backend när den ska deployas på azyre, dvs det deployas bara backend.
-
-Frontend (av samma branch ??) ska publiseras på studentserver.
-
+Nu visas coverage, men tester går inte igenom 

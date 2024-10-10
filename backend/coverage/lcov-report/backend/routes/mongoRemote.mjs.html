@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">41.66% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>10/24</span>
+                <span class='fraction'>20/24</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/4</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">41.66% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>10/24</span>
+                <span class='fraction'>20/24</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -127,7 +127,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -137,7 +137,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -145,10 +145,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -156,10 +156,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -178,7 +178,7 @@ router.use(express.json());
 router.get("/", async(req, res) =&gt; {
     try {
         const collection = await documents.getAll();
-<span class="cstat-no" title="statement not covered" >        res.json({ documents: collection });</span>
+        res.json({ documents: collection });
     } catch (error) {
 <span class="cstat-no" title="statement not covered" >        res.json({ error: error });</span>
     };
@@ -188,29 +188,29 @@ router.get("/", async(req, res) =&gt; {
 router.post('/', async (req, res) =&gt; {
     try {
         const result = await documents.addNew();
-<span class="cstat-no" title="statement not covered" >        res.json({ result });</span>
+        res.json({ result });
     } catch (error) {
 <span class="cstat-no" title="statement not covered" >        res.json({ error: error });</span>
     }
 });
 &nbsp;
 // update a document
-router.put('/update', <span class="fstat-no" title="function not covered" >as</span>ync (req, res) =&gt; {
-    const { id, title, content } = <span class="cstat-no" title="statement not covered" >req.body;</span>
-<span class="cstat-no" title="statement not covered" >    try {</span>
-        const result = <span class="cstat-no" title="statement not covered" >await documents.updateOne(id, title, content);</span>
-<span class="cstat-no" title="statement not covered" >        res.json({ result });</span>
+router.put('/update', async (req, res) =&gt; {
+    const { id, title, content } = req.body;
+    try {
+        const result = await documents.updateOne(id, title, content);
+        res.json({ result });
     } catch (error) {
 <span class="cstat-no" title="statement not covered" >        res.status(500).json({ message: 'Error updating document bu put route', error });</span>
     }
 });
 &nbsp;
 // remove a document
-router.delete('/delete/:id', <span class="fstat-no" title="function not covered" >as</span>ync (req, res) =&gt; {
-    const id = <span class="cstat-no" title="statement not covered" >req.params.id;</span>
-<span class="cstat-no" title="statement not covered" >    try {</span>
-        const result = <span class="cstat-no" title="statement not covered" >await documents.removeById(id);</span>
-<span class="cstat-no" title="statement not covered" >        res.json({ result });</span>
+router.delete('/delete/:id', async (req, res) =&gt; {
+    const id = req.params.id;
+    try {
+        const result = await documents.removeById(id);
+        res.json({ result });
     } catch (error) {
 <span class="cstat-no" title="statement not covered" >        res.json({ error: error });</span>
     }
@@ -223,7 +223,7 @@ export default router;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-10-09T15:41:36.527Z
+                at 2024-10-10T08:11:33.764Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

@@ -1,4 +1,4 @@
-import mongoDb from '../db/mongo/mongoDb.mjs'
+import database from '../db/mongo/mongoDb.mjs'
 import { ObjectId } from 'mongodb';
 
 
@@ -15,7 +15,7 @@ const mongoDocs = {
      * @return {Promise<array>} The resultset as an promis.
      */
       getAll: async function getAll() {
-        const remoteMongo = await mongoDb.remoteMongo();
+        const remoteMongo = await database.connect();
         try {
             //get database         
             const documents = await remoteMongo.collection.find().toArray();
@@ -44,7 +44,7 @@ const mongoDocs = {
         const options = {
             projection: { _id: 1, title: 1, content: 1 }
         }
-        const remoteMongo = await mongoDb.remoteMongo();
+        const remoteMongo = await database.connect();
         try {
             return await remoteMongo.collection.find(query, options).toArray()       
         } finally {
@@ -78,7 +78,7 @@ const mongoDocs = {
               content: content
             },
           };
-        const remoteMongo = await mongoDb.remoteMongo();
+        const remoteMongo = await database.connect();
         try {
             return await remoteMongo.collection.updateOne(filter, updateDoc, options);
         } finally {
@@ -96,7 +96,7 @@ const mongoDocs = {
      * @return {Promise<object>} The resultset as an array.
      */
     addNew: async function addNew() {
-        const remoteMongo = await mongoDb.remoteMongo();
+        const remoteMongo = await database.connect();
         const data = {
             title: "New document",
             content: "New content"
@@ -121,7 +121,7 @@ const mongoDocs = {
      */
     removeById: async function removeById(id) {
         //get database
-        const remoteMongo = await mongoDb.remoteMongo();
+        const remoteMongo = await database.connect();
         try {
             console.log("try to delete by removeByID, id =", id);
             return await remoteMongo.collection.deleteOne({_id: new ObjectId(`${id}`)})       
@@ -141,7 +141,7 @@ const mongoDocs = {
      * @return {Promise<object>} The resultset as an array.
      */
         removeByTitle: async function removeByTitle(title) {
-            const remoteMongo = await mongoDb.remoteMongo();
+            const remoteMongo = await database.connect();
             try {
                 return await remoteMongo.collection.deleteOne({title: title});           
             } finally {
@@ -160,7 +160,7 @@ const mongoDocs = {
      * @return {Promise<object>} The resultset as an array.
      */
         getByID: async function getByID(id) {
-            const remoteMongo = await mongoDb.remoteMongo();
+            const remoteMongo = await database.connect();
             try {
                 return await remoteMongo.collection.findOne({_id: new ObjectId(`${id}`)});           
             } finally {
