@@ -10,7 +10,7 @@ on:
     branches: [ "CI-kedja" ]
 
 env:
-  JWT_SECRET: "DUMMYSECRETFORTESTINGJWT12345678"
+  # JWT_SECRET: "DUMMYSECRETFORTESTINGJWT12345678"
   ATLAS_USERNAME: "oleg22"
   ATLAS_PASSWORD: DEyTL0mOhfjdcK8g"
   LOCAL_DSN: "mongodb://localhost:27017"
@@ -24,6 +24,8 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+
+    timeout-minutes: 20 
 
     strategy:
       matrix:
@@ -43,5 +45,15 @@ jobs:
       with:
         mongodb-version: ${{ matrix.mongodb-version }}
 
-    - run: npm install
-    - run: npm test
+    # - run: npm install
+    # - run: npm test
+
+    - name: Install Backend Dependencies
+      run: |
+        cd backend
+        npm install
+
+    - name: Run Backend Tests
+      run: |
+        cd backend
+        npm test

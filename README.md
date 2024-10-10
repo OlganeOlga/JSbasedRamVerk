@@ -362,4 +362,26 @@ Tar bort .deployment and .vscode/ ifrån projekt-root. Detta fil och dir skaffad
 
 Pushar to `jest-tests-works`
 
+Tetster fungerar på lokal miljo, men faller på git.
+
+Uppdaterar `.github/workflows/node.js.yml`:
+ kommenterar bort: `JWT_SECRET: "DUMMYSECRETFORTESTINGJWT12345678"`
+  - bifogar andra env-variablar från .env;
+  - bifogar längre run tid: `timeout-minutes: 20`;
+
+Nu far jag error: `npm error Missing script: "test"`.
+
+Updaterar `node.js.yml` med 
+
+´´- name: Install Backend Dependencies
+      run: |
+        cd backend
+        npm install
+
+    - name: Run Backend Tests
+      run: |
+        cd backend
+        npm test´´
+
+
 ### Arbetar med VIdareutveckling/Autentisering
