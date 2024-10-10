@@ -360,4 +360,6 @@ Bifogar `coverageReporters: ['html', 'text'],` i `jset.config.js`. Nu visas cove
 
 Tar bort .deployment and .vscode/ ifrån projekt-root. Detta fil och dir skaffades formodligen när jag försökte deploya från root istället av backend/.
 
+Pushar to `jest-tests-works`
+
 ### Arbetar med VIdareutveckling/Autentisering
