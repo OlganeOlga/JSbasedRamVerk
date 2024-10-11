@@ -11,6 +11,7 @@
         "@types/node": "^16.18.112",
         "@types/react": "^18.3.11",
         "@types/react-dom": "^18.3.0",
+        "botstrap": "^0.20.1",
         "css-select": "^5.1.0",
         "nth-check": "^2.0.1",
         "postcss": "^8.4.31",
@@ -18,11 +19,14 @@
         "react-dom": "^18.3.1",
         "react-scripts": "^5.0.1",
         "resolve-cwd": "^3.0.0",
+        "socket.io": "^4.8.0",
+        "socket.io-client": "^4.8.0",
         "typescript": "^4.9.5",
         "web-vitals": "^2.1.4"
     },
     "devDependencies": {
         "@babel/plugin-proposal-private-property-in-object": "7.21.11",
+        "@types/socket.io-client": "^1.4.36",
         "webpack": "^5.95.0"
     },
     "scripts": {

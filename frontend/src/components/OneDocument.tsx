@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import utils from '../utils.mjs';
+import io from "socket.io-client"; 
+import { Socket } from "socket.io-client"; 
 
 // interfase for element
 interface OneDocumentProps {
@@ -9,11 +11,43 @@ interface OneDocumentProps {
     handleClose: () => void;
 }
 
-function OneDocument({ id:id, title: intialTitle, content: initialContent, handleClose }: OneDocumentProps) {
+
+function OneDocument({ id, title: intialTitle, content: initialContent, handleClose }: OneDocumentProps) {
+    const SERVER_URL = "http://localhost:3000";
     // declare variabels and function to change them
     const [title, setTitle] = useState(intialTitle);
     const [content, setContent] = useState(initialContent);
     const [isSubmitting, setIsSubmitting] = useState(false); // For submit state (optional)
+
+    const socket = useRef<typeof Socket | null>(null);
+
+    useEffect(() => {
+        socket.current = io(SERVER_URL);
+  
+        socket.current.on("content", (title: React.SetStateAction<string>, content: React.SetStateAction<string>) => {
+            setContent(content); // Assuming 'data' has a property 'content'
+            setTitle(title); // Assuming 'data' has a property 'title'
+        });
+  
+        return () => {
+            // Check if socket.current is not null before disconnecting
+            if (socket.current) {
+                socket.current.disconnect();
+            }
+        };
+      }, []);
+
+    function clear() {
+        setTitle("");
+        setContent("");
+    }
+    // function handleContentChange(e: { target: { value: any; }; }) {
+    //     const value = e.target.value;
+    //     if (socket.current) {
+    //         socket.current.emit("content", value);
+    //     }
+    // }
+  
 
     const handleSubmitAndClose = async (event: React.FormEvent) => {
         event.preventDefault(); // Prevent page refresh
@@ -44,23 +78,28 @@ function OneDocument({ id:id, title: intialTitle, content: initialContent, handl
                     type="text"
                     name="newTitle"
                     value={title}
-                    onChange={(e) => {
-                    setTitle(e.target.value)}}>
+                    onChange={(e) => 
+                        setTitle(e.target.value)}>
                 </input>
                 
                 <input className='content'
                     type="text"
                     name="newContent"
                     value={content}
-                    onChange={(e) => {setContent(e.target.value)}
-                    }>
+                    onChange={(e) => 
+                        setContent(e.target.value)}>
                 </input>
 
                 {/* Combined Submit and Back to List button */}
                 <button type="submit" value="Submit" className='btn btn-primary change-collection' disabled={isSubmitting}>
                     {isSubmitting ? 'Submitting...' : 'Save and close'}
                 </button>
+                <button type="reset" value="Clear" className='btn btn-primary change-collection' onClick={clear}>
+                    
+                </button>
             </form>
+            <h1>{title}</h1>
+            <p>{content}</p>
             
         </>
 )};
