@@ -5,9 +5,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "CI-kedja" ]
+    branches: [ "jest-tests-works" ]
   pull_request:
-    branches: [ "CI-kedja" ]
+    branches: [ "jest-tests-works" ]
 
 env:
   # JWT_SECRET: "DUMMYSECRETFORTESTINGJWT12345678"
