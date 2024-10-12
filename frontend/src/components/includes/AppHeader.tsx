@@ -14,28 +14,39 @@ interface AppHeaderProps {
 
 
 function AppHeader({ selectedIndex, handleClose, selectedDocumentId, reloadDocuments }: AppHeaderProps) {
-
+    let username = localStorage.getItem("username");
+    if (localStorage.getItem("username") === null)
+    {
+        username = 'olga@example.com';
+    }
    //create new document
    const addDocument = async () => {
-        try {
-            const result = await utils.processRoute("POST");
-            if (result.result.acknowledged){
+        try {   
+            const result = await utils.processRoute(username, "POST", "/data", {username: username, password: 'olga@example.com'});
+            if (result.status === 200){
                 alert('New document is created!');
                 reloadDocuments();
             }
         } catch (error) {
             return(error);
-        }     
-        
+        }
     };
 
-    const delateDocument = async (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault(); 
+    const deleteDocument = async () => { 
         try {
-            await utils.processRoute('DELETE', `/delete/${selectedDocumentId}`); // Call the function with the URL and ID
-            alert('Document deleted successfully!'); // show that document is deleted
-            handleClose();
-            reloadDocuments(); // remove selection on the document with index
+            const respons = await utils.processRoute(username, 'DELETE', 
+                `/data/delete/${selectedDocumentId}`,
+                {username: username, password: 'olga@example.com'});
+
+            // Call the function with the URL and ID
+            if(respons.status === 200){
+                alert('Document deleted successfully!'); 
+                // show that document is deleted
+                handleClose();
+                reloadDocuments();
+            } else {
+                alert("Faile to delate document");
+            }
         } catch (error) {
             console.error('Failed to delete document at DeleteDocument: ', error);
             alert('Failed to delete document.');
@@ -53,7 +64,7 @@ function AppHeader({ selectedIndex, handleClose, selectedDocumentId, reloadDocum
                <button className="change-collection" value={'Add'} onClick={addDocument}>
                    Create document
                </button>) : ( // if a document is selected, render OneDocument component
-              <button className="change-collection" value={'Remove'} onClick={delateDocument}>
+              <button className="change-collection" value={'Remove'} onClick={deleteDocument}>
                 Remove document
                 {/* <FontAwesomeIcon icon={faTrashCan} width={10}/> */}
             </button>)}

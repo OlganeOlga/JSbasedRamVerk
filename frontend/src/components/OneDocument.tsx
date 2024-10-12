@@ -20,12 +20,20 @@ function OneDocument({ id:id, title: intialTitle, content: initialContent, handl
         setIsSubmitting(true);  // Set the submitting state to true (optional)
 
         // Updated document object
-        const updatedDoc = { id, title, content };
+        const body = {username: "olga@example.com", 
+                            password: "olga@example.com", 
+                            id, 
+                            title, 
+                            content
+                        };
 
         try {
             // Submit the document update to the backend
-            await utils.processRoute('PUT', `/update`, updatedDoc);
-            console.log('Document updated successfully');
+            await utils.processRoute("olga@example.com", 
+                                        'PUT', 
+                                        `/data/update`, 
+                                        body);
+            console.log('Document updated successfully', body);
 
             // After the submission, go back to the list
             handleClose();

@@ -1,9 +1,11 @@
 import OneDocument from './OneDocument';
-import Document from '../functions/interfase'; // import interface for object Document
-
+import User from '../functions/interfase'; // import interface for object Document
+import Document from '../functions/interfase'; 
 // element properties
 interface AppArticleProps {
+    //users: User[];
     documents: Document[];
+    //reloadUsers: () => void;
     reloadDocuments: () => void;
     selectedIndex: number | null; // Selected document index from parent
     setSelectedIndex: (index: number | null) => void; // Function to update selectedIndex in parent
@@ -12,7 +14,7 @@ interface AppArticleProps {
 function AppArticle({ documents, reloadDocuments, selectedIndex, setSelectedIndex }: AppArticleProps) {
 
     // select document
-    const handleSelect = (index: number) => {
+    const handleSelect = (index: number) => { 
         setSelectedIndex(index); // Update the parent component's selectedIndex
     };
 
@@ -20,6 +22,7 @@ function AppArticle({ documents, reloadDocuments, selectedIndex, setSelectedInde
     const handleClose = () => {
         setSelectedIndex(null);
         reloadDocuments();
+        //reloadUsers();
     };
     const selectedDocument = selectedIndex !== null && documents[selectedIndex];
 
@@ -28,6 +31,7 @@ function AppArticle({ documents, reloadDocuments, selectedIndex, setSelectedInde
             {selectedIndex === null || !selectedDocument ? ( // if no document is selected or invalid selection
                 <ul className='list-group'>
                     {documents.length === 0 ? <p>No documents found</p> : null}
+                    
                     {documents.map((doc, index) => (
                         <li
                             className="list-group-item"

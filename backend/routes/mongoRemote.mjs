@@ -1,6 +1,10 @@
 import express from 'express';
-import documents from '../docs/remoteDocs.mjs';
-
+//import utils from './../utils.mjs';  // Import your authentication middleware
+import mogoDocs from '../docs/remoteDocs.mjs';
+import { authenticateToken } from './auth.mjs';
+import data from "../models/data.mjs";
+import auth from "../models/auth.mjs";
+import mongoDocs from '../docs/remoteDocs.mjs';
 
 const router = express.Router();
 
@@ -8,30 +12,42 @@ const router = express.Router();
 router.use(express.json());
 
 // get all dcuments as JSON
-router.get("/", async(req, res) => {
+router.get("/",async(req, res) => {
+    
     try {
-        const collection = await documents.getAll();
-        res.json({ documents: collection });
+        console.log("try in the GET docs/")
+        const users = await mongoDocs.getAll();
+        res.json(users);
     } catch (error) {
-        res.json({ error: error });
-    };
+        res.status(500).json({ message: 
+            'Error fetching documents at backend/routes/mongoREmote.mjs' });
+    }
 });
 
 // add an new unnamed document
 router.post('/', async (req, res) => {
-    try {
-        const result = await documents.addNew();
-        res.json({ result });
-    } catch (error) {
-        res.json({ error: error });
-    }
+    console.log("start Post route")
+    const {username, password} = req.body
+    console.log("user :", req.body);
+        try {
+            console.log("start adding documents")
+            const result = await mongoDocs.newDocument(username, password);
+            console.log("after adding documents", result)
+            res.json({ result });
+        } catch (error) {
+            res.json({ error: error });
+        }
 });
 
 // update a document
 router.put('/update', async (req, res) => {
-    const { id, title, content } = req.body;
+    console.log("att Update route")
+    const {username, password, id, title, content } = req.body;
+    console.log("att Update route", req.body)
     try {
-        const result = await documents.updateOne(id, title, content);
+        console.log("Try to use update function")
+        const result = await mongoDocs.updateDocument(username, password, id, title, content);
+        console.log("After use update function", result)
         res.json({ result });
     } catch (error) {
         res.status(500).json({ message: 'Error updating document bu put route', error });
@@ -41,8 +57,9 @@ router.put('/update', async (req, res) => {
 // remove a document
 router.delete('/delete/:id', async (req, res) => {
     const id = req.params.id;
+    const {username, password} = req.body;
     try {
-        const result = await documents.removeById(id);
+        const result = await mongoDocs.removeDocument(id, username, password);
         res.json({ result });
     } catch (error) {
         res.json({ error: error });
