@@ -2,6 +2,7 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
+import userDocs from '../docs/mongoUsers.mjs'
 
 // Define your User schema (mongoose)
 const UserSchema = new mongoose.Schema({
@@ -11,7 +12,7 @@ const UserSchema = new mongoose.Schema({
 const User = mongoose.model('User', UserSchema);
 
 // JWT secret key (use dotenv to store the secret key)
-const JWT_SECRET = process.env.JWT_SECRET || 'Olgas_jwt_secret_key';
+const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
 
 const router = express.Router();
 
@@ -31,34 +32,22 @@ router.post('/register', async (req, res) => {
 
 // User login route
 router.post('/login', async (req, res) => {
+    console.log("start login at auth/ligin")
     const { username, password } = req.body;
 
-    // try {
-    //     const user = await User.findOne({ username });
-    //     if (!user) return res.status(400).json({ message: 'Invalid username or password' });
-
-    //     const isMatch = await bcrypt.compare(password, user.password);
-    //     if (!isMatch) return res.status(400).json({ message: 'Invalid username or password' });
-
-    //     // Generate JWT token
-    //     const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
-
-    //     res.json({ token });
-    // } catch (error) {
-    //     res.status(500).json({ message: 'Error during login', error });
-    // }
-
+    console.log(req.body)
     try {
-        const user = await User.findOne({ username });
-        console.log(username)
+        console.log("start fetching user")
+        const user = await userDocs.getUser(username);
+        console.log("after fetching user")
+        console.log(user)
         if (!user) return res.status(400).json({ message: 'Invalid username or password' });
-        console.log(username)
-        // const isMatch = await bcrypt.compare(password, user.password);
-        // if (!isMatch) return res.status(400).json({ message: 'Invalid username or password' });
-        if (user.password !== password) {
-            console.log(user.password)
-            return res.status(400).json({ message: 'Invalid username or password' });
-        }
+
+        //const isMatch = await bcrypt.compare(password, user.password);
+        //if (!isMatch) return res.status(400).json({ message: 'Invalid username or password' });
+
+        if (password === user.password) return res.status(400).json({ message: 'Invalid username or password' });
+
         // Generate JWT token
         const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
 
@@ -66,7 +55,7 @@ router.post('/login', async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Error during login', error });
     }
-    });
+});
 
 // Middleware to protect routes
 export const authenticateToken = (req, res, next) => {

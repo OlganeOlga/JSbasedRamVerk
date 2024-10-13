@@ -1,4 +1,4 @@
-import { getDb } from "../db/mongo/mongoDb.mjs";
+import getDb from "../db/mongo/mongoDb.mjs";
 import hat from "hat";
 import { validate } from "email-validator";
 

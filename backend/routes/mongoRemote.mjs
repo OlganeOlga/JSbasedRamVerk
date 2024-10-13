@@ -11,13 +11,13 @@ const router = express.Router();
 //parse JSON bodies
 router.use(express.json());
 
-// get all dcuments as JSON
-router.get("/",async(req, res) => {
-    
+// get all dcuments from a user as JSON
+router.get("/:user",async(req, res) => {
+    const user = req.params.user;
     try {
         console.log("try in the GET docs/")
-        const users = await mongoDocs.getAll();
-        res.json(users);
+        const docs = await mongoDocs.usersDocuments(user);
+        res.json(docs);
     } catch (error) {
         res.status(500).json({ message: 
             'Error fetching documents at backend/routes/mongoREmote.mjs' });

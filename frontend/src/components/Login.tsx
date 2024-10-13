@@ -16,18 +16,20 @@ function Login({ onLoginSuccess }: LoginProps) {
 
         try{
             alert("post your login")
-            const docs = await utils.processRoute("olga@example.com", 'POST', "/auth/login", 
+            const result = await utils.processRoute(username, 'POST', "/auth/login", 
                 { 
-                    username: "olga@example.com", 
-                    password: "olga@example.com" 
+                    resultname: username, 
+                    password: password 
                 }
                 );
-            console.log (docs);
-            localStorage.setItem("tocken", "mocl-tocken");
-            localStorage.setItem("usename", username);
-            localStorage.setItem("passwod", password);
-            onLoginSuccess();  // Call callback to notify App of successful login
-            alert("Login successful");
+            console.log (result);
+            if(result.status === 200){
+                localStorage.setItem("token", result.token);
+                localStorage.setItem("usename", username);
+                localStorage.setItem("passwod", password);
+                onLoginSuccess();  // Call callback to notify App of successful login
+                alert("Login successful"); 
+            }
         } catch (e) {
             alert("Login failed");
         }

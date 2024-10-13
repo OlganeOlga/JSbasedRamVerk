@@ -10,7 +10,7 @@ import morgan from 'morgan';
 //import methodOverride from 'method-override';
 
 import mongoRemote from "./routes/mongoRemote.mjs";
-import authRoutes from "./routes/auth.mjs";
+import authRoutes from "./routes/auth_user.mjs";
 //import authRoutes, { authenticateToken } from './routes/auth.js'; // import authentication route
 
 const app = express();
@@ -44,7 +44,7 @@ if (process.env.NODE_ENV !== 'test') {
     app.use(morgan('combined')); // 'combined' outputs the Apache style LOGs
 }
 
-app.use('/', mongoRemote); // import routes using remote mongoDB
+app.use('/data', mongoRemote); // import routes using remote mongoDB
 app.use('/auth', authRoutes); // Use auth routes under '/auth'
 
 // // Protect the documents route

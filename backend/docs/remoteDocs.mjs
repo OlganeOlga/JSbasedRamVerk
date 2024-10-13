@@ -6,7 +6,7 @@ import { ObjectId } from 'mongodb';
 const mongoDocs = {
 
     /**
-     * Show all documents in an collection.
+     * Show all users in an collection.
      *
      * @async
      *
@@ -37,16 +37,14 @@ const mongoDocs = {
      *
      * @async
      * 
-     * @param {string} name  users email
-     * @param {string} userPassword users userPassword
-     * @param {string} searched     title of document 
+     * @param {string} name  users email 
      *
      * @throws Error when database operation fails.
      *
      * @return {Promise<object>} The resultset as an array.
      */
-    findDocuments: async function findDocuments(name, password, searched) {
-        const query = {username: name, password: password};
+    usersDocuments: async function usersDocuments(name, searched) {
+        const query = {username: name};
 
         const options = {
             //projection: { _id: 1, title: 1, content: 1 }

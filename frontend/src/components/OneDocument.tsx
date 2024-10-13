@@ -15,13 +15,16 @@ function OneDocument({ id:id, title: intialTitle, content: initialContent, handl
     const [content, setContent] = useState(initialContent);
     const [isSubmitting, setIsSubmitting] = useState(false); // For submit state (optional)
 
+    const [username, setUsername] = useState(localStorage.getItem('username'));
+    const [passwod, setPasswod] = useState(localStorage.getItem('passwod'));
+
     const handleSubmitAndClose = async (event: React.FormEvent) => {
         event.preventDefault(); // Prevent page refresh
         setIsSubmitting(true);  // Set the submitting state to true (optional)
 
         // Updated document object
-        const body = {username: "olga@example.com", 
-                            password: "olga@example.com", 
+        const body = {username: username, 
+                            password: passwod, 
                             id, 
                             title, 
                             content
@@ -29,7 +32,7 @@ function OneDocument({ id:id, title: intialTitle, content: initialContent, handl
 
         try {
             // Submit the document update to the backend
-            await utils.processRoute("olga@example.com", 
+            await utils.processRoute(username, 
                                         'PUT', 
                                         `/data/update`, 
                                         body);

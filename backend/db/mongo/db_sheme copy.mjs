@@ -5,7 +5,7 @@ db.createCollection("users", {
           "title": "Users Object Validation",
           "required": [ "username", "password" ],
           "properties": {
-             "email": {
+             "username": {
                 "bsonType": "string",
                 "description": "'email' uses as 'name' must be a string/email and is required"
              },
@@ -42,9 +42,12 @@ db.createCollection("users", {
     }
 });
 
-[   {name: "olga", email: "polga@olga"}
+db.collection.createIndex({ username: 1 }, { unique: true })
+
+[   {username: "polga@olga", email: "polga@olga"}
 ]
 db.users.insertOne({
     username: "olga@example.com",
     password: "olga@example.com",
 });
+db.users.insertOne({username: "polga@olga", password: "polga@olga"});

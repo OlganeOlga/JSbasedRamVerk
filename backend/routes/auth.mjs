@@ -2,9 +2,12 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
-//import userSchema from './../db/mongo/db_schema.json' assert { type: 'json' };
-//import userSchema from './../db/mongo/db_schema.json' assert { type: 'json' };
 import docs from '../docs/remoteDocs.mjs';
+// Define your User schema (mongoose)
+const UserSchema = new mongoose.Schema({
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true }
+});
 
 // // Define your User schema (mongoose)
 // const UserSchema = new mongoose.Schema(userSchema);
@@ -33,6 +36,8 @@ router.post('/register', async (req, res) => {
 
 // User login route
 router.post('/login', async (req, res) => {
+    console.log("start suth/login")
+    console.log(req.body);
     const { username, password } = req.body;
 
     try {

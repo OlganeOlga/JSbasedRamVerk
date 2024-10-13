@@ -5,7 +5,7 @@
           "title": "Users Object Validation",
           "required": [ "username", "password" ],
           "properties": {
-             "email": {
+             "username": {
                 "bsonType": "string",
                 "description": "'email' uses as 'name' must be a string/email and is required"
              },

@@ -13,10 +13,10 @@ function Register({ onLoginSuccess }: RegiterProps) {
         e.preventDefault();
         try{
             alert("post your login")
-            const docs = await utils.processRoute("olga@example.com", 'POST', "/auth/login", 
+            const docs = await utils.processRoute("", 'POST', "/auth/register", 
                 { 
-                    username: "olga@example.com", 
-                    password: "olga@example.com" 
+                    username: username, 
+                    password: password 
                 },
                 );
             console.log (docs);
@@ -31,25 +31,34 @@ function Register({ onLoginSuccess }: RegiterProps) {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h2>New user? Sign</h2>
-            <input 
-                type="email" 
-                placeholder="email" 
-                value={username} 
-                onChange={(e) => setUsername(e.target.value)} 
-                required 
-            />
-            <input 
-                type="text" 
-                placeholder="Password" 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)}
-                required 
-            />
-            <button type="submit">Sign Up</button>
-        </form>
-    );
-}
+        <>
+            <form onSubmit={handleSubmit}>
+                <h2>New user? Sign</h2>
+                <input 
+                    type="email" 
+                    placeholder="email" 
+                    value={username} 
+                    onChange={(e) => setUsername(e.target.value)} 
+                    required 
+                />
+                <input 
+                    type="text" 
+                    placeholder="Password" 
+                    value={password} 
+                    onChange={(e) => setPassword(e.target.value)}
+                    required 
+                />
+                <button type="submit">Sign Up</button>
+            </form>
+            <div className="terms">
+                <h3>Terms and Conditions</h3>
+
+                <p>Your email will be stored together with your personal API-key to be able to contact you if you violate the terms and conditions and/or send an extraordinary amount of requests to the API.</p>
+
+                <p>You are responsible for any data that you store in the API's database and that the data does not violate current jurisdiction.</p>
+
+                <p>You can at any time request that your API-key is deleted together with all of the data that you have stored in the API's database by using the <a href="/api_key/deregister">deregister form</a>.</p>
+            </div>
+        </>)};
 
 export default Register;

@@ -9,7 +9,7 @@ import path from 'path';
 
 const app = express();
 
-import auth from "./routes/auth1.mjs";
+import auth from "./routes/auth_user.mjs";
 import users from "./routes/users.mjs";
 //import data from "./routes/data.mjs";
 import data from './routes/mongoRemote.mjs';
@@ -45,7 +45,7 @@ if (process.env.NODE_ENV !== 'test') {
 
 //app.use("/users", users);
 app.use("/data", data);
-// app.use("/auth", auth);
+app.use("/auth", auth);
 // app.use('/hoy', async (reg, res) =>{
 //   res.send("HOY Hoppolapoy!");
 // });

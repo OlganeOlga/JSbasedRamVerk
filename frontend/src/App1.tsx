@@ -51,10 +51,10 @@ function App() {
     useEffect(() => {
         const token = localStorage.getItem('token');
         handleLoginSuccess();
-        // if (token) {
-        //     setIsAuthenticated(true);
-        //     loadDocuments();  // Load documents if user is authenticated
-        // }
+        if (token) {
+            setIsAuthenticated(true);
+            loadDocuments();  // Load documents if user is authenticated
+        }
     }, [loadDocuments]);
 
     // Handle successful login by reloading documents and setting authenticated state
@@ -79,6 +79,7 @@ function App() {
                 />
             </ErrorBoundary>
             <ErrorBoundary>
+                
                 <AppMain 
                     documents={documents} 
                     loading={loading} 
