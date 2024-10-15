@@ -16,19 +16,20 @@ function Login({ onLoginSuccess }: LoginProps) {
 
         try{
             alert("post your login")
-            const result = await utils.processRoute(username, 'POST', "/auth/login", 
+            const result = await utils.processRoute('POST', "/auth/login", 
                 { 
-                    resultname: username, 
+                    username: username, 
                     password: password 
                 }
                 );
-            console.log (result);
             if(result.status === 200){
-                localStorage.setItem("token", result.token);
-                localStorage.setItem("usename", username);
-                localStorage.setItem("passwod", password);
+                localStorage.setItem("token", result.result.token);
+                localStorage.setItem("username", username);
+                localStorage.setItem("password", password);
                 onLoginSuccess();  // Call callback to notify App of successful login
                 alert("Login successful"); 
+            } else {
+                alert("User name or password is not correctr. New user? Sign in.");
             }
         } catch (e) {
             alert("Login failed");

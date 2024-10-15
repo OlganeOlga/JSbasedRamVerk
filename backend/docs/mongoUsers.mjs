@@ -60,100 +60,46 @@ const mongoUsers = {
      * @return {Promise<array>} The resultset as an promis.
      */
     getUser: async function getUser(userName) {
-        console.log("at userDocs: getUser")
-        const query = {username: userName};
-        
+        console.log("at userDocs: getUser", userName)
+        const query = {'username': userName};
+        console.log("at userDocs query", query)
         let db;
         
         try {
-            console.log("BEfor connected from mongoDocs getUser")
+            console.log("BEfor connected from mongoUser getUser")
             db = await getDb.connect();
-            console.log("connected from mongoDocs getOne")
-            //get database  
-            //console.log("fetching database from mongoUsers getUser")
-
+            console.log("connected from mongoUser getUser")
             let user = [];
-            user = await db.collection.find(query).toArray();
-            console.log("user: ",user) 
-            console.log("after fetching user")
-            return user;
-            // return res.status(200).json({
-            //     user: user
-            // });
-
+            let users = await db.collection.find();
+            console.log(users)
+            user = await db.collection.findOne(query);
+            console.log("After fetchoing user : in MongoUsers :")
+            if (user.length > 0){
+                return user;
+            } else {
+                throw new Error("No users found");
+            }
         } catch (error) {
-            return res.status(500).json({
-                error: {
-                    status: 500,
-                    path: "/auth/login",
-                    title: "Database error",
-                    message: err.message
-                }
-            });
+            console.error("Error in getUser:", error);  // Log the error
+            throw new Error("Database error: " + error.message);  // Re-throw or handle error
         } finally {
             await db.client.close();
         }
     },
 
-    // /**
-    //  * Find documents in an collection by matching search criteria.
-    //  *
-    //  * @async
-    //  * 
-    //  * @param {string} name  users email 
-    //  *
-    //  * @throws Error when database operation fails.
-    //  *
-    //  * @return {Promise<object>} The resultset as an array.
-    //  */
-    // findDocuments: async function findDocuments(name, searched) {
-    //     const query = {username: name};
-
-    //     const options = {
-    //         //projection: { _id: 1, title: 1, content: 1 }
-    //         projection: { username: 1, password: 1 }
-    //     }
-    //     const remoteMongo = await database.connect();
-    //     try {
-    //         return await remoteMongo.collection.find(query, options).toArray();
-    //     } finally {
-    //         await remoteMongo.client.close();
-    //     }
-    // },
-
-    //     /**
-    //  * Find documents in an collection by matching search criteria.
-    //  *
-    //  * @async
-    //  * 
-    //  * @param {string} name  users email
-    //  * @param {string} userPassword users userPassword
-    //  * @param {string} searched     title of document 
-    //  *
-    //  * @throws Error when database operation fails.
-    //  *
-    //  * @return {Promise<object>} The resultset as an array.
-    //  */
-    // findDocument: async function findDocument(name, password, searched) {
-    //     const query = {username: name, password: password};
-
-    //     const options = {
-    //         //projection: { _id: 1, title: 1, content: 1 }
-    //         projection: { documents: 1 }
-    //     }
-    //     const remoteMongo = await database.connect();
-    //     try {
-    //         const docs = await remoteMongo.collection.find(query, options).toArray();
-    //         const one = docs.find(one => one.title === searched);
-    //         if(!one) { 
-    //             return "not found";
-    //         } 
-    //         return one;                
-    //     } finally {
-    //         await remoteMongo.client.close();
-    //     }
-    // },
-
+    saveUser: async function saveUser(user) {
+        console.log("at saveuser: saveUser")
+        let db;
+        try {
+            db = await getDb.connect();
+            const respons = await db.collection.insertOne(user);
+        } catch (error) {
+            console.error("Error in getUser:", error);  // Log the error
+            throw new Error("Database error: " + error.message);  // Re-throw or handle error
+        } finally {
+            await db.client.close();
+        }
+    }
 };
 
 export default mongoUsers;

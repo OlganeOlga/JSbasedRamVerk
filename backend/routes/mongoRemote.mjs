@@ -1,9 +1,4 @@
 import express from 'express';
-//import utils from './../utils.mjs';  // Import your authentication middleware
-import mogoDocs from '../docs/remoteDocs.mjs';
-import { authenticateToken } from './auth.mjs';
-import data from "../models/data.mjs";
-import auth from "../models/auth.mjs";
 import mongoDocs from '../docs/remoteDocs.mjs';
 
 const router = express.Router();
@@ -16,8 +11,14 @@ router.get("/:user",async(req, res) => {
     const user = req.params.user;
     try {
         console.log("try in the GET docs/")
-        const docs = await mongoDocs.usersDocuments(user);
-        res.json(docs);
+        const docs = await mongoDocs.userDocuments(user);
+        console.log("at /docs routes get documents: documents: ", docs)
+        try { 
+            res.json(docs);
+        } catch (e) {
+            return e
+        }
+        
     } catch (error) {
         res.status(500).json({ message: 
             'Error fetching documents at backend/routes/mongoREmote.mjs' });

@@ -2,7 +2,7 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
-import userDocs from '../docs/mongoUsers.mjs'
+import userFunctions from '../docs/mongoUsers.mjs'
 
 // Define your User schema (mongoose)
 const UserSchema = new mongoose.Schema({
@@ -19,11 +19,12 @@ const router = express.Router();
 // User registration route
 router.post('/register', async (req, res) => {
     const { username, password } = req.body;
+    console.log(req.body)
     const hashedPassword = await bcrypt.hash(password, 10);
-
+    console.log(hashedPassword)
     try {
         const user = new User({ username, password: hashedPassword });
-        await user.save();
+        await userFunctions.saveUser(user);
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Error registering user', error });
@@ -32,13 +33,12 @@ router.post('/register', async (req, res) => {
 
 // User login route
 router.post('/login', async (req, res) => {
-    console.log("start login at auth/ligin")
+    console.log("start login at auth/login")
     const { username, password } = req.body;
-
     console.log(req.body)
     try {
         console.log("start fetching user")
-        const user = await userDocs.getUser(username);
+        const user = await userFunctions.getUser(username);
         console.log("after fetching user")
         console.log(user)
         if (!user) return res.status(400).json({ message: 'Invalid username or password' });

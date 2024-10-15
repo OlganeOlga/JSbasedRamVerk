@@ -5,32 +5,32 @@ import { ObjectId } from 'mongodb';
 // Functionality
 const mongoDocs = {
 
-    /**
-     * Show all users in an collection.
-     *
-     * @async
-     *
-     * @throws Error when database operation fails.
-     *
-     * @return {Promise<array>} The resultset as an promis.
-     */
-      getAll: async function getAll() {
-        //console.log("BEfor connected from mongoDocs getAll")
-        const remoteMongo = await database.connect();
-        //console.log("connected from mongoDocs getAll")
-        try {
-            //get database  
-            //console.log("fetching database from mongoDocs getAll")
+    // /**
+    //  * Show all users in an collection.
+    //  *
+    //  * @async
+    //  *
+    //  * @throws Error when database operation fails.
+    //  *
+    //  * @return {Promise<array>} The resultset as an promis.
+    //  */
+    //   getAll: async function getAll() {
+    //     //console.log("BEfor connected from mongoDocs getAll")
+    //     const remoteMongo = await database.connect();
+    //     //console.log("connected from mongoDocs getAll")
+    //     try {
+    //         //get database  
+    //         //console.log("fetching database from mongoDocs getAll")
 
-            const documents = await remoteMongo.collection.find().toArray();
-            //console.log(documents) 
-            return documents;
-        } catch (error) {
-            return error;
-        } finally {
-            await remoteMongo.client.close();
-        }
-    },
+    //         const documents = await remoteMongo.collection.find().toArray();
+    //         //console.log(documents) 
+    //         return documents;
+    //     } catch (error) {
+    //         return error;
+    //     } finally {
+    //         await remoteMongo.client.close();
+    //     }
+    // },
 
     /**
      * Find documents in an collection by matching search criteria.
@@ -43,7 +43,7 @@ const mongoDocs = {
      *
      * @return {Promise<object>} The resultset as an array.
      */
-    usersDocuments: async function usersDocuments(name, searched) {
+    userDocuments: async function userDocuments(name, searched) {
         const query = {username: name};
 
         const options = {

@@ -5,7 +5,6 @@ const utils = {
      * Fetch route functionality to the React component
      * @async
      * 
-     * @param {string |null} userName name of the user
      * @param {string} [passedMethod='GET'] - HTTP method ('GET', 'POST', etc.)
      * @param {object|null} [body=null] - Request body (used only for POST/PUT requests)
      * @param {object} [headers={}] - Request headers
@@ -13,8 +12,8 @@ const utils = {
      * @param {string} route : express-route route
      * @returns {Promise<array>}: returns one ore more dokuments as array
      */
-    processRoute : async function processRoute(userName, passedMethod = 'GET', 
-        route = "/data", body = null, headers = {}) {
+    processRoute : async function processRoute(passedMethod = 'GET', 
+        route   , body = null, headers = {}) {
         const url = localBackend + route;
         
         const defaultHeaders = { 'Content-Type': 'application/json'};
@@ -47,7 +46,6 @@ const utils = {
                 };
         ;
             }
-             throw new Error(`User with name ${userName} not found`);
 
         } catch (error) {
             console.log('Failed to fetch documents in processRoute.processRoute:', error);
@@ -65,23 +63,20 @@ const utils = {
      * 
      * @returns {void}
      */
-    loadDocuments: async function loadDocuments(userName, setDocuments, setLoading) {
+    loadDocuments: async function loadDocuments(userName, setDocuments) {
         try {
-            const result = await this.processRoute(userName,'GET'); // Call fetch function here
+            console.log("utils LoadDocuments, route: ", `/data/${userName}`)
+            const result = await this.processRoute('GET', `/data/${userName}`); // Call fetch function here
             if (result) {
-                console.log(result.result);
-                console.log('User being searched for:', userName);
-                const user = result.result.find(user => user.username === userName);
-                console.log(user.documents);
-                setDocuments(user.documents); // Update documents state
+                console.log(result);
+                console.log('Documents being searched for:', userName, "found result.result", result.result);
+                setDocuments(result.result); // Update documents state
             } else {
                 setDocuments([]); // Handle no documents case
             }
         } catch (error) {
             console.error("Error loading documents:", error);
             setDocuments([]); // Reset documents on error
-        } finally {
-            setLoading(false); // Stop loading state
         }
     },
 }

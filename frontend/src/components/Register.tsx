@@ -13,18 +13,21 @@ function Register({ onLoginSuccess }: RegiterProps) {
         e.preventDefault();
         try{
             alert("post your login")
-            const docs = await utils.processRoute("", 'POST', "/auth/register", 
+            const respons = await utils.processRoute('POST', "/auth/register", 
                 { 
                     username: username, 
                     password: password 
                 },
                 );
-            console.log (docs);
-            localStorage.setItem("tocken", "mocl-tocken");
-            localStorage.setItem("usename", username);
-            localStorage.setItem("passwod", password);
+
+            //console.log (respons);
+            if (respons.status === 201) {
+                localStorage.setItem("tocken", "mocl-tocken");
+                localStorage.setItem("usename", username);
+                localStorage.setItem("passwod", password);
+            }
             onLoginSuccess();  // Call callback to notify App of successful login
-            alert("Login successful");
+            alert(respons.result.message);
         } catch (e) {
             alert("Login failed");
         }
@@ -48,7 +51,7 @@ function Register({ onLoginSuccess }: RegiterProps) {
                     onChange={(e) => setPassword(e.target.value)}
                     required 
                 />
-                <button type="submit">Sign Up</button>
+                <button type="submit">Register</button>
             </form>
             <div className="terms">
                 <h3>Terms and Conditions</h3>

@@ -8,21 +8,37 @@ import utils from '../../utils.mjs';
 interface AppHeaderProps {
     reloadDocuments: () => void; // Prop type for the reload function
     selectedIndex: number | null; // Accept selectedIndex prop
+    username: string | null;
+    password: string | null;
+    token: string | null;
     handleClose: () => void;
     selectedDocumentId: string; 
 }
 
 
-function AppHeader({ selectedIndex, handleClose, selectedDocumentId, reloadDocuments }: AppHeaderProps) {
-    let username = localStorage.getItem("username");
-    if (localStorage.getItem("username") === null)
-    {
-        username = 'olga@example.com';
-    }
+function AppHeader({ selectedIndex, 
+                        handleClose, 
+                        selectedDocumentId, 
+                        username, 
+                        password, 
+                        token, 
+                        reloadDocuments }: 
+                        AppHeaderProps) {
+
+    // empty local storage befor restarting app
+    const logOut = () => {
+        
+            localStorage.removeItem('token');
+            localStorage.removeItem('username');
+            localStorage.removeItem('password');
+            window.location.reload();
+            // Optionally, clear all of localStorage: localStorage.clear();
+        
+    }; // Empty dependency array to ensure this only runs once on mount
    //create new document
    const addDocument = async () => {
         try {   
-            const result = await utils.processRoute(username, "POST", "/data", {username: username, password: 'olga@example.com'});
+            const result = await utils.processRoute("POST", "/data", {username: username, password: 'olga@example.com'});
             if (result.status === 200){
                 alert('New document is created!');
                 reloadDocuments();
@@ -34,7 +50,7 @@ function AppHeader({ selectedIndex, handleClose, selectedDocumentId, reloadDocum
 
     const deleteDocument = async () => { 
         try {
-            const respons = await utils.processRoute(username, 'DELETE', 
+            const respons = await utils.processRoute('DELETE', 
                 `/data/delete/${selectedDocumentId}`,
                 {username: username, password: 'olga@example.com'});
 
@@ -69,6 +85,10 @@ function AppHeader({ selectedIndex, handleClose, selectedDocumentId, reloadDocum
                 {/* <FontAwesomeIcon icon={faTrashCan} width={10}/> */}
             </button>)}
            </div>
+           <button className="change-collection" value={'Logout'} onClick={logOut}>
+                Logout
+                {/* <FontAwesomeIcon icon={faTrashCan} width={10}/> */}
+            </button>
         </header>
         
     );

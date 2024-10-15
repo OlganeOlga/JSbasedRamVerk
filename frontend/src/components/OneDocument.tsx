@@ -32,8 +32,7 @@ function OneDocument({ id:id, title: intialTitle, content: initialContent, handl
 
         try {
             // Submit the document update to the backend
-            await utils.processRoute(username, 
-                                        'PUT', 
+            await utils.processRoute('PUT', 
                                         `/data/update`, 
                                         body);
             console.log('Document updated successfully', body);

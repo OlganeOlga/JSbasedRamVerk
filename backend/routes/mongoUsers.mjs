@@ -33,19 +33,6 @@ const router = express.Router();
 //parse JSON bodies
 router.use(express.json());
 
-// get a user as JSON
-router.get("/:id",async(req, res) => {
-    
-    try {
-        console.log("try in the GET /:id mongoUsers.mjs")
-        const users = await users.getAll();
-        res.json(users);
-    } catch (error) {
-        res.status(500).json({ message: 
-            'Error fetching users at backend/routes/mongoUsers.mjs' });
-    }
-});
-
 // get a user by name from a user as JSON
 router.get("/:user",async(req, res) => {
     const user = reg.params.user;

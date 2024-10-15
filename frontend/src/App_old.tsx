@@ -8,93 +8,81 @@ import utils from './utils.mjs';
 import Document from './functions/interfase'; // import interface for object Document
 
 function App() {
-    // empty local storage befor restarting app
-    useEffect(() => {
-        if (process.env.NODE_ENV === 'development') {
-            // Clear specific items or clear all of localStorage
-            localStorage.removeItem('token');
-            localStorage.removeItem('username');
-            localStorage.removeItem('password');
-            // Optionally, clear all of localStorage: localStorage.clear();
-        }
-    }, []); // Empty dependency array to ensure this only runs once on mount
 
     const [documents, setDocuments] = useState<Document[]>([]); // Initialize state for documents
     const [loading, setLoading] = useState(true); // Initialize loading state
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null); // Initialize selected index
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false); // Track login state
-
+    const [username, setUsername] = useState<string | null>(null);
+    const [password, setPassword] = useState<string | null>(null);
+    const [token, setToken] = useState<string | null>(null);
+    
     //const token = localStorage.getItem('token');
 
-    const [username, setUsername] = useState(localStorage.getItem('username'));
-
-    const getDocuments = (async() => {
-        try {
-            const res = await utils.loadDocuments(localStorage.getItem("username"), setDocuments, setLoading); 
-            console.log(res, "Loaded documents"); // Log the loaded documents
-        } catch (error) {
-            console.error("Error loading documents:", error);
-        } finally {
-            setLoading(false); // Set loading to false after fetching
-        }
-    });
-
-    // const loadDocuments = useCallback(async () => {
-    //     const token = localStorage.getItem('token');  // Get token from localStorage
-
-    //     if (!token) {
-    //         setIsAuthenticated(false);  // If no token, user is not authenticated
-    //         return;
-    //     }
+    useEffect(() => { 
+        const storedUsername = localStorage.getItem('username');
+        const storedToken = localStorage.getItem('token');
         
-    //     setLoading(isAuthenticated); // Set loading to true before fetching
-    //     getDocuments();
-    // }, [localStorage.getItem("username"), isAuthenticated]); // Depend on username to reload documents if it changes
-    
-    const loadDocuments = useCallback(async () => {
-        const token = localStorage.getItem('token');  // Get token from localStorage
-        
-        if (!token) {
-            setIsAuthenticated(false);  // If no token, user is not authenticated
-            return;
+        if (storedUsername) {
+            setUsername(storedUsername);
+            console.log("Stored Username:", storedUsername);
         }
-    
-        setLoading(true); // Set loading to true before fetching
-        
-        try {
-            await getDocuments();  // Fetch documents
-        } catch (error) {
-            console.error('Failed to load documents:', error);
-        } finally {
-            setLoading(false);  // Ensure loading is set to false after fetch
-        }
-    }, [isAuthenticated, username]);
-
-    // Handle successful login by reloading documents and setting authenticated state
-    const handleLoginSuccess = () => {
-        setIsAuthenticated(true);  // Mark the user as authenticated
-    };
-
-    // // Use useEffect to load documents when the component mounts
-    // useEffect(() => {
-    //     loadDocuments(); // Call loadDocuments when the component mounts
-    // }, [loadDocuments]); // Dependencies for the effect
-
-    //
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            setIsAuthenticated(true);  // Set authentication state
+        if (storedToken) {
+            setToken(storedToken);
+            console.log("Stored Token:", storedToken);
         }
     }, []);
 
-    useEffect(() => {
-        if (isAuthenticated) {
-            loadDocuments();  // Load documents if the user is authenticated
+    const loadDocuments = async () => {
+        // if (!username) return; // Prevent calling if username is not set
+    
+        setLoading(true); // Start loading
+        try {
+            //set documents in utils.mjs
+            await utils.loadDocuments(username, setDocuments); // Fetch documents
+             // Log the loaded documents
+        } catch (error) {
+            console.error("Error loading documents:", error);
+        } finally {
+            setLoading(false); // End loading
         }
-    }, [isAuthenticated, loadDocuments]);
+    };
 
-   
+    const getDocuments = (async() => {
+        if (localStorage.getItem('username')) {
+            setUsername(localStorage.getItem('username'));
+            console.log("Stored Username:", username);
+        }
+        if (localStorage.getItem('token')) {
+            setToken(localStorage.getItem('token'));
+            console.log("Stored Token:", localStorage.getItem('token'));
+        }
+        if (!token) return; // Prevent calling if username is not set
+        console.log(username)
+        setLoading(true); // Start loading
+
+        try {
+            const res = await loadDocuments();
+        } catch (error) {
+            console.error("Error loading documents:", error);
+        } finally {
+            setLoading(false); // End loading
+        }
+    });
+    
+     useEffect(() => {
+        if (token) {
+            getDocuments(); // Load documents if the token exists
+        }
+    }, [token, username]); // Re-run when token or username changes
+
+    // Handle successful login
+    const handleLoginSuccess = () => {
+        const storedToken = localStorage.getItem("token");
+        if (storedToken) {
+            setToken(storedToken); // Update token in state after login
+        }
+    };
 
     // Get the selected document ID
     const selectedDocumentId = selectedIndex !== null ? documents[selectedIndex]?._id : null;
@@ -106,10 +94,13 @@ function App() {
                     handleClose={() => setSelectedIndex(null)} // Reset selected index on close
                     selectedDocumentId={selectedDocumentId || ""} // Pass the selected document ID
                     reloadDocuments={loadDocuments}
+                    username={username}
+                    password={password}
+                    token={token}
                 />
             </ErrorBoundary>
             <ErrorBoundary>
-            {isAuthenticated ?( 
+            {token ?( 
                 <AppMain 
                     documents={documents} 
                     loading={loading} 
