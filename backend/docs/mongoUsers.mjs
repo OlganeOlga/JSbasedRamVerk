@@ -60,21 +60,15 @@ const mongoUsers = {
      * @return {Promise<array>} The resultset as an promis.
      */
     getUser: async function getUser(userName) {
-        console.log("at userDocs: getUser", userName)
         const query = {'username': userName};
-        console.log("at userDocs query", query)
+
         let db;
         
         try {
-            console.log("BEfor connected from mongoUser getUser")
             db = await getDb.connect();
-            console.log("connected from mongoUser getUser")
             let user = [];
-            let users = await db.collection.find();
-            console.log(users)
             user = await db.collection.findOne(query);
-            console.log("After fetchoing user : in MongoUsers :")
-            if (user.length > 0){
+            if (user){
                 return user;
             } else {
                 throw new Error("No users found");
@@ -88,13 +82,31 @@ const mongoUsers = {
     },
 
     saveUser: async function saveUser(user) {
-        console.log("at saveuser: saveUser")
         let db;
         try {
             db = await getDb.connect();
             const respons = await db.collection.insertOne(user);
         } catch (error) {
             console.error("Error in getUser:", error);  // Log the error
+            throw new Error("Database error: " + error.message);  // Re-throw or handle error
+        } finally {
+            await db.client.close();
+        }
+    },
+
+    removeUser: async function removeUser(username) {
+        const query = {'username': username};
+        let db;
+        try {
+            db = await getDb.connect();
+            const result = await db.collection.deleteOne(query);
+            console.log (result)
+            if (result.deletedCount === 0) {
+                throw new Error("No user found with the specified username");
+            }
+            return { message: "User successfully removed", deletedCount: result.deletedCount };
+        } catch (error) {
+            console.error("Error in removeUser:", error);  // Log the error
             throw new Error("Database error: " + error.message);  // Re-throw or handle error
         } finally {
             await db.client.close();

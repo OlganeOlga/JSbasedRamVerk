@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Register from './Register';
+import Unregister from './Unregister';
 import utils from '../utils.mjs';
 
 interface LoginProps {
@@ -61,6 +62,7 @@ function Login({ onLoginSuccess }: LoginProps) {
             </form>
             {error && <p>{error}</p>}
             <Register onLoginSuccess={onLoginSuccess} />
+            <Unregister />
         </div>
     );
 };

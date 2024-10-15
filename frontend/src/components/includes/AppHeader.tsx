@@ -37,8 +37,8 @@ function AppHeader({ selectedIndex,
     }; // Empty dependency array to ensure this only runs once on mount
    //create new document
    const addDocument = async () => {
-        try {   
-            const result = await utils.processRoute("POST", "/data", {username: username, password: 'olga@example.com'});
+        try {
+            const result = await utils.processRoute("POST", "/data", {username: username});
             if (result.status === 200){
                 alert('New document is created!');
                 reloadDocuments();

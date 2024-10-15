@@ -5,15 +5,16 @@ const utils = {
      * Fetch route functionality to the React component
      * @async
      * 
-     * @param {string} [passedMethod='GET'] - HTTP method ('GET', 'POST', etc.)
+     * @param {string} [passedMethod] - HTTP method ('GET', 'POST', etc.)
+     * @param {string} [route]
      * @param {object|null} [body=null] - Request body (used only for POST/PUT requests)
      * @param {object} [headers={}] - Request headers
      * 
      * @param {string} route : express-route route
      * @returns {Promise<array>}: returns one ore more dokuments as array
      */
-    processRoute : async function processRoute(passedMethod = 'GET', 
-        route   , body = null, headers = {}) {
+    processRoute : async function processRoute(passedMethod, 
+        route, body = null, headers = {}) {
         const url = localBackend + route;
         
         const defaultHeaders = { 'Content-Type': 'application/json'};
@@ -36,17 +37,11 @@ const utils = {
             }
 
             const result = await response.json();
-            
-  
-            // Check if user exists, and return the documents, otherwise return a message
-            if(result) {
-                return {
-                    status: response.status,
-                    result: result
-                };
-        ;
-            }
-
+            console.log(result)
+            return {
+                status: response.status,
+                result: result
+            };
         } catch (error) {
             console.log('Failed to fetch documents in processRoute.processRoute:', error);
             return error;
@@ -65,11 +60,8 @@ const utils = {
      */
     loadDocuments: async function loadDocuments(userName, setDocuments) {
         try {
-            console.log("utils LoadDocuments, route: ", `/data/${userName}`)
             const result = await this.processRoute('GET', `/data/${userName}`); // Call fetch function here
-            if (result) {
-                console.log(result);
-                console.log('Documents being searched for:', userName, "found result.result", result.result);
+            if (result.status === 200) {
                 setDocuments(result.result); // Update documents state
             } else {
                 setDocuments([]); // Handle no documents case

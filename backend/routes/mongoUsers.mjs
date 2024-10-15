@@ -39,6 +39,10 @@ router.get("/:user",async(req, res) => {
     try {
         console.log("try in the GET docs/")
         const docs = await users.getUser(user);
+        // res = {
+        //     status: 200,
+        //     user: user
+        // }
         res.json(docs);
     } catch (error) {
         res.status(500).json({ message: 

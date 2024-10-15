@@ -23,12 +23,12 @@ function OneDocument({ id:id, title: intialTitle, content: initialContent, handl
         setIsSubmitting(true);  // Set the submitting state to true (optional)
 
         // Updated document object
-        const body = {username: username, 
-                            password: passwod, 
-                            id, 
-                            title, 
-                            content
-                        };
+        const body = {
+                        username: username, 
+                        id, 
+                        title, 
+                        content
+                    };
 
         try {
             // Submit the document update to the backend

@@ -10,14 +10,8 @@ router.use(express.json());
 router.get("/:user",async(req, res) => {
     const user = req.params.user;
     try {
-        console.log("try in the GET docs/")
         const docs = await mongoDocs.userDocuments(user);
-        console.log("at /docs routes get documents: documents: ", docs)
-        try { 
-            res.json(docs);
-        } catch (e) {
-            return e
-        }
+        res.json(docs);
         
     } catch (error) {
         res.status(500).json({ message: 
@@ -27,13 +21,9 @@ router.get("/:user",async(req, res) => {
 
 // add an new unnamed document
 router.post('/', async (req, res) => {
-    console.log("start Post route")
     const {username, password} = req.body
-    console.log("user :", req.body);
         try {
-            console.log("start adding documents")
-            const result = await mongoDocs.newDocument(username, password);
-            console.log("after adding documents", result)
+            const result = await mongoDocs.newDocument(username);
             res.json({ result });
         } catch (error) {
             res.json({ error: error });
@@ -42,13 +32,9 @@ router.post('/', async (req, res) => {
 
 // update a document
 router.put('/update', async (req, res) => {
-    console.log("att Update route")
-    const {username, password, id, title, content } = req.body;
-    console.log("att Update route", req.body)
+    const {username, id, title, content } = req.body;
     try {
-        console.log("Try to use update function")
-        const result = await mongoDocs.updateDocument(username, password, id, title, content);
-        console.log("After use update function", result)
+        const result = await mongoDocs.updateDocument(username, id, title, content);
         res.json({ result });
     } catch (error) {
         res.status(500).json({ message: 'Error updating document bu put route', error });

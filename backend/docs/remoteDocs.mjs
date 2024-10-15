@@ -4,34 +4,6 @@ import { ObjectId } from 'mongodb';
 
 // Functionality
 const mongoDocs = {
-
-    // /**
-    //  * Show all users in an collection.
-    //  *
-    //  * @async
-    //  *
-    //  * @throws Error when database operation fails.
-    //  *
-    //  * @return {Promise<array>} The resultset as an promis.
-    //  */
-    //   getAll: async function getAll() {
-    //     //console.log("BEfor connected from mongoDocs getAll")
-    //     const remoteMongo = await database.connect();
-    //     //console.log("connected from mongoDocs getAll")
-    //     try {
-    //         //get database  
-    //         //console.log("fetching database from mongoDocs getAll")
-
-    //         const documents = await remoteMongo.collection.find().toArray();
-    //         //console.log(documents) 
-    //         return documents;
-    //     } catch (error) {
-    //         return error;
-    //     } finally {
-    //         await remoteMongo.client.close();
-    //     }
-    // },
-
     /**
      * Find documents in an collection by matching search criteria.
      *
@@ -43,8 +15,8 @@ const mongoDocs = {
      *
      * @return {Promise<object>} The resultset as an array.
      */
-    userDocuments: async function userDocuments(name, searched) {
-        const query = {username: name};
+    userDocuments: async function userDocuments(name) {
+        const query = {'username': name};
 
         const options = {
             //projection: { _id: 1, title: 1, content: 1 }
@@ -52,7 +24,8 @@ const mongoDocs = {
         }
         const remoteMongo = await database.connect();
         try {
-            return await remoteMongo.collection.find(query, options).toArray();
+           const result = await remoteMongo.collection.find(query, options).toArray();
+            return result[0].documents
         } finally {
             await remoteMongo.client.close();
         }
@@ -104,14 +77,11 @@ const mongoDocs = {
      *
      * @return {Promise<object>} The resultset as an array.
      */
-    updateDocument: async function updateDocument(username, password, id, title, content) {
-
+    updateDocument: async function updateDocument(username, id, title, content) {
         const query = {
-            "username": username, 
-            "password": password,
+            "username": username,
             "documents._id": new ObjectId(`${id}`)
         };
-    
         const options = { upsert: false }; // do not add document if the docuent with this title is note found
         const updateDoc = {
             $set: {
@@ -120,64 +90,9 @@ const mongoDocs = {
             },
             };
         const remoteMongo = await database.connect();
-
         try {
-            return await remoteMongo.collection.updateOne(query, updateDoc);
+            return await remoteMongo.collection.updateOne(query, updateDoc, options);
         } finally {
-            await remoteMongo.client.close();
-        }
-    },
-
-    // db.users.updateOne(
-        //     { 
-        //       "username": "olga@example.com",
-        //       "password": "olga@example.com",
-        //       "documents._id": ObjectId("670a6fe4b88d1eb49d15cbd5")
-        //     },
-        //     { 
-        //       $set: { 
-        //         "documents.$.title": "Updated Document Title",
-        //         "documents.$.content": "This is the updated content"
-        //       }
-        //     }
-        //   )
-    
-    /**
-     * update documents in an collection 
-     * or create one if doc does not exists.
-     *
-     * @async
-     *
-     * @param {string} title        documents title
-     * @param {string} content      documents content
-     *
-     * @throws Error when database operation fails.
-     *
-     * @return {Promise<object>} The resultset as an array.
-     */
-    updateOne: async function updateOne(username, password, id, title, content) {
-
-        const query = {username: username, password: password};
-
-        //const data = req.params;
- 
-        const filter = { _id: new ObjectId(`${id}`) };
-    
-        const options = { upsert: false }; // do not add document if the docuent with this title is note found
-        const updateDoc = {
-            $set: {
-              title: title,
-              content: content
-            },
-          };
-        const remoteMongo = await database.connect();
-        try {
-            return await remoteMongo.collection.updateOne(filter, updateDoc, options);
-        } 
-        catch(error) {
-            console.error('MongoDB update error:', error);
-        }
-        finally {
             await remoteMongo.client.close();
         }
     },
@@ -194,28 +109,33 @@ const mongoDocs = {
      *
      * @return {Promise<object>} The resultset as an array.
      */
-    newDocument: async function newDocument(username, password) {
-        const query = {username: username, password: password};
-
-        console.log("At newDocument befor connection")
-        const remoteMongo = await database.connect();
-        console.log("At newDocument, connected db")
+    newDocument: async function newDocument(username) {
+        const query = {'username': username };
+    
+        const remoteMongo = await database.connect();  // Assume this returns the DB connection
+    
+        // Create the new document object to push into the `documents` array
         const document = {
-            _id: new ObjectId(),
+            _id: new ObjectId(),  // Generate new ObjectId for the document
             title: "New document",
             content: ""
         };
+    
+        try {   
+            // Use `updateOne` to push the new document into the `documents` array
+            const result = await remoteMongo.collection.updateOne(
+                query,                                   // Query to find the user by username
+                { $push: { documents: document } }       // Push the new document into the `documents` array
+            );
 
-        try {
-            console.log("At newDocument, before update")
-            const result = await remoteMongo.collection.updateOne( query, { $push: { documents: document } });
-            console.log("At newDocument, after update ", result)
             return result;
+        } catch (error) {
+            throw error;
         } finally {
             await remoteMongo.client.close();
         }
     },
-
+   
     /**
      * add new user in the collection 
      *
@@ -286,7 +206,6 @@ const mongoDocs = {
         //get database
         const remoteMongo = await database.connect();
         try {
-            console.log("try to delete by removeByID, id =", id);
             return await remoteMongo.collection.deleteOne({_id: new ObjectId(`${id}`)})       
         } finally {
             await remoteMongo.client.close();
@@ -305,8 +224,8 @@ const mongoDocs = {
      *
      * @return {Promise<object>} The resultset as an array.
      */
-    removeDocument: async function removeDocument(id, userName, password) {
-        const query = {username: userName, password: password};
+    removeDocument: async function removeDocument(id, userName) {
+        const query = {'username': userName};
         const remove = { documents: {_id: new ObjectId(`${id}`)}};
         const remoteMongo = await database.connect();
 

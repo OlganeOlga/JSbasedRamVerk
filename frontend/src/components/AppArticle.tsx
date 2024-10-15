@@ -30,13 +30,15 @@ function AppArticle({ documents, reloadDocuments, selectedIndex, setSelectedInde
         <div className='article'>
             {selectedIndex === null || !selectedDocument ? ( // if no document is selected or invalid selection
                 <ul className='list-group'>
-                    {documents.length === 0 ? <p>No documents found</p> : null}
-                    
-                    {documents.map((doc, index) => (
+                    {Array.isArray(documents) && documents.length === 0 ? (
+                    <p>No documents found</p>
+                        ) : null
+                    }
+                    {Array.isArray(documents) && documents.map((doc, index) => (
                         <li
                             className="list-group-item"
                             key={doc._id}
-                            onClick={() => handleSelect(index)} // select document by click on the element
+                            onClick={() => handleSelect(index)}
                         >
                             <h3>{doc.title}</h3>
                         </li>
