@@ -29,7 +29,6 @@ const database = {
         try {
             const db = client.db(process.env.DB_NAME);
             const users = db.collection(process.env.COLLECTION_NAME);
-            console.log("returning databas", users)
             return {db:db, client: client, collection: users};
         } catch (error) {
             console.error("Error by remote connection: ", error);
