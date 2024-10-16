@@ -34,7 +34,7 @@ function Unregister() {
     return (
         <>
             <form onSubmit={handleSubmit}>
-                <h2>New user? Sign</h2>
+                <h2>Stop your registration</h2>
                 <input 
                     type="email" 
                     placeholder="email" 
