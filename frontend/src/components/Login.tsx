@@ -15,8 +15,8 @@ function Login({ onLoginSuccess }: LoginProps) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+
         try{
-            alert("post your login")
             const result = await utils.processRoute('POST', "/auth/login", 
                 { 
                     username: username, 
@@ -32,8 +32,9 @@ function Login({ onLoginSuccess }: LoginProps) {
             } else {
                 alert("User name or password is not correctr. New user? Sign in.");
             }
-        } catch (e) {
-            alert("Login failed");
+        } catch (error) {
+            console.log(error)
+            alert(`Login failed. Res status ${error}`);
         }
     }
 

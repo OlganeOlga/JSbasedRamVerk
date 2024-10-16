@@ -25,11 +25,16 @@ function Register({ onLoginSuccess }: RegiterProps) {
                 localStorage.setItem("tocken", "mocl-tocken");
                 localStorage.setItem("usename", username);
                 localStorage.setItem("passwod", password);
+                onLoginSuccess();  // Call callback to notify App of successful login
+                console.log(respons)
+                alert("YOu regisetered now. Login..");
+            } else {
+                console.log(respons)
+                alert("You faile to register. Use another name or login...");
             }
-            onLoginSuccess();  // Call callback to notify App of successful login
-            alert(respons.result.message);
+            
         } catch (e) {
-            alert("Login failed");
+            alert(e);
         }
     };
 
