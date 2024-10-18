@@ -12,8 +12,9 @@ import methodOverride from 'method-override';
 import mongoRemote from "./routes/mongoRemote.mjs";
 
 const app = express();
-
 app.use(cors()); // tillåter nå app från olika platformer. Det finns mäjlighet att presissera varifån appen can nås
+
+//const allowedOrigins = ['http://localhost:3001'];
 
 // Parse application/json
 app.use(bodyParser.json());

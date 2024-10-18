@@ -1,4 +1,8 @@
 const localBackend = "http://localhost:3000";
+const remoteBackend = "https://jsramverk-oleg22-g9exhtecg0d2cda5.northeurope-01.azurewebsites.net/";
+
+// Bestäm vilken backend som ska användas baserat på om vi kör lokalt eller i produktion
+const backendUrl = window.location.hostname === 'localhost' ? localBackend : remoteBackend;
 const utils = {
 
     /**
@@ -12,9 +16,10 @@ const utils = {
      * @param {string} route : express-route route
      * @returns {Promise<array>}: returns one ore more dokuments as array
      */
-    processRoute : async function processRoute(passedMethod = 'GET', route = "", body = null, headers = {}) {
-        const url = localBackend + route;
-
+    processRoute : async function processRoute(passedMethod = 'GET', route = "/", body = null, headers = {}) {
+        const url = backendUrl + route;
+        console.log("route: ",route)
+        console.log(" url: ",url)
         const defaultHeaders = { 'Content-Type': 'application/json'};
         const mergeHeaders = {...defaultHeaders, ...headers};
 

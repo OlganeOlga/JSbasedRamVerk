@@ -9,6 +9,7 @@ router.use(express.json());
 
 // get all dcuments as JSON
 router.get("/", async(req, res) => {
+    console.log("use get to get docs")
     try {
         const collection = await documents.getAll();
         res.json({ documents: collection });
