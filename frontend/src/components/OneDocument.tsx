@@ -33,7 +33,7 @@ interface OneDocumentProps {
   content: string;
   handleClose: () => void; }
 
-function Document() {
+function Document({username, id, title: intialTitle, content: initialContent, handleClose }: OneDocumentProps) {
   const [loading, setLoading] = useState<boolean>(true);
   const [formData, setFormData] = useState<FormData>({
     title: "",
