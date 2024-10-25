@@ -8,6 +8,7 @@ import Document from '../functions/interfase';
 interface AppMainProps {
     username: string | null,
     documents: Document[];
+    // sharedDocuments: Document[];
     loading: boolean;
     reloadDocuments: () => void;
     selectedIndex: number | null; // Selected document index from parent
@@ -30,7 +31,8 @@ function AppMain({username, documents, loading, reloadDocuments, selectedIndex, 
             <ArticleHead documents={documents}
             selectedIndex={selectedIndex} />
             <AppArticle usersname={username}
-                        documents={documents} 
+                        documents={documents}
+                        // sharedDocuments={sharedDocuments}
                         reloadDocuments={reloadDocuments} 
                         selectedIndex={selectedIndex} 
                         setSelectedIndex={setSelectedIndex} 

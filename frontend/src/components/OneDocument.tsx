@@ -10,6 +10,7 @@ interface ContentEvent {
 // interfase for element
 interface OneDocumentProps {
     username: string | null;
+    docOwner: string | null;
     id: string;
     title: string;
     content: string;
@@ -17,7 +18,7 @@ interface OneDocumentProps {
 }
 
 
-function OneDocument({username, id, title: intialTitle, content: initialContent, handleClose }: OneDocumentProps) {
+function OneDocument({username, docOwner, id, title: intialTitle, content: initialContent, handleClose }: OneDocumentProps) {
     const SERVER_URL = "http://localhost:3000";
     // declare variabels and function to change them
     const [title, setTitle] = useState(intialTitle);
@@ -49,7 +50,7 @@ function OneDocument({username, id, title: intialTitle, content: initialContent,
 
         // Updated document object
         const body = {
-                        username: username, 
+                        username: docOwner, 
                         id, 
                         title, 
                         content

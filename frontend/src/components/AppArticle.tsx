@@ -5,6 +5,7 @@ import Document from '../functions/interfase';
 interface AppArticleProps {
     usersname:string | null;
     documents: Document[];
+    //sharedDocuments: Document[];
     //reloadUsers: () => void;
     reloadDocuments: () => void;
     selectedIndex: number | null; // Selected document index from parent
@@ -48,6 +49,7 @@ function AppArticle({usersname, documents, reloadDocuments, selectedIndex, setSe
                 
                 <OneDocument
                     username={usersname}
+                    docOwner={documents[selectedIndex].owner}
                     id={documents[selectedIndex]._id}
                     title={documents[selectedIndex].title}
                     content={documents[selectedIndex].content}

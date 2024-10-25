@@ -19,7 +19,7 @@ const utils = {
      */
     processRoute : async function processRoute(passedMethod = 'GET', route = "/", body = null, headers = {}) {
         const url = backendUrl + route;
-        // console.log("route: ",route)
+        console.log("route: ",route)
         // console.log(" url: ",url)
 
         const defaultHeaders = { 'Content-Type': 'application/json'};
@@ -28,26 +28,28 @@ const utils = {
         const options = {
             method: passedMethod,
             headers: mergeHeaders,
-            body: body ? JSON.stringify(body) : null, 
+            body: body ? JSON.stringify(body) : null,
+            //credentials: 'include' 
         };
 
         try {
             // Pass the URL and options to fetch
-            //console.log(`Fetching data from URL: ${url} with options:`, options)
+            // console.log(`Fetching data from URL: ${url} with options:`, options)
             const response = await fetch(url, options);
-            //console.log("Respons of the processRoute", response)
+            // console.log("Respons of the processRoute", response)
             if (!response.ok) {
+                // console.log("reposns not OK")
                 const errorData = await response.json();
                 //console.error('Error:', errorData.message);  // Will print: 'No username found'
              
                 return {
                     ok: response.ok,
                     status: response.status,
-                    message: errorData.message
+                    message: errorData.message,
                 };
             }
             const result = await response.json();
-            //console.log(result)
+            console.log("Result of processRoute: ", result)
             return {
                 ok: response.ok,
                 status: response.status,
@@ -58,7 +60,44 @@ const utils = {
             return error;
         }
     },
-
+    //change for token in cookies
+    // processRoute: async function processRoute(passedMethod = 'GET', route = "/", body = null, headers = {}) {
+    //     const url = backendUrl + route;
+    
+    //     const defaultHeaders = { 'Content-Type': 'application/json' };
+    //     const mergeHeaders = { ...defaultHeaders, ...headers };
+    
+    //     const options = {
+    //         method: passedMethod,
+    //         headers: mergeHeaders,
+    //         body: body ? JSON.stringify(body) : null, 
+    //         credentials: 'include', // IMPORTANT: This ensures cookies (including HTTP-only cookies) are sent with requests
+    //     };
+    
+    //     try {
+    //         const response = await fetch(url, options);
+    
+    //         if (!response.ok) {
+    //             const errorData = await response.json();
+    //             return {
+    //                 ok: response.ok,
+    //                 status: response.status,
+    //                 message: errorData.message
+    //             };
+    //         }
+    
+    //         const result = await response.json();
+    //         console.log(result)
+    //         return {
+    //             ok: response.ok,
+    //             status: response.status,
+    //             result: result
+    //         };
+    //     } catch (error) {
+    //         console.log('Failed to fetch documents in processRoute.processRoute:', error);
+    //         return error;
+    //     }
+    // },
     /**
      * Reload documents on the page
      * @async

@@ -14,9 +14,10 @@ function App() {
     const [fooEvents, setFooEvents] = useState([]);
     
     const [documents, setDocuments] = useState<Document[]>([]); // Initialize state for documents
+    const [sharedDocuments, setsharedDocuments] = useState<Document[]>([]); // Initialize state for documents
     const [loading, setLoading] = useState(true); // Initialize loading state
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null); // Initialize selected index
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false); // Track login state
+    //const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false); // Track login state
     const [username, setUsername] = useState<string | null>(null);
     const [password, setPassword] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null);
@@ -45,6 +46,22 @@ function App() {
             console.error("Error loading documents:", error);
         } finally {
             setLoading(false); // End loading
+        }
+    };
+
+    const seeShared = async () => {
+        try {
+            const result = await utils.processRoute('GET', `/data/shared/${username}`); // Call fetch function here
+            console.log(result)
+            if (result.status === 200) {
+                console.log(result.result.documents)
+                setDocuments(result.result.documents); // Update documents state
+            } else {
+                setDocuments([]); // Handle no documents case
+            }
+        } catch (error) {
+            console.error("Error loading shared documents:", error);
+            setDocuments([]); // Reset documents on error
         }
     };
 
@@ -91,6 +108,7 @@ function App() {
                     handleClose={() => setSelectedIndex(null)} // Reset selected index on close
                     selectedDocumentId={selectedDocumentId || ""} // Pass the selected document ID
                     reloadDocuments={loadDocuments}
+                    seeShared={seeShared}
                     username={username}
                     password={password}
                     token={token}
@@ -100,7 +118,8 @@ function App() {
             {token ?( 
                 <AppMain
                     username={username}
-                    documents={documents} 
+                    documents={documents}
+                    // sharedDocuments={sharedDocuments} 
                     loading={loading} 
                     reloadDocuments={loadDocuments} 
                     selectedIndex={selectedIndex} 

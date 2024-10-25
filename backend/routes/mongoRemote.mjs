@@ -48,11 +48,39 @@ router.delete('/delete/:id', async (req, res) => {
     const id = req.params.id;
     const {username, password} = req.body;
     try {
-        const result = await mongoDocs.removeDocument(id, username, password);
+        const result = await mongoDocs.removeDocument(id, username);
         res.json({ result });
     } catch (error) {
         res.json({ error: error });
     }
 });
+
+router.get('/shared/:username', async (req, res) => {
+    const username = req.params.username;
+    try {
+        const documents = await mongoDocs.getShared(username);
+
+        //return fout status if no shared documents
+        if (!documents || documents.length === 0) {
+            return res.status(404).json({ message: "No shared documents found." }); // Return 404 if no documents found
+        }
+        res.json({ documents });
+    } catch (error) {
+        console.log("error in route shared/username: ", error)
+        res.json({ error: error });
+    }
+})
+
+router.post('/share', async (req, res) => {
+    const {username, docId, adress } = req.body;
+
+    try {
+        const result = await mongoDocs.shareDoc(username, docId, adress);
+        res.json({ result });
+    } catch (error) {
+        console.log("error in /share: ", error)
+        res.json({ error: error });
+    }
+})
 
 export default router;
