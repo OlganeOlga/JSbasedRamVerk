@@ -303,7 +303,10 @@ const mongoDocs = {
         // search on
         const pipeline = [
             { 
-                $match: { "documents.allowd_users": username } // Match documents where the allowd_users array contains the specified username
+                $match: {
+                    "documents.allowd_users": { $exists: true, $type: "array" }, // Ensure allowd_users exists and is an array
+                    "documents.allowd_users": username // Match documents where allowd_users contains the specified username
+                }
             },
             {
                 $project: {
