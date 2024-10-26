@@ -73,7 +73,17 @@ router.get('/shared/:username', async (req, res) => {
 
 router.post('/share', async (req, res) => {
     const {username, docId, adress } = req.body;
+    try {
+        const result = await mongoDocs.shareDoc(username, docId, adress);
+        res.json({ result });
+    } catch (error) {
+        console.log("error in /share: ", error)
+        res.json({ error: error });
+    }
+})
 
+router.post('/comment', async (req, res) => {
+    const {username, docId, adress } = req.body;
     try {
         const result = await mongoDocs.shareDoc(username, docId, adress);
         res.json({ result });

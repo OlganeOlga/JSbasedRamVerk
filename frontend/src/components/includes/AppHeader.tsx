@@ -94,37 +94,40 @@ function AppHeader({
                     <div>
                         {selectedIndex === null ? (
                         <>
-                            <button className="change-collection" onClick={addDocument}>
+                            <button type='button' className="change-collection" onClick={addDocument}>
                                 Create document
                             </button>
-                            <button className="see-shared" onClick={seeShared}>
+                            <button type='button' className="see-shared" onClick={seeShared}>
                                 See shared dokument
                             </button>
-                            <button className="change-collection" onClick={logOut}>
+                            <button type='button' className="change-collection" onClick={logOut}>
                                 Logout
                             </button>
                         </>
                         ) : (
                         <>
-                            <button className="change-collection" onClick={deleteDocument}>
-                                Remove document
-                            </button>
-                            <form className='smalForm' onSubmit={shareDoc}>
+                            <form className='shareForm' onSubmit={shareDoc}>
                             <div className="input-group">
-                                <input
-                                    type="email"
-                                    name='adress'
-                                    placeholder="Email"
-                                    value={adress}
-                                    onChange={(e) => setAdress(e.target.value)}
-                                    required
-                                />
+                                <label className="share"> 
+                                    With whom will you share your document?
+                                    <input
+                                        type="email"
+                                        name='adress'
+                                        placeholder="write email"
+                                        value={adress}
+                                        onChange={(e) => setAdress(e.target.value)}
+                                        required
+                                    />
+                                </label>
                             </div>
-                                <button className="see-shared">
+                                <button type='submit' className="see-shared">
                                     share dokument
                                 </button>
                             </form>
-                            <button className="change-collection" onClick={logOut}>
+                            <button type='button' className="change-collection" onClick={deleteDocument}>
+                                Remove document
+                            </button>
+                            <button type='button' className="change-collection" onClick={logOut}>
                                 Logout
                             </button>
                         </>

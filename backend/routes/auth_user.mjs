@@ -9,7 +9,7 @@ const UserSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true }
 });
-const User = mongoose.model('User', UserSchema);
+export const User = mongoose.model('User', UserSchema);
 
 // JWT secret key (use dotenv to store the secret key)
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
@@ -101,6 +101,7 @@ router.post('/login', async (req, res) => {
 // User login route
 router.delete('/unregister', async (req, res) => {
     const { username, password } = req.body;
+    console.log({username, password})
     try {
         const user = await userFunctions.getUser(username);
         if (!user) return res.status(400).json({ message: 'Invalid username or password' });

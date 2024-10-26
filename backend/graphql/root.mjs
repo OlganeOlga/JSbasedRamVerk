@@ -2,13 +2,15 @@ import {
     GraphQLObjectType,
     GraphQLList,
     GraphQLString,
-    GraphQLNonNull
 } from 'graphql';
 
 import UserType from './user.mjs';
 import DockType from './dock.mjs';
+import SharedDockType from './shareddock.mjs';
 
-import userFunketions from './../models/users.mjs';
+//import userFu from './../models/users.mjs';
+import userFu from './../models/users.mjs';
+import docFu from './../docs/remoteDocs.mjs'
 
 const RootQueryType = new GraphQLObjectType({
     name: 'Query',
@@ -18,7 +20,7 @@ const RootQueryType = new GraphQLObjectType({
             type: new GraphQLList(UserType),
             description: "a list of users",
             resolve: async function name() {
-                return await userFunketions.getAll();
+                return await userFu.getAll();
             }
         },
         user: {
@@ -28,7 +30,7 @@ const RootQueryType = new GraphQLObjectType({
                 username: {type: GraphQLString}
             },
             resolve: async function(parent, args) {
-                let users = await userFunketions.getAll();
+                let users = await userFu.getAll();
                 return users.find(user => user.username === args.username);
             }
         },
@@ -40,7 +42,7 @@ const RootQueryType = new GraphQLObjectType({
                 username: {type: GraphQLString},
             },
             resolve: async function(parent, args) {
-                let users = await userFunketions.getAll();
+                let users = await userFu.getAll();
                 let user = users.find(user => user.username === args.username);
                 if(user){
                     return user.documents;
@@ -57,7 +59,7 @@ const RootQueryType = new GraphQLObjectType({
                 docid: {type: GraphQLString}
             },
             resolve: async function(parent, args) {
-                let users = await userFunketions.getAll();
+                let users = await userFu.getAll();
                 let user = users.find(user => user.username === args.username);
                 if(user){
                     return user.documents.find(doc => doc.docid === args.docid);
@@ -67,59 +69,28 @@ const RootQueryType = new GraphQLObjectType({
         },
 
         sharedWithUser: {
-            type: new GraphQLList(DockType),
+            type: new GraphQLList(SharedDockType),
             description: "a list with dokuments of other users that are shared with this user",
             args: {
                 username: {type: GraphQLString}
             },
             resolve: async function(parent, args) {
-                let users = await userFunketions.getAll();
-                let sharedDocs = [];
-
-                // Iterate over users and their documents
-                users.forEach(user => {
-                    if (user.documents && user.documents.length > 0) {
-                        // Filter documents where the 'shared' field contains the specific username
-                        const filteredDocs = user.documents.filter(doc =>
-                            doc.shared && doc.shared.includes(args.username)
-                        );
-                        
-                        // Add the filtered documents to the sharedDocs array
-                        sharedDocs.push(...filteredDocs);
+                const username = args.username;
+                try {
+                    const documents = await docFu.getShared(username);
+            
+                    //return fout status if no shared documents
+                    if (!documents || documents.length === 0) {
+                        return []; // Return 404 if no documents found
                     }
-                });
-
-                return sharedDocs;
-            }
-        },
-        sharedDoc: {
-            type: DockType,
-            description: "a dokument of another user that are shared with this user",
-            args: {
-                username: {type: GraphQLString}, // the name of use that can reach document
-                docid: {type: GraphQLString} // _id of document
-            },
-            resolve: async function(parent, args) {
-                let users = await userFunketions.getAll();
-                let sharedDocs = [];
-
-                    // Iterate over users and their documents
-                    users.forEach(user => {
-                        if (user.documents && user.documents.length > 0) {
-                            // Filter documents where the 'shared' field contains the specific username
-                            const filteredDocs = user.documents.filter(doc =>
-                                doc.shared && doc.shared.includes(args.username)
-                            );
-                            
-                            // Add the filtered documents to the sharedDocs array
-                            sharedDocs.push(...filteredDocs);
-                        }
-                    });
-
-                    return sharedDocs.find(doc => doc.docid === args.docid);
+                    return documents ;
+                } catch (error) {
+                    console.log("error in route graphql shared/username: ", error);
+                    throw new Error("error in route graphql shared/username: ", error);
                 }
             }
-        })
+        },
+    }),
 });
 
 export default RootQueryType;

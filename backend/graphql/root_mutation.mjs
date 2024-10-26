@@ -1,0 +1,190 @@
+import { GraphQLObjectType, GraphQLString, GraphQLBoolean, GraphQLNonNull, GraphQLSchema } from 'graphql';
+import bcrypt from 'bcryptjs';
+import userFu from './../models/users.mjs';
+import docFu from './../docs/remoteDocs.mjs'
+import { User } from '../routes/auth_user.mjs';
+import DockType from './dock.mjs';
+
+const RootMutationType = new GraphQLObjectType({
+  name: 'Mutation',
+  fields:() => ({
+    deleteUser: {
+        type: GraphQLBoolean, // Boolean response type for success or failure
+        description: 'Delete a user after verifying the password',
+        args: {
+            username: { type: GraphQLString },
+            password: { type: GraphQLString }
+        },
+        async resolve(parent, { username, password }) {
+            try {
+            // Get user details from database
+            const user = await userFu.getUser(username);
+            if (!user) {
+                throw new Error('Invalid username or password');
+            }
+
+            // Check if the password matches
+            const isMatch = await bcrypt.compare(password, user.password);
+            if (!isMatch) {
+                throw new Error('Invalid username or password');
+            }
+
+            // Delete user if password matches
+            const deleteResponse = await userFu.deleteUser(username);
+            return deleteResponse.deletedCount > 0; // Return true if deletion was successful
+            } catch (error) {
+            console.error("Error during user deletion:", error);
+            throw new Error('User deletion failed', error);
+            }
+        }
+        },
+
+        createUser: {
+            type: GraphQLBoolean, // Boolean response type for success or failure
+            description: 'Create a user',
+            args: {
+                username: {type: GraphQLString},
+                password: { type: GraphQLString}
+            },
+            async resolve(parent, { username, password }) {
+                try {
+                // Check if the user already exists
+                const existingUser = await userFu.getUser(username);
+
+                console.log("the user with this name", existingUser);
+
+                // If the user already exists, return a 409 Conflict status with a descriptive message
+                if (existingUser) {
+                    return false;
+                }
+
+                // Hash the password
+                const hashedPassword = await bcrypt.hash(password, 10);
+
+                // If the user does not exist, create a new user
+                const newUser = new User({
+                    username,
+                    password: hashedPassword,
+                });
+
+                // Save the user to the database
+                const saveResponse = await userFu.createUser(newUser);
+                console.log(saveResponse)
+                // Return success response
+                return true;
+
+            } catch (error) {
+                // Handle any server or database errors
+                console.error("Error in graphql registration:", error);
+                throw new Error("Error in graphql registration:", error);
+            
+            }
+        }
+    },
+    addDokument: {
+        type: GraphQLBoolean, // Boolean response type for success or failure
+        description: 'Create a user',
+        args: {
+            username: {type: GraphQLString},
+        },
+        async resolve(parent, { username }) {
+            try {
+                const result = await docFu.newDocument(username);
+                if(result.acknowledged){ return true;}
+                return false
+            } catch (error) {
+                throw new Error('Error updating document by root_motatio', error );
+            }
+        }
+    },
+
+    updateDocument: { 
+        type: DockType,
+        description: 'Change a documnt',  
+        args: {
+            username: { type: GraphQLString },
+            inputid: { type: GraphQLString },
+            title: { type: GraphQLString },
+            content: { type: GraphQLString },
+            addAllowedUser: { type: GraphQLString },    // Add a single user to allowedUsers array
+        },
+        async resolve(parent, { username, inputid, title, content, addAllowedUser}) {
+            
+            try {
+                // Perform the update in MongoDB
+                const result = await docFu.updateDocument( username, 
+                                                            inputid,
+                                                            title,
+                                                            content,
+                                                            addAllowedUser);
+
+                console.log(result)
+                if (!result.acknowledged) {
+                    throw new Error("Document not found or update failed.");
+                }
+                return {
+                    _id: inputid,
+                    title:title,
+                    content:content
+                };
+            } catch (error) {
+                console.error("Error updating user document:", error);
+                throw new Error("Failed to update user document.");
+            }
+    }},
+
+    shareDoc: {
+        type: GraphQLBoolean,
+        description: "a dokument of another user that are shared with this user",
+        args: {
+            owner: {type: GraphQLString}, // owner of the document
+            adress: {type: GraphQLString}, // the name of use that can reach document
+            docid: {type: GraphQLString} // _id of document
+        },
+        resolve: async function(parent, args) {
+            console.log("int graphql /shareDoc,  51", args.docid)
+            try {
+                console.log("int graphql /shareDoc")
+                const result = await docFu.shareDoc(args.owner, args.docid, args.adress);
+                console.log("int graphql /shareDoc ", result)
+                if(result.acknowledged) {
+                    return true;
+                };
+                return false;
+            } catch (error) {
+                console.log("error in /share: ", error);
+                throw new Error(`error in /share: ${error}`);
+            }
+        }
+    },
+    commentDoc: {
+        type: GraphQLBoolean,
+        description: "add comment to an own documnt or to the sheared document",
+        args: {
+            owner: {type: GraphQLString}, // owner of the document
+            docid: {type: GraphQLString}, // _id of document
+            author: {type: GraphQLString}, // the name of user that can comment document
+            content: {type: GraphQLString}, // the content of commnt
+        },
+        resolve: async function(parent, args) {
+            console.log("in graphql /commentDoc,  line 170", args.docid)
+            try {
+                console.log("int graphql /commentDoc")
+                const result = await docFu.commentDoc(args.owner, args.docid, args.author, args.content);
+                console.log("int graphql /commentDoc ", result)
+                if(result.acknowledged & result.modifiedCount > 0) {
+                    return true;
+                };
+                return false;
+            } catch (error) {
+                console.log("error in /comment: ", error);
+                throw new Error(`error in /comment: ${error}`);
+            }
+        }
+    },
+    
+})
+})
+
+
+export default RootMutationType;

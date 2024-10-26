@@ -75,27 +75,31 @@ function OneDocument({username, docOwner, id, title: intialTitle, content: initi
     return (
         <> {/* wrap all in the one eleemnt */}
             <form className='doc' onSubmit={handleSubmitAndClose}> {/* change when the form submitted */}
-                <input type='hidden'name="id" value={id} />
-                <input className='title'
-                    type="text"
-                    name="newTitle"
-                    value={title}
-                    onChange={(e) => 
-                        setTitle(e.target.value)}>
-                </input>
-                
-                <input className='content'
-                    type="text"
-                    name="newContent"
-                    value={content}
-                    onChange={(e) => 
-                        setContent(e.target.value)}>
-                </input>
+                <div className='button-div'>
+                    <button type="submit" value="Submit" className='btn btn-primary change-collection' disabled={isSubmitting}>
+                        {isSubmitting ? 'Submitting...' : 'Save and close'}
+                    </button>
+                </div>
+                <div className='input-div'>
+                    <input type='hidden'name="id" value={id} />
+                    <input className='title'
+                        type="text"
+                        name="newTitle"
+                        value={title}
+                        onChange={(e) => 
+                            setTitle(e.target.value)}>
+                    </input>
+                    
+                    <input className='content'
+                        type="text"
+                        name="newContent"
+                        value={content}
+                        onChange={(e) => 
+                            setContent(e.target.value)}>
+                    </input>
 
-                {/* Combined Submit and Back to List button */}
-                <button type="submit" value="Submit" className='btn btn-primary change-collection' disabled={isSubmitting}>
-                    {isSubmitting ? 'Submitting...' : 'Save and close'}
-                </button>
+                    {/* Combined Submit and Back to List button */}
+                </div>
             </form>
             <h1>{title}</h1>
             <p>{content}</p>
