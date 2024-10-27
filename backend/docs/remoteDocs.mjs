@@ -80,23 +80,35 @@ const mongoDocs = {
      * @param {string} id        documents id
      * @param {string} title        documents title
      * @param {string} content      documents content
+     * @param {string} allowedUser      share document
      *
      * @throws Error when database operation fails.
      *
      * @return {Promise<object>} The resultset as an array.
      */
-    updateDocument: async function updateDocument(username, id, title, content) {
+
+    updateDocument: async function updateDocument(username, id, title, content, allowedUser=null) {
         const query = {
             "username": username,
-            "documents._id": new ObjectId(`${id}`)
+            "documents._id": new ObjectId(`${id}`) // Ensure you're searching by the correct document ID
         };
-        const options = { upsert: false }; // do not add document if the docuent with this title is note found
+    
+        const options = { upsert: false }; // Do not add document if the document with this ID is not found
+    
+        // Construct the update document
         const updateDoc = {
             $set: {
                 "documents.$.title": title,
                 "documents.$.content": content
-            },
-            };
+            }
+        };
+    
+        // If an allowedUser is provided, add it to the allowed_users array
+        if (allowedUser) {
+            // Use $addToSet to add the allowedUser to the allowed_users array
+            updateDoc.$addToSet = { "documents.$.allowed_users": allowedUser };
+        }
+    
         const remoteMongo = await database.connect();
         try {
             return await remoteMongo.collection.updateOne(query, updateDoc, options);
@@ -127,7 +139,8 @@ const mongoDocs = {
             _id: new ObjectId(),  // Generate new ObjectId for the document
             title: "new document",
             content: "",
-            allowd_users: [],
+            comments: [],
+            allowed_users: [],
         };
     
         try {   
@@ -247,7 +260,7 @@ const mongoDocs = {
     },
 
     /**
-     * fined shared documents by username in the collection 
+     * shared document with user  
      *
      * @async
      * @param {string} owner  name user of the document
@@ -259,26 +272,28 @@ const mongoDocs = {
      * @return {Promise<object>} The resultset as an array.
      */
     shareDoc: async function shareDoc(owner, docId, adress) {
-        const remoteMongo = await database.connect();
-        console.log(owner)
-        console.log(docId)
-        console.log(adress)
+        console.log("int sherDoc of remoteDocs, typeof", typeof(docId))
+        console.log(docId);
+        const id = docId.toString();
         const query = {
             "username": owner,
-            "documents._id": new ObjectId(`${docId}`)
+            "documents._id": new ObjectId(`${id}`)
         };
-        console.log(query)
+
+        console.log("int sherDoc of remoteDocs")
         const options = { upsert: false }; // do not add document if the docuent with this title is note found
+        
         const updateDoc = {
             $addToSet: {
-                "documents.$.allowd_users": adress,
+                "documents.$.allowed_users": adress,
             },
         }
-        console.log(updateDoc)
+
+        const remoteMongo = await database.connect();
+        
         try {
             const response = await remoteMongo.collection.updateOne(query, updateDoc, options);
-            const result = await response.json();
-            console.log("shared docs result", result)
+            console.log(response)
             return response;          
         } finally {
             await remoteMongo.client.close();
@@ -287,6 +302,47 @@ const mongoDocs = {
 
     //db.users.updateOne({ "username": "olga@olga", "documents._id": ObjectId("671b4a4fd2618fba0cfcd84a") },{ $addToSet: { "documents.$.alowd_users": "newUser@example.com" } });
     
+        /**
+     * shared document with user  
+     *
+     * @async
+     * @param {string} owner  name user of the document
+     * @param {string} docId id of the document
+     * @param {<string>} author  names user who commnts
+     * @param {string} content  comment content
+     * @throws Error when database operation fails.
+     *
+     * @return {Promise<object>} The resultset as an array.
+     */
+    commentDoc: async function commentDoc(owner, docId, author, content) {
+        console.log("int commentDoc of remoteDocs, typeof", typeof(docId))
+        const id = docId.toString();// added for using GRAPHQL
+        const query = {
+            "username": owner,
+            "documents._id": new ObjectId(`${id}`)
+        };
+
+        const options = { upsert: false }; // do not add document if the docuent with this title is note found
+        const updateDoc = {
+            $addToSet: {
+                "documents.$.comments": {
+                                            author: author,
+                                            content: content
+                                        },
+            },
+        }
+
+        const remoteMongo = await database.connect();
+        
+        try {
+            const response = await remoteMongo.collection.updateOne(query, updateDoc, options);
+            console.log(response)
+            return response;          
+        } finally {
+            await remoteMongo.client.close();
+        }
+    },
+
     /**
      * fined shared documents by username in the collection 
      *
@@ -304,8 +360,8 @@ const mongoDocs = {
         const pipeline = [
             { 
                 $match: {
-                    "documents.allowd_users": { $exists: true, $type: "array" }, // Ensure allowd_users exists and is an array
-                    "documents.allowd_users": username // Match documents where allowd_users contains the specified username
+                    "documents.allowed_users": { $exists: true, $type: "array" }, // Ensure allowed_users exists and is an array
+                    "documents.allowed_users": username // Match documents where allowed_users contains the specified username
                 }
             },
             {
@@ -315,7 +371,7 @@ const mongoDocs = {
                         $filter: {
                             input: "$documents", // Input array to filter
                             as: "document", // Variable for each document
-                            cond: { $in: [username, "$$document.allowd_users"] } // Condition to check if 'username' is in allowd_users
+                            cond: { $in: [username, "$$document.allowed_users"] } // Condition to check if 'username' is in allowed_users
                         }
                     },
                     owner: "$username" // Include the owner's username in the projection
@@ -337,7 +393,7 @@ const mongoDocs = {
         try {
             const response = await remoteMongo.collection.aggregate(pipeline).toArray();
             //returns array
-            return response;        
+            return response;
         } catch (e) {
             console.log("error in remoteDocs: getShare, " , e)
         }finally {
@@ -349,7 +405,7 @@ const mongoDocs = {
      * db.users.aggregate([
             {
                 $match: {
-                    "documents.allowd_users": "try@try"  // Match users with documents shared with 'try@try'
+                    "documents.allowed_users": "try@try"  // Match users with documents shared with 'try@try'
                 }
             },
             {
@@ -359,7 +415,7 @@ const mongoDocs = {
                         $filter: {
                             input: "$documents",  // Input array to filter
                             as: "document",  // Variable for each document
-                            cond: { $in: ["try@try", "$$document.allowd_users"] }  // Condition to check if 'try@try' is in allowd_users
+                            cond: { $in: ["try@try", "$$document.allowed_users"] }  // Condition to check if 'try@try' is in allowed_users
                         }
                     }
                 }
@@ -373,67 +429,6 @@ const mongoDocs = {
         ]);
 
      */
-
-    // /**
-    //  * fiend document in the collection by _id
-    //  *
-    //  * @async
-    //  * @param {string} id           documents id (_id)
-    //  *
-    //  * @throws Error when database operation fails.
-    //  *
-    //  * @return {Promise<object>} The resultset as an array.
-    //  */
-    //     getByID: async function getByID(id) {
-    //         const remoteMongo = await database.connect();
-    //         try {
-    //             return await remoteMongo.collection.findOne({_id: new ObjectId(`${id}`)});           
-    //         } finally {
-    //             await remoteMongo.client.close();
-    //         }
-    //     },
-    
-    // /**
-    //  * Find documents in an collection by matching search criteria.
-    //  *
-    //  * @async
-    //  *
-    //  * @param {string} col        Collection.
-    //  * @param {string} pass   Search password.
-    //  *
-    //  * @throws Error when database operation fails.
-    //  *
-    //  * @return {Promise<array>} The resultset as an array.
-    //  */
-    
-    // findByPassword: async function finedByPassword(col, pass) {
-    //     const remoteMongo = await database.connect();
-    //     try {
-    //         return await remoteMongo.collection.findOne({password: pass});
-    //     } finally {
-    //         await remoteMongo.client.close();
-    //     }
-    // },
-
-    // /**
-    //  * Find documents in an collection by matching search criteria.
-    //  *
-    //  * @async
-    //  *
-    //  * @param {string} col        Collection.
-    //  * @param {object} criteria   Search criteria.
-    //  * @param {object} projection What to project in results.
-    //  * @param {number} limit      Limit the number of documents to retrieve.
-    //  *
-    //  * @throws Error when database operation fails.
-    //  *
-    //  * @return {Promise<array>} The resultset as an array.
-    //  */
-    
-    // findInCollection: async function findInCollection(col, criteria, projection, limit = 1) {
-        
-    //     return await col.find(criteria, projection).limit(limit).toArray();
-    // },
 };
 
 export default mongoDocs;

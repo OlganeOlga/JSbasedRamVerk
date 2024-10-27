@@ -1,9 +1,12 @@
 import  {
     GraphQLObjectType,
     GraphQLString,
-    GraphQLFloat,
-    GraphQLNonNull
+    GraphQLList,
+    // GraphQLFloat,
+    // GraphQLNonNull
 } from 'graphql';
+
+import CommentType from './comment.mjs';
 
 const DockType = new GraphQLObjectType({
     name: 'Document',
@@ -12,9 +15,8 @@ const DockType = new GraphQLObjectType({
         _id: { type: GraphQLString },
         title: { type: GraphQLString},
         content: { type:GraphQLString },
-        sharedWith: {
-            type:  GraphQLString,
-        }
+        comments: { type: GraphQLList(CommentType)},
+        allowed_users: { type: new GraphQLList(GraphQLString) }
     })
 });
 

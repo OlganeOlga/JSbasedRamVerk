@@ -1,0 +1,81 @@
+/* CommentStyles.css */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it's on top of other content */
+  }
+  
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 500px;
+  }
+  
+  .modal-title {
+    margin: 0 0 10px;
+    font-size: 1.5em;
+    color: #333;
+  }
+  
+  .modal-comment-area {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none;
+    font-size: 1em;
+  }
+  
+  .modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+  }
+  
+  .modal-button {
+    background-color: #007bff; /* Blue background */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .modal-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+  
+  .modal-button-cancel {
+    background-color: #dc3545; /* Red background for cancel */
+  }
+  
+  .modal-button-cancel:hover {
+    background-color: #c82333; /* Darker red on hover */
+  }
+  
+  .modal-comment-button {
+    background-color: #28a745; /* Green background */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .modal-comment-button:hover {
+    background-color: #218838; /* Darker green on hover */
+  }
+  

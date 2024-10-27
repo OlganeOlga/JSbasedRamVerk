@@ -10,15 +10,13 @@ import Document from './functions/interface'; // import interface for object Doc
 import { socket } from './socket.mjs';
 
 function App() {
-    //socet variables
-    const [isConnected, setIsConnected] = useState(socket.connected);
-    const [fooEvents, setFooEvents] = useState([]);
+    // //socet variables
+    // const [isConnected, setIsConnected] = useState(socket.connected);
+    // const [fooEvents, setFooEvents] = useState([]);
     
     const [documents, setDocuments] = useState<Document[]>([]); // Initialize state for documents
-    const [sharedDocuments, setsharedDocuments] = useState<Document[]>([]); // Initialize state for documents
     const [loading, setLoading] = useState(true); // Initialize loading state
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null); // Initialize selected index
-    //const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false); // Track login state
     const [username, setUsername] = useState<string | null>(null);
     const [password, setPassword] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null);
@@ -36,33 +34,23 @@ function App() {
     }, []);
 
     const loadDocuments = async () => {
-        // if (!username) return; // Prevent calling if username is not set
-    
+        const doctype = sessionStorage.getItem("docType") || "";
+        
+        let route = "/data/" + doctype + username;
+
         setLoading(true); // Start loading
         try {
-            //set documents in utils.mjs
-            await utils.loadDocuments(username, setDocuments); // Fetch documents
-             // Log the loaded documents
-        } catch (error) {
-            console.error("Error loading documents:", error);
-        } finally {
-            setLoading(false); // End loading
-        }
-    };
-
-    const seeShared = async () => {
-        try {
-            const result = await utils.processRoute('GET', `/data/shared/${username}`); // Call fetch function here
-            console.log(result)
-            if (result.status === 200) {
-                console.log(result.result.documents)
-                setDocuments(result.result.documents); // Update documents state
+            const result = await utils.processRoute('GET', route); // Call fetch function here
+            if (result.status === 200) {  
+                setDocuments(result.result); // Update documents state
             } else {
                 setDocuments([]); // Handle no documents case
             }
         } catch (error) {
-            console.error("Error loading shared documents:", error);
+            console.error("Error loading documents:", error);
             setDocuments([]); // Reset documents on error
+        } finally {
+            setLoading(false); // End loading
         }
     };
 
@@ -105,15 +93,14 @@ function App() {
         <>
             <ErrorBoundary>
                 <AppHeader 
-                    selectedIndex={selectedIndex} 
+                    selectedIndex={selectedIndex}
                     handleClose={() => setSelectedIndex(null)} // Reset selected index on close
                     selectedDocumentId={selectedDocumentId || ""} // Pass the selected document ID
                     reloadDocuments={loadDocuments}
-                    seeShared={seeShared}
                     username={username}
                     password={password}
-                    token={token}
-                />
+                    token={token} 
+                    />
             </ErrorBoundary>
             <ErrorBoundary>
             <BrowserRouter>
@@ -121,7 +108,6 @@ function App() {
                 <AppMain
                     username={username}
                     documents={documents}
-                    // sharedDocuments={sharedDocuments} 
                     loading={loading} 
                     reloadDocuments={loadDocuments} 
                     selectedIndex={selectedIndex} 

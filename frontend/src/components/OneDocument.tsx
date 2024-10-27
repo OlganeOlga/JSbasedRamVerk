@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 // import  io, { Socket}  from "socket.io-client";
 import {socket} from './../socket.mjs'
 //import { Socket } from "socket.io-client";
-import AddComment from "./Comment";
+import AddComment from "./AddComment";
 import utils from "../utils.mjs";
 import CommentInterface from './../functions/interface';
 
@@ -113,13 +113,24 @@ function OneDocument({username, docOwner, id, title: intialTitle, content: initi
                         title, 
                         content
                     };
+        const token = sessionStorage.getItem('token');
+        if (!token) {
+            console.error("No token found in session storage. User may not be authenticated.");
+            return;
+        }
+        const headers = {
+                'Authorization': `Bearer ${token}`,
+        };       
 
         try {
             // Submit the document update to the backend
-            await utils.processRoute('PUT', 
+            const response = await utils.processRoute('PUT', 
                                         `/data/update`, 
-                                        body);
-
+                                        body, headers);
+            if (!response.ok) {
+                console.error('Failed to update document:', response.message);
+                // Optionally, show error message in UI
+                }
             // After the submission, go back to the list
             handleClose();
         } catch (error) {
@@ -166,27 +177,31 @@ function OneDocument({username, docOwner, id, title: intialTitle, content: initi
                 newComment={handelSocketComment}
             />
             <form className='doc' onSubmit={handleSubmitAndClose}> {/* change when the form submitted */}
-                <input type='hidden'name="id" value={id} />
-                <input className='title'
-                    type="text"
-                    name="newTitle"
-                    value={title}
-                    onChange={(e) => 
-                        setTitle(e.target.value)}>
-                </input>
-                
-                <input className='content'
-                    type="text"
-                    name="newContent"
-                    value={content}
-                    onChange={(e) => 
-                        setContent(e.target.value)}>
-                </input>
+                <div className='button-div'>
+                    <button type="submit" value="Submit" className='btn btn-primary change-collection' disabled={isSubmitting}>
+                        {isSubmitting ? 'Submitting...' : 'Save and close'}
+                    </button>
+                </div>
+                <div className='input-div'>
+                    <input type='hidden'name="id" value={id} />
+                    <input className='title'
+                        type="text"
+                        name="newTitle"
+                        value={title}
+                        onChange={(e) => 
+                            setTitle(e.target.value)}>
+                    </input>
+                    
+                    <input className='content'
+                        type="text"
+                        name="newContent"
+                        value={content}
+                        onChange={(e) => 
+                            setContent(e.target.value)}>
+                    </input>
 
-                {/* Combined Submit and Back to List button */}
-                <button type="submit" value="Submit" className='btn btn-primary change-collection' disabled={isSubmitting}>
-                    {isSubmitting ? 'Submitting...' : 'Save and close'}
-                </button>
+                    {/* Combined Submit and Back to List button */}
+                </div>
             </form>
             <div>
                 {comments.map((comment, index) => (

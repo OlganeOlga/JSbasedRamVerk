@@ -5,8 +5,6 @@ import Document from '../functions/interface';
 interface AppArticleProps {
     usersname:string | null;
     documents: Document[];
-    //sharedDocuments: Document[];
-    //reloadUsers: () => void;
     reloadDocuments: () => void;
     selectedIndex: number | null; // Selected document index from parent
     setSelectedIndex: (index: number | null) => void; // Function to update selectedIndex in parent
@@ -23,7 +21,6 @@ function AppArticle({usersname, documents, reloadDocuments, selectedIndex, setSe
     const handleClose = () => {
         setSelectedIndex(null);
         reloadDocuments();
-        //reloadUsers();
     };
     const selectedDocument = selectedIndex !== null && documents[selectedIndex];
 

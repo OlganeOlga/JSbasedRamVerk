@@ -33,25 +33,32 @@ function Auth({ onLoginSuccess }: AuthProps) {
 
             console.log(response)
             if (response.ok) {
-                if (route === '/auth/login') {
-                    sessionStorage.setItem('token', response.result.token);
-                    sessionStorage.setItem('username', username);
-                    sessionStorage.setItem('password', password);
-                    alert("You are logged in!");
-                    onLoginSuccess(); // Notify parent component of successful login
-                } else if (route === '/auth/register') {
-                    setMessage('User successfully registered. Please log in!');
-                    alert('User successfully registered. Please log in!');
-                    handleFormChange('login'); // Switch to login form after successful registration
-                } else if (route === '/auth/unregister') {
-                    sessionStorage.clear(); // Clear local storage on account removal
-                    setMessage('User successfully removed. All your data are removed!');
-                    alert('User successfully removed. All your data are removed!');
-                    handleFormChange('buttons'); // Go back to buttons after unregistration
+                switch(route) {
+                    case '/auth/login':
+                        sessionStorage.setItem('token', response.result.token);
+                        sessionStorage.setItem('username', username);
+                        sessionStorage.setItem('password', password);
+                        alert("You are logged in!");
+                        onLoginSuccess(); // Notify parent component of successful login
+                        break;
+        
+                    case '/auth/register':
+                        setMessage('User successfully registered. Please log in!');
+                        alert('User successfully registered. Please log in!');
+                        handleFormChange('login'); // Switch to login form after successful registration
+                        break;
+        
+                    case '/auth/unregister':
+                        sessionStorage.clear(); // Clear local storage on account removal
+                        setMessage('User successfully removed. All your data are removed!');
+                        alert('User successfully removed. All your data are removed!');
+                        handleFormChange('buttons'); // Go back to buttons after unregistration
+                        break;
+        
+                    default:
+                        console.warn(`Unhandled route: ${route}`);
                 }
             } else {
-                console.log("in Auth else of handleSabmit")
-                
                 console.error('Error:', response.message);
                 alert(response.message);
                 // Handle unsuccessful login and return to buttons
@@ -62,7 +69,7 @@ function Auth({ onLoginSuccess }: AuthProps) {
                     alert('Incorrect username or password.');
                     handleFormChange('buttons'); // Return to button selection
                 } else {
-                    // setError('An error occurred. Please try again.');
+                    setError('An error occurred. Please try again.');
                     // alert('An error occurred. Please try again.');
                     handleFormChange('buttons');
                 }
@@ -79,16 +86,16 @@ function Auth({ onLoginSuccess }: AuthProps) {
             {currentForm === 'buttons' && (
                 
                 <div className='auth-button'>
-                    <button className="auth" onClick={() => handleFormChange('login')}>Login</button>
-                    <button className="auth" onClick={() => handleFormChange('register')}>Register</button>
-                    <button className="auth" onClick={() => handleFormChange('unregister')}>Remove Account</button>
+                    <button type='button' className="auth" onClick={() => handleFormChange('login')}>Login</button>
+                    <button type='button' className="auth" onClick={() => handleFormChange('register')}>Register</button>
+                    <button type='button' className="auth" onClick={() => handleFormChange('unregister')}>Remove Account</button>
                 </div>
             )}
             
             {currentForm === 'login' && (
                 <div className='auth-options'>
                 
-                <FormConteiner
+                <FormConteiner key="1"
                     formName={'login'}
                     buttonText={'Login'}
                     conditionsHeader={''}
@@ -109,16 +116,16 @@ function Auth({ onLoginSuccess }: AuthProps) {
 
             {currentForm === 'register' && (
                 <div className='auth-options'>
-                <FormConteiner
+                <FormConteiner key="2"
                     formName={'register'}
                     buttonText={'Register'}
                     errorString={'An error occurred during registration. Please try again.'}
                     greeting={'New user? Sign up'}
                     conditionsHeader={'Terms and Conditions'}
                     conditionsText={[
-                        <p key="1">Your email will be stored together with your personal API key to contact you in case of violation of the terms and conditions or if an excessive number of requests is made to the API.</p>,
-                        <p key="2">You are responsible for ensuring that the data stored in the API's database complies with current legal regulations.</p>,
-                        <p key="3">You may request the deletion of your API key and all associated data at any time by <a href="/api_key/deregister">removing your account</a>.</p>,
+                        <p key="condition-1">Your email will be stored together with your personal API key to contact you in case of violation of the terms and conditions or if an excessive number of requests is made to the API.</p>,
+                        <p key="condition-2">You are responsible for ensuring that the data stored in the API's database complies with current legal regulations.</p>,
+                        <p key="condition-3">You may request the deletion of your API key and all associated data at any time by <a href="/api_key/deregister">removing your account</a>.</p>,
                       ]} 
                     handleSubmit={(e) => handleSubmit(e, '/auth/register', 'POST')} // Pass down the handleSubmit
                     username={username}
@@ -134,15 +141,15 @@ function Auth({ onLoginSuccess }: AuthProps) {
 
             {currentForm === 'unregister' && (
                 <div className='auth-options'>
-                <FormConteiner
+                <FormConteiner key="1"
                     formName={'unregister'}
                     buttonText={'Remove Account'}
                     errorString={'Failed to unregister. Please check your credentials.'}
                     greeting={'Remove your account'}
                     conditionsHeader={'CAUTION!'}
-                    conditionsText={[<><h3 key="1">IT IS YOUR RESPONSIBILITY TO SAVE YOUR DATA </h3>
-                        <h3 key="2">IF YOUR PROCEED All YOUR DATA WILL BE REMOVED </h3>
-                        <h3 key="3">All your credential will be also removed.</h3></>]}
+                    conditionsText={[<><h3 key="condition-1">IT IS YOUR RESPONSIBILITY TO SAVE YOUR DATA </h3>
+                        <h3 key="condition-2">IF YOUR PROCEED All YOUR DATA WILL BE REMOVED </h3>
+                        <h3 key="condition-3">All your credential will be also removed.</h3></>]}
                     handleSubmit={(e) => handleSubmit(e, '/auth/unregister', 'DELETE')} // Pass down the handleSubmit
                     username={username}
                     password={password}

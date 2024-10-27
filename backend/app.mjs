@@ -14,16 +14,24 @@ import comments from "./models/comments.mjs";
 
 //import comments from "comments.mjs"; // For comments sockets in future
 
-
 import mongoRemote from "./routes/mongoRemote.mjs";
-import authRoutes from "./routes/auth_user.mjs";
+import authRoutes, {authenticateToken} from "./routes/auth_user.mjs";
+
 
 // GAPHQL
 import { graphqlHTTP } from 'express-graphql';
 const visual = true; // SET IT TO FALSE ONDER PRODUCTION!
+//import schema from './graphql/graphschema.mjs';
+/**
+ * vreate graphql schema in the separate file in graphql/graphschema
+ */
 import {GraphQLSchema} from "graphql";
-
 import RootQueryType from "./graphql/root.mjs";
+import RootMutationType from './graphql/root_mutation.mjs';
+
+
+
+
 //import users from "./models/users.mjs"
 
 const app = express();
@@ -122,16 +130,19 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 //app.get("/", (req, res) => users.getAll(res));
+//app.use(authenticateToken);
 app.use('/data', mongoRemote); // import routes using remote mongoDB
 app.use('/auth', authRoutes); // Use auth routes under '/auth'
 
-// FOR GRAPHQL
+// FOR GRAPHQL: import in the begint
 const schema = new GraphQLSchema({
-  query: RootQueryType
+  query: RootQueryType,
+  mutation: RootMutationType   
 });
 app.use('/graphql', graphqlHTTP({
   schema: schema,
   graphiql: visual, // Visual är satt till true under utveckling
+  livereload: true, // watch code chenges 
 }));
 
 // // Protect the documents route

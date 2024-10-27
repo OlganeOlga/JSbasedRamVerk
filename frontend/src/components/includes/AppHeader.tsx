@@ -1,6 +1,7 @@
 import { useState } from 'react'; 
 import logo from './../../functions/logo.svg';
 import utils from '../../utils.mjs';
+import ButtonConteiner from './ButtonConteiner';
 
 interface AppHeaderProps {
     reloadDocuments: () => void;
@@ -9,8 +10,7 @@ interface AppHeaderProps {
     password: string | null;
     token: string | null;
     handleClose: () => void;
-    selectedDocumentId: string; 
-    seeShared: () => void;
+    selectedDocumentId: string;
 }
 
 function AppHeader({ 
@@ -21,21 +21,12 @@ function AppHeader({
     password, 
     token, 
     reloadDocuments,
-    seeShared 
 }: AppHeaderProps) {
     const [adress, setAdress]=useState('');
 
     const logOut = async () => {
-        sessionStorage.removeItem('token');
-        sessionStorage.removeItem('username');
-        sessionStorage.removeItem('password');
+        sessionStorage.clear()
         window.location.reload();
-
-        // //chenge for token in cookies:
-        // console.log("try to loggout")
-        // await utils.processRoute('POST', '/auth/logout');
-        // localStorage.clear();
-        // window.location.reload(); 
     };
     const shareDoc = async (e: React.FormEvent) => {
         e.preventDefault(); 
@@ -43,9 +34,6 @@ function AppHeader({
             const result = await utils.processRoute("POST", "/data/share", 
                 { username: username, docId:selectedDocumentId, adress:adress });
             if (result.status === 200) {
-                console.log("result of shearing: ", result)
-                console.log("selected doc: ", selectedDocumentId, "   ", selectedIndex)
-                //selectedIndex = selectedIndex
                 alert('Document is shared!');
             }
         } catch (error) {
@@ -94,39 +82,74 @@ function AppHeader({
                     <div>
                         {selectedIndex === null ? (
                         <>
-                            <button className="change-collection" onClick={addDocument}>
-                                Create document
-                            </button>
-                            <button className="see-shared" onClick={seeShared}>
-                                See shared dokument
-                            </button>
-                            <button className="change-collection" onClick={logOut}>
-                                Logout
-                            </button>
+                            <ButtonConteiner
+                            buttonType='button'
+                            buttonName='change-collection'
+                            buttonText='Create document'
+                            buttonFunction={addDocument}
+                             />
+                            {sessionStorage.getItem("docType") === "shared/" ? 
+                            (<ButtonConteiner
+                            buttonType='button'
+                            buttonName='see-shared'
+                            buttonText="See users's dokuments"
+                            buttonFunction={() => {
+                                                        sessionStorage.setItem("docType", "");
+                                                        reloadDocuments();
+                                                    }}
+                             />) :
+                             (<ButtonConteiner
+                                buttonType='button'
+                                buttonName='see-shared'
+                                buttonText="See shared documents"
+                                buttonFunction={() => {
+                                                        sessionStorage.setItem("docType", "shared/");
+                                                        reloadDocuments();
+                                                    }}
+                                 />)
+                            }
+                            <ButtonConteiner
+                            buttonType='button'
+                            buttonName='change-collection'
+                            buttonText='Logout'
+                            buttonFunction={logOut}
+                             />
                         </>
                         ) : (
                         <>
-                            <button className="change-collection" onClick={deleteDocument}>
-                                Remove document
-                            </button>
-                            <form className='smalForm' onSubmit={shareDoc}>
+                            <form className='shareForm' onSubmit={shareDoc}>
                             <div className="input-group">
-                                <input
-                                    type="email"
-                                    name='adress'
-                                    placeholder="Email"
-                                    value={adress}
-                                    onChange={(e) => setAdress(e.target.value)}
-                                    required
-                                />
+                                <label className="share"> 
+                                    With whom will you share your document?
+                                    <input
+                                        type="email"
+                                        name='adress'
+                                        placeholder="write email"
+                                        value={adress}
+                                        onChange={(e) => setAdress(e.target.value)}
+                                        required
+                                    />
+                                </label>
                             </div>
-                                <button className="see-shared">
-                                    share dokument
-                                </button>
+                                <ButtonConteiner
+                                buttonType='submit'
+                                buttonName='see-shared'
+                                buttonText='Share dokument'
+                                buttonFunction={() => console.log("Button clicked")}
+                                />
                             </form>
-                            <button className="change-collection" onClick={logOut}>
-                                Logout
-                            </button>
+                            <ButtonConteiner
+                                buttonType='button'
+                                buttonName='change-collection'
+                                buttonText='Remove document'
+                                buttonFunction={deleteDocument}
+                                />
+                            <ButtonConteiner
+                                buttonType='button'
+                                buttonName='change-collection'
+                                buttonText='Logout'
+                                buttonFunction={logOut}
+                                />
                         </>
                         )}
                     </div>
