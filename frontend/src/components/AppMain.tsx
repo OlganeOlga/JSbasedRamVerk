@@ -32,7 +32,6 @@ function AppMain({username, documents, loading, reloadDocuments, selectedIndex, 
             selectedIndex={selectedIndex} />
             <AppArticle usersname={username}
                         documents={documents}
-                        // sharedDocuments={sharedDocuments}
                         reloadDocuments={reloadDocuments} 
                         selectedIndex={selectedIndex} 
                         setSelectedIndex={setSelectedIndex} 

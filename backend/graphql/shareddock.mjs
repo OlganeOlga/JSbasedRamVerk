@@ -1,9 +1,9 @@
 import {
     GraphQLObjectType,
     GraphQLString,
-    GraphQLNonNull,
-    GraphQLScalarType,
-    graphql,
+    // GraphQLNonNull,
+    // GraphQLScalarType,
+    // graphql,
     GraphQLList
 } from 'graphql';
 import CommentType from './comment.mjs';

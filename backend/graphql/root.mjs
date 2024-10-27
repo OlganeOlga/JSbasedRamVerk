@@ -90,6 +90,29 @@ const RootQueryType = new GraphQLObjectType({
                 }
             }
         },
+
+        // commentDocumnt: {
+        //     type: new GraphQLList(SharedDockType),
+        //     description: "a list with dokuments of other users that are shared with this user",
+        //     args: {
+        //         username: {type: GraphQLString}
+        //     },
+        //     resolve: async function(parent, args) {
+        //         const username = args.username;
+        //         try {
+        //             const documents = await docFu.getShared(username);
+            
+        //             //return fout status if no shared documents
+        //             if (!documents || documents.length === 0) {
+        //                 return []; // Return 404 if no documents found
+        //             }
+        //             return documents ;
+        //         } catch (error) {
+        //             console.log("error in route graphql shared/username: ", error);
+        //             throw new Error("error in route graphql shared/username: ", error);
+        //         }
+        //     }
+        // },
     }),
 });
 

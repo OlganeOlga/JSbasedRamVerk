@@ -34,9 +34,8 @@ const utils = {
 
         try {
             // Pass the URL and options to fetch
-            // console.log(`Fetching data from URL: ${url} with options:`, options)
             const response = await fetch(url, options);
-            // console.log("Respons of the processRoute", response)
+            
             if (!response.ok) {
                 // console.log("reposns not OK")
                 const errorData = await response.json();
@@ -49,7 +48,7 @@ const utils = {
                 };
             }
             const result = await response.json();
-            console.log("Result of processRoute: ", result)
+            
             return {
                 ok: response.ok,
                 status: response.status,
@@ -59,6 +58,29 @@ const utils = {
             console.log('Failed to fetch documents in processRoute.processRoute:', error);
             return error;
         }
+    },
+
+    /**
+     * Function handle request to the graphql route that
+     * replase all previouse routes
+     * @asynk
+     * 
+     * @param {object} params query for the request
+     * @returns {object} resutl of the graphql request
+     */
+    processGraphQl : async function processGraphQl(params) {
+        const query = params;
+        const respons = fetch('/graphql', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({ query: "{ courses { name } }" })
+        })
+        const result = await respons.json();
+        console.log('data returned:', result.data);
+        return result;
     },
     //change for token in cookies
     // processRoute: async function processRoute(passedMethod = 'GET', route = "/", body = null, headers = {}) {
@@ -98,29 +120,6 @@ const utils = {
     //         return error;
     //     }
     // },
-    /**
-     * Reload documents on the page
-     * @async
-     * 
-     * @param {string |null} userName name of the user
-     * @param {function} setDocuments 
-     * @param {function} setLoading
-     * 
-     * @returns {void}
-     */
-    loadDocuments: async function loadDocuments(userName, setDocuments) {
-        try {
-            const result = await this.processRoute('GET', `/data/${userName}`); // Call fetch function here
-            if (result.status === 200) {
-                setDocuments(result.result); // Update documents state
-            } else {
-                setDocuments([]); // Handle no documents case
-            }
-        } catch (error) {
-            console.error("Error loading documents:", error);
-            setDocuments([]); // Reset documents on error
-        }
-    },
 }
 
 export default utils;

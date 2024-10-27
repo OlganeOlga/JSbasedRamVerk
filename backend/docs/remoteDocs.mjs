@@ -393,7 +393,7 @@ const mongoDocs = {
         try {
             const response = await remoteMongo.collection.aggregate(pipeline).toArray();
             //returns array
-            return response;        
+            return response;
         } catch (e) {
             console.log("error in remoteDocs: getShare, " , e)
         }finally {

@@ -55,13 +55,24 @@ function OneDocument({username, docOwner, id, title: intialTitle, content: initi
                         title, 
                         content
                     };
+        const token = sessionStorage.getItem('token');
+        if (!token) {
+            console.error("No token found in session storage. User may not be authenticated.");
+            return;
+        }
+        const headers = {
+                'Authorization': `Bearer ${token}`,
+        };       
 
         try {
             // Submit the document update to the backend
-            await utils.processRoute('PUT', 
+            const response = await utils.processRoute('PUT', 
                                         `/data/update`, 
-                                        body);
-
+                                        body, headers);
+            if (!response.ok) {
+                console.error('Failed to update document:', response.message);
+                // Optionally, show error message in UI
+                }
             // After the submission, go back to the list
             handleClose();
         } catch (error) {

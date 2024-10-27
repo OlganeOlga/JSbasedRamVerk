@@ -82,17 +82,17 @@ router.post('/login', async (req, res) => {
         // Generate JWT token
         const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
 
-        // Set the token in a cookie
-        res.cookie('token', token, {
-            httpOnly: true, // Prevent access to the token via JavaScript
-            secure: process.env.NODE_ENV === 'production', // Send cookies over HTTPS only in production
-            maxAge: 60 * 60 * 1000, // Token expires in 1 hour (same as the token expiry)
-        });
+        // // Set the token in a cookie
+        // res.cookie('token', token, {
+        //     httpOnly: true, // Prevent access to the token via JavaScript
+        //     secure: process.env.NODE_ENV === 'production', // Send cookies over HTTPS only in production
+        //     maxAge: 60 * 60 * 1000, // Token expires in 1 hour (same as the token expiry)
+        // });
 
-        console.log(res.cookie)
+        
 
         // Send a success message (but without the token)
-        res.json({ message: 'Login successful' });
+        res.json({ message: 'Login successful', token: token });
     } catch (error) {
         res.status(500).json({ message: 'Error during login', error });
     }

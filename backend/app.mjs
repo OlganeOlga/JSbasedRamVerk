@@ -11,7 +11,8 @@ import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 
 import mongoRemote from "./routes/mongoRemote.mjs";
-import authRoutes from "./routes/auth_user.mjs";
+import authRoutes, {authenticateToken} from "./routes/auth_user.mjs";
+
 
 // GAPHQL
 import { graphqlHTTP } from 'express-graphql';
@@ -82,6 +83,7 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 //app.get("/", (req, res) => users.getAll(res));
+//app.use(authenticateToken);
 app.use('/data', mongoRemote); // import routes using remote mongoDB
 app.use('/auth', authRoutes); // Use auth routes under '/auth'
 
