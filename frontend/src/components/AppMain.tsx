@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import ArticleHead from './ArticleHead';
 import AppArticle from './AppArticle';
-import Document from '../functions/interfase';
+import Document from '../functions/interface';
 
 // element properties
 interface AppMainProps {

@@ -1,12 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import {socket} from "../socket.mjs";
-import utils from '../utils.mjs';
+import React, { useState, useEffect, useRef, } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+// import  io, { Socket}  from "socket.io-client";
+import {socket} from './../socket.mjs'
+//import { Socket } from "socket.io-client";
+import AddComment from "./Comment";
+import utils from "../utils.mjs";
+import CommentInterface from './../functions/interface';
 
-// Define an interface for the socket event data
-interface ContentEvent {
-    title: string;   // Ensure title is a string
-    content: string; // Ensure content is a string
+// Define the shape of formData and comments
+interface FormData {
+  title: string;
+  content: string;
 }
+
+interface Comment {
+  comment: string;
+  caret: number;
+  row: number;
+}
+
+interface ServerData {
+  data: FormData;
+}
+
+interface SocketUpdateData {
+  title: string;
+  content: string;
+}
+
 // interfase for element
 interface OneDocumentProps {
     username: string | null;
@@ -24,14 +45,37 @@ function OneDocument({username, docOwner, id, title: intialTitle, content: initi
     const [title, setTitle] = useState(intialTitle);
     const [content, setContent] = useState(initialContent);
     const [isSubmitting, setIsSubmitting] = useState(false); // For submit state (optional)
-    //const [contentEvent, setContentEven] = useState(ContentEvent)
-    
+    const [formData, setFormData] = useState<FormData>({
+      title: "",
+      content: "",
+    });
+    const [caretPosition, setCaretPosition] = useState({caret: 0, line: 0, x: 0, y: 0 });
+    const [comments, setComments] = useState<Comment[]>([]);
+  
+    //const { id } = useParams<{ id: string }>(); // Explicit typing for useParams
+    const navigate = useNavigate();
+  
+    const currentPath =
+      process.env.NODE_ENV === "production"
+        ? "https://jsramverk-oleg22-g9exhtecg0d2cda5.northeurope-01.azurewebsites.net/"
+        : "http://localhost:3000";
+  
+    //const socketRef = useRef<typeof Socket | null>(null); // Add type for socketRef
+  
+    const handelSocketUpdate = (update: string, data: SocketUpdateData) => {
+      const path = update === "socketJoin" ? data : data;
+  
+      setFormData({
+        title: path.title,
+        content: path.content,
+      });
+    };
     useEffect(() => {
        // Connect the socket when the component mounts
        socket.connect();
 
        // Listen for "content" event to update title and content from the server
-       socket.on("content", (data: ContentEvent) => {
+       socket.on("content", () => {
            setTitle(title);
            setContent(content);
        });
@@ -43,7 +87,21 @@ function OneDocument({username, docOwner, id, title: intialTitle, content: initi
            socket.disconnect(); // Disconnect the socket
        };
     }, []);
-
+    const handelSocketComment = (data: any) => {
+        if (data.comment) {
+          setComments((prevComments) => [
+            ...prevComments,
+            {
+              comment: data.comment,
+              caret: data.caretPosition.caret,
+              row: data.caretPosition.line,
+            },
+          ]);
+        } else {
+          setComments((prevComments) => [...prevComments, ...data]);
+        }
+      };
+    
     const handleSubmitAndClose = async (event: React.FormEvent) => {
         event.preventDefault(); // Prevent page refresh
         setIsSubmitting(true);  // Set the submitting state to true (optional)
@@ -71,9 +129,42 @@ function OneDocument({username, docOwner, id, title: intialTitle, content: initi
         }
     };
 
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setFormData({
+          ...formData,
+          [name]: value,
+        });
+    
+        socket.emit("update", {
+          ...formData,
+          [name]: value,
+        });
+    };
+
+    const handleCarotMove = (e: React.MouseEvent<HTMLTextAreaElement>) => {
+        const target = e.target as HTMLTextAreaElement;
+        const value = target.value;
+        const caretPosition = target.selectionStart;
+        const lineNumber = value.substring(0, caretPosition).split("\n").length;
+    
+        const caretPositionInLine =
+          lineNumber === 1
+            ? caretPosition
+            : caretPosition - (value.lastIndexOf("\n", caretPosition - 1) + 1);
+    
+        const x = e.clientX; // Example using mouse event coordinates
+        const y = e.clientY;
+        setCaretPosition({ caret: caretPositionInLine, line: lineNumber, x:x, y:y });
+      };
     // element
     return (
         <> {/* wrap all in the one eleemnt */}
+            <AddComment
+                caretPosition={caretPosition}
+                socketRef={socket}
+                newComment={handelSocketComment}
+            />
             <form className='doc' onSubmit={handleSubmitAndClose}> {/* change when the form submitted */}
                 <input type='hidden'name="id" value={id} />
                 <input className='title'
@@ -97,8 +188,16 @@ function OneDocument({username, docOwner, id, title: intialTitle, content: initi
                     {isSubmitting ? 'Submitting...' : 'Save and close'}
                 </button>
             </form>
-            <h1>{title}</h1>
-            <p>{content}</p>
+            <div>
+                {comments.map((comment, index) => (
+                <div className="comment" key={index}>
+                    <h3>
+                    Rad {comment.row} | char {comment.caret}
+                    </h3>
+                    <p>{comment.comment}</p>
+                </div>
+                ))}
+            </div>
             
         </>
 )};

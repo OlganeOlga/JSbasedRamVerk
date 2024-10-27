@@ -1,6 +1,6 @@
 import OneDocument from './OneDocument';
 //import User from '../functions/interfase'; // import interface for object Document
-import Document from '../functions/interfase'; 
+import Document from '../functions/interface'; 
 // element properties
 interface AppArticleProps {
     usersname:string | null;

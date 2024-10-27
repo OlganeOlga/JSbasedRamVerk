@@ -2,10 +2,11 @@ import { useState, useCallback, useEffect } from 'react';
 import AppFooter from "./components/includes/AppFooter";
 import AppHeader from "./components/includes/AppHeader";
 import ErrorBoundary from './components/includes/ErrorBoundary';
+import { BrowserRouter } from 'react-router-dom';
 import AppMain from "./components/AppMain";
 import Auth from './components/Auth';
 import utils from './utils.mjs';
-import Document from './functions/interfase'; // import interface for object Document
+import Document from './functions/interface'; // import interface for object Document
 import { socket } from './socket.mjs';
 
 function App() {
@@ -115,6 +116,7 @@ function App() {
                 />
             </ErrorBoundary>
             <ErrorBoundary>
+            <BrowserRouter>
             {token ?( 
                 <AppMain
                     username={username}
@@ -125,7 +127,9 @@ function App() {
                     selectedIndex={selectedIndex} 
                     setSelectedIndex={setSelectedIndex} 
                 />) : (<Auth onLoginSuccess={handleLoginSuccess} />)}
+            </BrowserRouter>
             </ErrorBoundary>
+            
             <AppFooter />
         </>
     );
