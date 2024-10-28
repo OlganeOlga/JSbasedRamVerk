@@ -2,6 +2,7 @@ import { useState } from 'react';
 import logo from './../../functions/logo.svg';
 import utils from '../../utils.mjs';
 import ButtonConteiner from './ButtonConteiner';
+import { json } from 'stream/consumers';
 
 interface AppHeaderProps {
     reloadDocuments: () => void;
@@ -29,12 +30,19 @@ function AppHeader({
         window.location.reload();
     };
     const shareDoc = async (e: React.FormEvent) => {
-        e.preventDefault(); 
+        e.preventDefault();
+        const body = JSON.stringify({query:
+            `mutation {shareDoc (owner:"${username}", 
+                               adress:"${adress}", 
+                               docid:"${selectedDocumentId}")}`
+       });
         try {
-            const result = await utils.processRoute("POST", "/data/share", 
-                { username: username, docId:selectedDocumentId, adress:adress });
+            // const result = await utils.processRoute("POST", "/data/share", 
+            //     { username: username, docId:selectedDocumentId, adress:adress });
+            //USER GRAPHQL
+                 const result = await utils.processRoute1(body);
             if (result.status === 200) {
-                alert('Document is shared!');
+                alert('Document is shared!')
             }
         } catch (error) {
             console.error('Failed to share document: ', error);
@@ -42,8 +50,14 @@ function AppHeader({
     };
 
     const addDocument = async () => {
+        const body = JSON.stringify({query:
+            `mutation {addDoc (username:"${username}")}`
+       });
         try {
-            const result = await utils.processRoute("POST", "/data", { username: username });
+            // const result = await utils.processRoute("POST", "/data", { username: username });
+
+            //USE GRAPHQL
+            const result = await utils.processRoute1(body);
             if (result.status === 200) {
                 alert('New document is created!');
                 reloadDocuments();
@@ -54,11 +68,15 @@ function AppHeader({
     };
 
     const deleteDocument = async () => {
+        const body = JSON.stringify({query:`mutation{deleteDoc(username:"${username}",id: "${selectedDocumentId}")}`});
         try {
-            const response = await utils.processRoute('DELETE', 
-                `/data/delete/${selectedDocumentId}`,
-                { username: username, password: password });
+            //const response = await utils.processRoute('DELETE', 
+                // `/data/delete/${selectedDocumentId}`,
+                // { username: username, password: password });
 
+            //USE GRAPHQL
+            const response = await utils.processRoute1(body)
+            console.log(response)
             if (response.status === 200) {
                 alert('Document deleted successfully!');
                 handleClose();

@@ -40,9 +40,41 @@ function App() {
 
         setLoading(true); // Start loading
         try {
-            const result = await utils.processRoute('GET', route); // Call fetch function here
+            //const result = await utils.processRoute('GET', route); // Call fetch function here
+
+            //GRAPHQL VARIANT
+            const headers = {'Accept': 'application/json'};
+                
+                    const body = JSON.stringify({
+                        query: `
+                          {
+                            user(username: "try@try") {
+                              documents {
+                                _id
+                                title
+                                content
+                                comments {
+                                  author
+                                  content
+                                }
+                                allowed_users
+                              }
+                            }
+                          }
+                        `
+                      });
+            const result = await utils.processRoute1(body);
+            // const result = await fetch('/graphql', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         'Accept': 'application/json',
+            //     },
+            //     body: JSON.stringify({ query: "{ courses { name } }" })
+            // })
+            console.log("result in App 54: ", result)
             if (result.status === 200) {  
-                setDocuments(result.result); // Update documents state
+                setDocuments(result.result.data.user.documents); // Update documents state
             } else {
                 setDocuments([]); // Handle no documents case
             }

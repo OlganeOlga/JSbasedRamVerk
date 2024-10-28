@@ -45,58 +45,58 @@ const io = new Server(httpServer, {
   },
 });
 
-let timeout;
+// let timeout;
 
-io.on("connection", (socket) => {
-  console.log("New client connected:", socket.id);
+// io.on("connection", (socket) => {
+//   console.log("New client connected:", socket.id);
 
-  socket.on("create", async function (room) {
-    socket.join(room);
+//   socket.on("create", async function (room) {
+//     socket.join(room);
 
-    socket.currentRoom = room;
-    console.log("Joined the room:", room);
+//     socket.currentRoom = room;
+//     console.log("Joined the room:", room);
 
-    const docComments = await comments.getComments(socket.currentRoom);
+//     const docComments = await comments.getComments(socket.currentRoom);
 
-    socket.emit("newComment", docComments);
+//     socket.emit("newComment", docComments);
 
-    if (socket.rooms.has(room)) {
-      const data = await roomState.getRoomState(room);
-      if (data) {
-        socket.emit("socketJoin", data);
-      }
-    }
-  });
+//     if (socket.rooms.has(room)) {
+//       const data = await roomState.getRoomState(room);
+//       if (data) {
+//         socket.emit("socketJoin", data);
+//       }
+//     }
+//   });
 
-  socket.on("update", (data) => {
-    socket.to(socket.currentRoom).emit("serverUpdate", data);
+//   socket.on("update", (data) => {
+//     socket.to(socket.currentRoom).emit("serverUpdate", data);
 
-    clearTimeout(timeout);
+//     clearTimeout(timeout);
 
-    timeout = setTimeout(function () {
-      roomState.updateRoomState(socket.currentRoom, data);
-    }, 2000);
-  });
+//     timeout = setTimeout(function () {
+//       roomState.updateRoomState(socket.currentRoom, data);
+//     }, 2000);
+//   });
 
-  socket.on("comment", (data) => {
-    comments.addComment(
-      socket.currentRoom,
-      data.comment,
-      data.caretPosition.caret,
-      data.caretPosition.line
-    );
+//   socket.on("comment", (data) => {
+//     comments.addComment(
+//       socket.currentRoom,
+//       data.comment,
+//       data.caretPosition.caret,
+//       data.caretPosition.line
+//     );
 
-    socket.to(socket.currentRoom).emit("newComment", data);
-  });
+//     socket.to(socket.currentRoom).emit("newComment", data);
+//   });
 
-  socket.on("disconnect", async () => {
-    console.log("Client disconnected:", socket.id);
-    const users = io.sockets.adapter.rooms.get(socket.currentRoom);
-    if (users === undefined) {
-      roomState.clearRoomState(socket.currentRoom);
-    }
-  });
-});
+//   socket.on("disconnect", async () => {
+//     console.log("Client disconnected:", socket.id);
+//     const users = io.sockets.adapter.rooms.get(socket.currentRoom);
+//     if (users === undefined) {
+//       roomState.clearRoomState(socket.currentRoom);
+//     }
+//   });
+// });
 
 app.use(cors()); // tillåter nå app från olika platformer. Det finns mäjlighet att presissera varifån appen can nås
 

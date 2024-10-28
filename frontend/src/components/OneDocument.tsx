@@ -70,23 +70,23 @@ function OneDocument({username, docOwner, id, title: intialTitle, content: initi
         content: path.content,
       });
     };
-    useEffect(() => {
-       // Connect the socket when the component mounts
-       socket.connect();
+    // useEffect(() => {
+    //    // Connect the socket when the component mounts
+    //    socket.connect();
 
-       // Listen for "content" event to update title and content from the server
-       socket.on("content", () => {
-           setTitle(title);
-           setContent(content);
-       });
+    //    // Listen for "content" event to update title and content from the server
+    //    socket.on("content", () => {
+    //        setTitle(title);
+    //        setContent(content);
+    //    });
 
-       // Clean up the socket connection and listeners when the component unmounts
-       return () => {
-           socket.off('message'); // Remove the listener
-           socket.off('content'); // Remove the content listener
-           socket.disconnect(); // Disconnect the socket
-       };
-    }, []);
+    //    // Clean up the socket connection and listeners when the component unmounts
+    //    return () => {
+    //        socket.off('message'); // Remove the listener
+    //        socket.off('content'); // Remove the content listener
+    //        socket.disconnect(); // Disconnect the socket
+    //    };
+    // }, []);
     const handelSocketComment = (data: any) => {
         if (data.comment) {
           setComments((prevComments) => [
@@ -106,29 +106,49 @@ function OneDocument({username, docOwner, id, title: intialTitle, content: initi
         event.preventDefault(); // Prevent page refresh
         setIsSubmitting(true);  // Set the submitting state to true (optional)
 
-        // Updated document object
-        const body = {
-                        username: docOwner, 
-                        id, 
-                        title, 
-                        content
-                    };
+        // // Updated document object
+        // const body = {
+        //                 username: username || docOwner, 
+        //                 id, 
+        //                 title, 
+        //                 content
+        //             };
         const token = sessionStorage.getItem('token');
         if (!token) {
             console.error("No token found in session storage. User may not be authenticated.");
             return;
         }
-        const headers = {
-                'Authorization': `Bearer ${token}`,
-        };       
+        // const headers = {
+        //         'Authorization': `Bearer ${token}`,
+        // };       
 
         try {
-            // Submit the document update to the backend
-            const response = await utils.processRoute('PUT', 
-                                        `/data/update`, 
-                                        body, headers);
-            if (!response.ok) {
-                console.error('Failed to update document:', response.message);
+          console.log("try update")
+            // // Submit the document update to the backend
+            // const response = await utils.processRoute('PUT', 
+            //                             `/data/update`, 
+            //                             body);
+
+            //WITH graphql
+            const body1 = JSON.stringify({
+              query: `mutation {
+                  updateDoc(
+                      username: "${username}",
+                      inputid: "${id}",
+                      title: "${title}",
+                      content: "${content}"
+                  ) {
+                      _id
+                      title
+                      content
+                  }
+              }`
+          });
+            console.log(body1)
+            const response1 = await utils.processRoute1(body1);
+            console.log("response of process route 1: ",response1)
+            if (!response1.ok) {
+                console.error('Failed to update document:', response1.message);
                 // Optionally, show error message in UI
                 }
             // After the submission, go back to the list

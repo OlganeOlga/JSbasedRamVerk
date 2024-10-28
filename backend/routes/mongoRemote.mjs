@@ -34,7 +34,9 @@ router.post('/', async (req, res) => {
 
 // update a document
 router.put('/update', async (req, res) => {
+    
     const {username, id, title, content } = req.body;
+    console.log(username, id, title, content, "fron put/update")
     try {
         const result = await mongoDocs.updateDocument(username, id, title, content);
         res.json({ result });

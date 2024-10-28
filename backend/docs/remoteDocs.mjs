@@ -1,4 +1,4 @@
-import { response } from 'express';
+// import { response } from 'express';
 import database from '../db/mongo/mongoDb.mjs'
 import { ObjectId } from 'mongodb';
 
@@ -88,9 +88,10 @@ const mongoDocs = {
      */
 
     updateDocument: async function updateDocument(username, id, title, content, allowedUser=null) {
+        console.log(typeof(id))
         const query = {
             "username": username,
-            "documents._id": new ObjectId(`${id}`) // Ensure you're searching by the correct document ID
+            "documents._id": new ObjectId(id) // Ensure you're searching by the correct document ID
         };
     
         const options = { upsert: false }; // Do not add document if the document with this ID is not found
@@ -103,13 +104,15 @@ const mongoDocs = {
             }
         };
     
-        // If an allowedUser is provided, add it to the allowed_users array
-        if (allowedUser) {
-            // Use $addToSet to add the allowedUser to the allowed_users array
-            updateDoc.$addToSet = { "documents.$.allowed_users": allowedUser };
-        }
+        // // If an allowedUser is provided, add it to the allowed_users array
+        // if (allowedUser) {
+        //     // Use $addToSet to add the allowedUser to the allowed_users array
+        //     updateDoc.$addToSet = { "documents.$.allowed_users": allowedUser };
+        // }
     
         const remoteMongo = await database.connect();
+        const user = await remoteMongo.collection.findOne(query);
+        console.log(user)
         try {
             return await remoteMongo.collection.updateOne(query, updateDoc, options);
         } finally {
@@ -157,82 +160,6 @@ const mongoDocs = {
             await remoteMongo.client.close();
         }
     },
-   
-    // /**
-    //  * add new user in the collection 
-    //  *
-    //  * @async
-    //  * 
-    //  * @param {string} name  users email
-    //  * @param {string} userPassword users userPassword
-    //  *
-    //  * @throws Error when database operation fails.
-    //  *
-    //  * @return {Promise<object>} The resultset as an array.
-    //  */
-    // addUser: async function addUser(name, userPassword) {
-    //     const remoteMongo = await database.connect();
-    //     const data = {
-    //         username: name,
-    //         password: userPassword
-    //     };
-    //     try {
-    //         const document = await remoteMongo.collection.insertOne(data);
-    //         return document;
-    //     } finally {
-    //         await remoteMongo.client.close();
-    //     }
-    // },
-
-    // /**
-    //  * add new user in the collection 
-    //  *
-    //  * @async
-    //  * 
-    //  * @param {string} name  users email
-    //  * @param {string} userPassword users userPassword
-    //  *
-    //  * @throws Error when database operation fails.
-    //  *
-    //  * @return {Promise<object>} The resultset as an array.
-    //  */
-    // findUser: async function findUser(name, userPassword) {
-    //     const remoteMongo = await database.connect();
-    //     const data = {
-    //         username: name,
-    //         password: userPassword
-    //     };
-    //     try {
-    //         const user = await remoteMongo.collection.findOne({password: userPassword});
-    //         if(user.username === name){
-    //             return user;
-    //         } else {
-    //             throw new Error("Name is false")
-    //         }
-    //     } finally {
-    //         await remoteMongo.client.close();
-    //     }
-    // },
-
-    // /**
-    //  * remove document by _id from the collection 
-    //  *
-    //  * @async
-    //  * @param {string} id           documents id (_id)
-    //  *
-    //  * @throws Error when database operation fails.
-    //  *
-    //  * @return {Promise<object>} The resultset as an array.
-    //  */
-    // removeById: async function removeById(id) {
-    //     //get database
-    //     const remoteMongo = await database.connect();
-    //     try {
-    //         return await remoteMongo.collection.deleteOne({_id: new ObjectId(`${id}`)})       
-    //     } finally {
-    //         await remoteMongo.client.close();
-    //     }
-    // },
 
     /**
      * remove document by _id from the collection 
@@ -241,7 +168,7 @@ const mongoDocs = {
      * 
      * @param {string} id           documents id (_id)
      * @param {string} username  users email
-     * @param {string} password users userPassword
+     *
      * @throws Error when database operation fails.
      *
      * @return {Promise<object>} The resultset as an array.
@@ -249,6 +176,7 @@ const mongoDocs = {
     removeDocument: async function removeDocument(id, userName) {
         const query = {'username': userName};
         const remove = { documents: {_id: new ObjectId(`${id}`)}};
+        console.log(remove)
         const remoteMongo = await database.connect();
 
         try {
@@ -400,35 +328,6 @@ const mongoDocs = {
             await remoteMongo.client.close();
         }
     },
-// test line
-    /**
-     * db.users.aggregate([
-            {
-                $match: {
-                    "documents.allowed_users": "try@try"  // Match users with documents shared with 'try@try'
-                }
-            },
-            {
-                $project: {
-                    _id: 0,  // Exclude the user _id from the result
-                    documents: {
-                        $filter: {
-                            input: "$documents",  // Input array to filter
-                            as: "document",  // Variable for each document
-                            cond: { $in: ["try@try", "$$document.allowed_users"] }  // Condition to check if 'try@try' is in allowed_users
-                        }
-                    }
-                }
-            },
-            {
-                $unwind: "$documents"  // Unwind the documents array to get individual documents
-            },
-            {
-                $replaceRoot: { newRoot: "$documents" }  // Replace the root with the documents
-            }
-        ]);
-
-     */
 };
 
 export default mongoDocs;

@@ -94,6 +94,26 @@ const users = {
             await db.client.close();
         }
     },
+      
+
+    // removeUser: async function removeUser(username) {
+    //     const query = {'username': username};
+    //     console.log(query)
+    //     let db;
+    //     try {
+    //         db = await database.connect();
+    //         const result = await db.collection.deleteOne(query);
+    //         if (result.deletedCount === 0) {
+    //             throw new Error("No user found with the specified username");
+    //         }
+    //         return { message: "User successfully removed", deletedCount: result.deletedCount };
+    //     } catch (error) {
+    //         console.error("Error in removeUser:", error);  // Log the error
+    //         throw new Error("Database error: " + error.message);  // Re-throw or handle error
+    //     } finally {
+    //         await db.client.close();
+    //     }
+    // }
 };
 
 export default users;

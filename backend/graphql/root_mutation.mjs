@@ -81,7 +81,7 @@ const RootMutationType = new GraphQLObjectType({
             }
         }
     },
-    addDokument: {
+    addDoc: {
         type: GraphQLBoolean, // Boolean response type for success or failure
         description: 'Create a user',
         args: {
@@ -98,7 +98,7 @@ const RootMutationType = new GraphQLObjectType({
         }
     },
 
-    updateDocument: { 
+    updateDoc: { 
         type: DockType,
         description: 'Change a documnt',  
         args: {
@@ -106,20 +106,18 @@ const RootMutationType = new GraphQLObjectType({
             inputid: { type: GraphQLString },
             title: { type: GraphQLString },
             content: { type: GraphQLString },
-            addAllowedUser: { type: GraphQLString },    // Add a single user to allowedUsers array
         },
-        async resolve(parent, { username, inputid, title, content, addAllowedUser}) {
+        async resolve(parent, { username, inputid, title, content}) {
             
             try {
                 // Perform the update in MongoDB
                 const result = await docFu.updateDocument( username, 
                                                             inputid,
                                                             title,
-                                                            content,
-                                                            addAllowedUser);
+                                                            content);
 
-                console.log(result)
-                if (!result.acknowledged) {
+                console.log(result, " in graphql SHEMA")
+                if (!result.modifiedCount) {
                     throw new Error("Document not found or update failed.");
                 }
                 return {
@@ -170,9 +168,32 @@ const RootMutationType = new GraphQLObjectType({
             console.log("in graphql /commentDoc,  line 170", args.docid)
             try {
                 console.log("int graphql /commentDoc")
-                const result = await docFu.commentDoc(args.owner, args.docid, args.author, args.content);
+                const result = await docFu.removeDocument(args.owner, args.docid, args.author, args.content);
                 console.log("int graphql /commentDoc ", result)
                 if(result.acknowledged & result.modifiedCount > 0) {
+                    return true;
+                };
+                return false;
+            } catch (error) {
+                console.log("error in /comment: ", error);
+                throw new Error(`error in /comment: ${error}`);
+            }
+        }
+    },
+    deleteDoc: {
+        type: GraphQLBoolean,
+        description: "Remove document",
+        args: {
+            id: {type: GraphQLString}, // _id of document
+            username: {type: GraphQLString}, // owner of the document
+        },
+        resolve: async function(parent, args) {
+            console.log("in graphql /deleteDoc,  line 191", args.id)
+            try {
+                console.log("int graphql /deleteDoc")
+                const result = await docFu.removeDocument(args.id, args.username);
+                console.log("int graphql /deleteDoc 195 ", result)
+                if(result. acknowledged) {
                     return true;
                 };
                 return false;
