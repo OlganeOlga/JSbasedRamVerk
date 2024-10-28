@@ -30,6 +30,7 @@ interface SocketUpdateData {
 
 // interfase for element
 interface OneDocumentProps {
+    docType: string;
     username: string | null;
     docOwner: string | null;
     id: string;
@@ -39,7 +40,7 @@ interface OneDocumentProps {
 }
 
 
-function OneDocument({username, docOwner, id, title: intialTitle, content: initialContent, handleClose }: OneDocumentProps) {
+function OneDocument({docType, username, docOwner, id, title: intialTitle, content: initialContent, handleClose }: OneDocumentProps) {
     const SERVER_URL = "http://localhost:3000";
     // declare variabels and function to change them
     const [title, setTitle] = useState(intialTitle);
@@ -120,7 +121,42 @@ function OneDocument({username, docOwner, id, title: intialTitle, content: initi
         }
         // const headers = {
         //         'Authorization': `Bearer ${token}`,
-        // };       
+        // };
+        let body;
+        switch(docType){
+            case "":
+                body = JSON.stringify({
+                    query: `mutation {
+                        updateDoc(
+                            username: "${username}",
+                            inputid: "${id}",
+                            title: "${title}",
+                            content: "${content}"
+                        ) {
+                            _id
+                            title
+                            content
+                        }
+                    }`
+                });
+                break;
+            case "shared/":
+                body = JSON.stringify({
+                    query: `mutation {
+                        updateDoc(
+                            username: "${docOwner}",
+                            inputid: "${id}",
+                            title: "${title}",
+                            content: "${content}"
+                        ) {
+                            _id
+                            title
+                            content
+                        }
+                    }`
+                });
+                break;    
+        }
 
         try {
           console.log("try update")
@@ -130,22 +166,8 @@ function OneDocument({username, docOwner, id, title: intialTitle, content: initi
             //                             body);
 
             //WITH graphql
-            const body1 = JSON.stringify({
-              query: `mutation {
-                  updateDoc(
-                      username: "${username}",
-                      inputid: "${id}",
-                      title: "${title}",
-                      content: "${content}"
-                  ) {
-                      _id
-                      title
-                      content
-                  }
-              }`
-          });
-            console.log(body1)
-            const response1 = await utils.processRoute1(body1);
+            
+            const response1 = await utils.graphQL(body);
             console.log("response of process route 1: ",response1)
             if (!response1.ok) {
                 console.error('Failed to update document:', response1.message);
@@ -238,142 +260,3 @@ function OneDocument({username, docOwner, id, title: intialTitle, content: initi
 )};
 
 export default OneDocument;
-
-// import React, { useState, useEffect } from 'react';
-// import {socket} from "../socket.mjs";
-// import utils from '../utils.mjs';
-
-// // Define an interface for the socket event data
-// interface ContentEvent {
-//     title: string;   // Ensure title is a string
-//     content: string; // Ensure content is a string
-// }
-// // interfase for element
-// interface OneDocumentProps {
-//     username: string | null;
-//     docOwner: string | null;
-//     id: string;
-//     title: string;
-//     content: string;
-//     handleClose: () => void;
-// }
-
-
-// function OneDocument({username, docOwner, id, title: intialTitle, content: initialContent, handleClose }: OneDocumentProps) {
-//     const SERVER_URL = "http://localhost:3000";
-//     // declare variabels and function to change them
-//     const [title, setTitle] = useState(intialTitle);
-//     const [content, setContent] = useState(initialContent);
-//     const [isSubmitting, setIsSubmitting] = useState(false); // For submit state (optional)
-//     //const [contentEvent, setContentEven] = useState(ContentEvent)
-    
-//     useEffect(() => {
-//        // Connect the socket when the component mounts
-//        socket.connect();
-
-//        // Listen for "content" event to update title and content from the server
-//        socket.on("content", (data: ContentEvent) => {
-//            setTitle(title);
-//            setContent(content);
-//        });
-
-//        // Clean up the socket connection and listeners when the component unmounts
-//        return () => {
-//            socket.off('message'); // Remove the listener
-//            socket.off('content'); // Remove the content listener
-//            socket.disconnect(); // Disconnect the socket
-//        };
-//     }, []);
-
-//     const handleSubmitAndClose = async (event: React.FormEvent) => {
-//         event.preventDefault(); // Prevent page refresh
-//         setIsSubmitting(true);  // Set the submitting state to true (optional)
-
-//         // Updated document object
-//         const body = {
-//                         username: docOwner, 
-//                         id, 
-//                         title, 
-//                         content
-//                     };
-//         const token = sessionStorage.getItem('token');
-//         if (!token) {
-//             console.error("No token found in session storage. User may not be authenticated.");
-//             return;
-//         }
-//         const headers = {
-//                 'Authorization': `Bearer ${token}`,
-//         };       
-
-//         try {
-//             //WITH graphql
-//             const body1 = JSON.stringify({
-//               query: `mutation {
-//                   updateDoc(
-//                       username: "${username}",
-//                       inputid: "${id}",
-//                       title: "${title}",
-//                       content: "${content}"
-//                   ) {
-//                       _id
-//                       title
-//                       content
-//                   }
-//               }`
-//           });
-//             console.log(body1)
-//             const response1 = await utils.processRoute1(body1);
-//             // // Submit the document update to the backend
-//             // const response = await utils.processRoute('PUT', 
-//             //                             `/data/update`, 
-//             //                             body, headers);
-//             if (!response1.ok) {
-//                 console.error('Failed to update document:', response1.message);
-//                 // Optionally, show error message in UI
-//                 }
-//             // After the submission, go back to the list
-//             handleClose();
-//         } catch (error) {
-//             console.error('Failed to update document:', error);
-//         } finally {
-//             setIsSubmitting(false);  // Reset submitting state (optional)
-//         }
-//     };
-
-//     // element
-//     return (
-//         <> {/* wrap all in the one eleemnt */}
-//             <form className='doc' onSubmit={handleSubmitAndClose}> {/* change when the form submitted */}
-//                 <div className='button-div'>
-//                     <button type="submit" value="Submit" className='btn btn-primary change-collection' disabled={isSubmitting}>
-//                         {isSubmitting ? 'Submitting...' : 'Save and close'}
-//                     </button>
-//                 </div>
-//                 <div className='input-div'>
-//                     <input type='hidden'name="id" value={id} />
-//                     <input className='title'
-//                         type="text"
-//                         name="newTitle"
-//                         value={title}
-//                         onChange={(e) => 
-//                             setTitle(e.target.value)}>
-//                     </input>
-                    
-//                     <input className='content'
-//                         type="text"
-//                         name="newContent"
-//                         value={content}
-//                         onChange={(e) => 
-//                             setContent(e.target.value)}>
-//                     </input>
-
-//                     {/* Combined Submit and Back to List button */}
-//                 </div>
-//             </form>
-//             <h1>{title}</h1>
-//             <p>{content}</p>
-            
-//         </>
-// )};
-
-// export default OneDocument;

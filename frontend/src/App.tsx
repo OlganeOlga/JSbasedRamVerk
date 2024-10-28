@@ -20,61 +20,91 @@ function App() {
     const [username, setUsername] = useState<string | null>(null);
     const [password, setPassword] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null);
+    const [docType, setDocType] = useState<string>("")
 
     useEffect(() => { 
         const storedUsername = sessionStorage.getItem('username');
         const storedToken = sessionStorage.getItem('token');
+        const storedPassword = sessionStorage.getItem('password');
+        const storedDocType = sessionStorage.getItem('docType');
         
         if (storedUsername) {
             setUsername(storedUsername);
-        }
+        };
         if (storedToken) {
             setToken(storedToken);
-        }
+        };
+        if (storedPassword) {
+            setPassword(password);
+        };
+        if(storedDocType) {
+            setDocType(storedDocType);
+        };
     }, []);
 
-    const loadDocuments = async () => {
-        const doctype = sessionStorage.getItem("docType") || "";
-        
-        let route = "/data/" + doctype + username;
+    const loadDocuments = async () => {        
+        //let route = "/data/" + doctype + username;
+        let body;
+        switch(docType) {
+            case "": 
+                body = JSON.stringify({
+                    query: `
+                        {
+                            user(username: "${username}") {
+                                documents {
+                                    _id
+                                    title
+                                    content
+                                    comments {
+                                        author
+                                        content
+                                    }
+                                    allowed_users
+                                }
+                            }
+                        }
+                    `
+                    });
+                break;
+            case "shared/":
+                body = JSON.stringify({
+                    query: `
+                        {
+                            sharedWithUser(username: "${username}") {
+                                owner
+                                _id
+                                title
+                                content
+                                comments {
+                                    author
+                                    content
+                                }
+                            }
+                        }
+                    `
+                    });
+        }
 
         setLoading(true); // Start loading
         try {
             //const result = await utils.processRoute('GET', route); // Call fetch function here
 
             //GRAPHQL VARIANT
-            const headers = {'Accept': 'application/json'};
+              
+            
+            const result = await utils.graphQL(body);
+            
+            if (result.status === 200) {
+                // Update documents state
+                switch(docType){
+                    case "":
+                        setDocuments(result.result.data.user.documents);
+                        break;
+                    case "shared/":
+                        setDocuments(result.result.data.sharedWithUser);
+                        break; 
+                    }
                 
-                    const body = JSON.stringify({
-                        query: `
-                          {
-                            user(username: "try@try") {
-                              documents {
-                                _id
-                                title
-                                content
-                                comments {
-                                  author
-                                  content
-                                }
-                                allowed_users
-                              }
-                            }
-                          }
-                        `
-                      });
-            const result = await utils.processRoute1(body);
-            // const result = await fetch('/graphql', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //         'Accept': 'application/json',
-            //     },
-            //     body: JSON.stringify({ query: "{ courses { name } }" })
-            // })
-            console.log("result in App 54: ", result)
-            if (result.status === 200) {  
-                setDocuments(result.result.data.user.documents); // Update documents state
             } else {
                 setDocuments([]); // Handle no documents case
             }
@@ -124,7 +154,7 @@ function App() {
     return (
         <>
             <ErrorBoundary>
-                <AppHeader 
+                <AppHeader
                     selectedIndex={selectedIndex}
                     handleClose={() => setSelectedIndex(null)} // Reset selected index on close
                     selectedDocumentId={selectedDocumentId || ""} // Pass the selected document ID
@@ -138,6 +168,7 @@ function App() {
             <BrowserRouter>
             {token ?( 
                 <AppMain
+                    docType={docType}
                     username={username}
                     documents={documents}
                     loading={loading} 

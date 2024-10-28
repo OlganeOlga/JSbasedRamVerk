@@ -102,7 +102,7 @@ const utils = {
      * 
      * @returns {Promise<processRoute1result>} - Returns a promise resolving to an object with the response status, data, or error message.
      */
-    processRoute1: async function processRoute1(
+    graphQL: async function graphQL(
         body = null, 
     )
      {

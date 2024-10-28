@@ -14,7 +14,7 @@ interface AppHeaderProps {
     selectedDocumentId: string;
 }
 
-function AppHeader({ 
+function AppHeader({
     selectedIndex, 
     handleClose, 
     selectedDocumentId, 
@@ -40,7 +40,7 @@ function AppHeader({
             // const result = await utils.processRoute("POST", "/data/share", 
             //     { username: username, docId:selectedDocumentId, adress:adress });
             //USER GRAPHQL
-                 const result = await utils.processRoute1(body);
+                 const result = await utils.graphQL(body);
             if (result.status === 200) {
                 alert('Document is shared!')
             }
@@ -57,7 +57,7 @@ function AppHeader({
             // const result = await utils.processRoute("POST", "/data", { username: username });
 
             //USE GRAPHQL
-            const result = await utils.processRoute1(body);
+            const result = await utils.graphQL(body);
             if (result.status === 200) {
                 alert('New document is created!');
                 reloadDocuments();
@@ -75,7 +75,7 @@ function AppHeader({
                 // { username: username, password: password });
 
             //USE GRAPHQL
-            const response = await utils.processRoute1(body)
+            const response = await utils.graphQL(body)
             console.log(response)
             if (response.status === 200) {
                 alert('Document deleted successfully!');

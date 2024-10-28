@@ -3,6 +3,7 @@ import OneDocument from './OneDocument';
 import Document from '../functions/interface'; 
 // element properties
 interface AppArticleProps {
+    docType: string;
     usersname:string | null;
     documents: Document[];
     reloadDocuments: () => void;
@@ -10,7 +11,7 @@ interface AppArticleProps {
     setSelectedIndex: (index: number | null) => void; // Function to update selectedIndex in parent
 }
 
-function AppArticle({usersname, documents, reloadDocuments, selectedIndex, setSelectedIndex }: AppArticleProps) {
+function AppArticle({docType, usersname, documents, reloadDocuments, selectedIndex, setSelectedIndex }: AppArticleProps) {
 
     // select document
     const handleSelect = (index: number) => { 
@@ -45,6 +46,7 @@ function AppArticle({usersname, documents, reloadDocuments, selectedIndex, setSe
             ) : ( // if a document is selected, render OneDocument component
                 
                 <OneDocument
+                    docType={docType}
                     username={usersname}
                     docOwner={documents[selectedIndex].owner}
                     id={documents[selectedIndex]._id}

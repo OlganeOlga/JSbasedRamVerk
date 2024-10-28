@@ -76,6 +76,7 @@ const RootQueryType = new GraphQLObjectType({
             },
             resolve: async function(parent, args) {
                 const username = args.username;
+                console.log("use sheraed documents")
                 try {
                     const documents = await docFu.getShared(username);
             
@@ -83,6 +84,7 @@ const RootQueryType = new GraphQLObjectType({
                     if (!documents || documents.length === 0) {
                         return []; // Return 404 if no documents found
                     }
+                    console.log(documents)
                     return documents ;
                 } catch (error) {
                     console.log("error in route graphql shared/username: ", error);
