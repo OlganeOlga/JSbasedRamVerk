@@ -8,8 +8,7 @@ import UserType from './user.mjs';
 import DockType from './dock.mjs';
 import SharedDockType from './shareddock.mjs';
 
-//import userFu from './../models/users.mjs';
-import userFu from './../models/users.mjs';
+import userFu from './../docs/mongoUsers.mjs';
 import docFu from './../docs/remoteDocs.mjs'
 
 const RootQueryType = new GraphQLObjectType({

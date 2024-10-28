@@ -27,9 +27,13 @@ const mongoUsers = {
 
             let returnObject = [];
 
-            if (keyObject.users) {
-                returnObject = keyObject.users.map(function (user) {
-                    return { name: user.username };
+            if (keyObject) {
+                returnObject = keyObject.map(function(user) {
+                    return {
+                        username: user.username,
+                        password: user.password,
+                        documents: user.documents,
+                    }
                 });
             }
 

@@ -20,13 +20,13 @@ function App() {
     const [username, setUsername] = useState<string | null>(null);
     const [password, setPassword] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null);
-    const [docType, setDocType] = useState<string>("")
+    //const [docType, setDocType] = useState<string>(sessionStorage.getItem('docType')||"")
 
     useEffect(() => { 
         const storedUsername = sessionStorage.getItem('username');
         const storedToken = sessionStorage.getItem('token');
         const storedPassword = sessionStorage.getItem('password');
-        const storedDocType = sessionStorage.getItem('docType');
+        //const storedDocType = sessionStorage.getItem('docType');
         
         if (storedUsername) {
             setUsername(storedUsername);
@@ -37,14 +37,16 @@ function App() {
         if (storedPassword) {
             setPassword(password);
         };
-        if(storedDocType) {
-            setDocType(storedDocType);
-        };
+        
+        // if(storedDocType) {
+        //     setDocType(storedDocType);
+        // };
     }, []);
 
     const loadDocuments = async () => {        
         //let route = "/data/" + doctype + username;
         let body;
+        let docType = sessionStorage.getItem("docType") || "";
         switch(docType) {
             case "": 
                 body = JSON.stringify({
@@ -168,7 +170,7 @@ function App() {
             <BrowserRouter>
             {token ?( 
                 <AppMain
-                    docType={docType}
+                    docType={sessionStorage.getItem("docType") || ""}
                     username={username}
                     documents={documents}
                     loading={loading} 

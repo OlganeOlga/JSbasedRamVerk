@@ -135,33 +135,36 @@ function AppHeader({
                         </>
                         ) : (
                         <>
+                        {sessionStorage.getItem("docType") === null || sessionStorage.getItem("docType") === "" ? (
                             <form className='shareForm' onSubmit={shareDoc}>
-                            <div className="input-group">
-                                <label className="share"> 
-                                    With whom will you share your document?
-                                    <input
-                                        type="email"
-                                        name='adress'
-                                        placeholder="write email"
-                                        value={adress}
-                                        onChange={(e) => setAdress(e.target.value)}
-                                        required
-                                    />
-                                </label>
-                            </div>
+                                <div className="input-group">
+                                    <label className="share"> 
+                                        With whom will you share your document?
+                                        <input
+                                            type="email"
+                                            name='adress'
+                                            placeholder="write email"
+                                            value={adress}
+                                            onChange={(e) => setAdress(e.target.value)}
+                                            required
+                                        />
+                                    </label>
+                                </div>
                                 <ButtonConteiner
-                                buttonType='submit'
-                                buttonName='see-shared'
-                                buttonText='Share dokument'
-                                buttonFunction={() => console.log("Button clicked")}
+                                    buttonType='submit'
+                                    buttonName='see-shared'
+                                    buttonText='Share document'
+                                    buttonFunction={() => console.log("Button clicked")}
                                 />
                             </form>
+                        ) : null}
+                        {sessionStorage.getItem("docType") === null || sessionStorage.getItem("docType") === "" ? (
                             <ButtonConteiner
                                 buttonType='button'
                                 buttonName='change-collection'
                                 buttonText='Remove document'
                                 buttonFunction={deleteDocument}
-                                />
+                                />) : null}
                             <ButtonConteiner
                                 buttonType='button'
                                 buttonName='change-collection'
