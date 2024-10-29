@@ -29,8 +29,10 @@ const RootQueryType = new GraphQLObjectType({
                 username: {type: GraphQLString}
             },
             resolve: async function(parent, args) {
-                let users = await userFu.getAll();
-                return users.find(user => user.username === args.username);
+
+                let user = await userFu.getUser(args.username);
+
+                return user;
             }
         },
 
@@ -41,10 +43,10 @@ const RootQueryType = new GraphQLObjectType({
                 username: {type: GraphQLString},
             },
             resolve: async function(parent, args) {
-                let users = await userFu.getAll();
-                let user = users.find(user => user.username === args.username);
+                let user = await userFu.getUser(args.username);
+
                 if(user){
-                    return user.documents;
+                    return user.documents || [];
                 }
                 throw new Error("user does not exists");
             }
@@ -75,7 +77,6 @@ const RootQueryType = new GraphQLObjectType({
             },
             resolve: async function(parent, args) {
                 const username = args.username;
-                console.log("use sheraed documents")
                 try {
                     const documents = await docFu.getShared(username);
             
@@ -83,7 +84,6 @@ const RootQueryType = new GraphQLObjectType({
                     if (!documents || documents.length === 0) {
                         return []; // Return 404 if no documents found
                     }
-                    console.log(documents)
                     return documents ;
                 } catch (error) {
                     console.log("error in route graphql shared/username: ", error);

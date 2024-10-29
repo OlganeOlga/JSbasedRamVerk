@@ -37,7 +37,7 @@ function Auth({ onLoginSuccess }: AuthProps) {
                     case '/auth/login':
                         sessionStorage.setItem('token', response.result.token);
                         sessionStorage.setItem('username', username);
-                        sessionStorage.setItem('password', password);
+                        //sessionStorage.setItem('password', password);
                         alert("You are logged in!");
                         onLoginSuccess(); // Notify parent component of successful login
                         break;

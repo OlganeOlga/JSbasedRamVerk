@@ -131,7 +131,7 @@ if (process.env.NODE_ENV !== 'test') {
 
 //app.get("/", (req, res) => users.getAll(res));
 //app.use(authenticateToken);
-app.use('/data', mongoRemote); // import routes using remote mongoDB
+//app.use('/data', mongoRemote); // import routes using remote mongoDB
 app.use('/auth', authRoutes); // Use auth routes under '/auth'
 
 // FOR GRAPHQL: import in the begint
@@ -139,10 +139,22 @@ const schema = new GraphQLSchema({
   query: RootQueryType,
   mutation: RootMutationType   
 });
-app.use('/graphql', graphqlHTTP({
+app.use('/graphql', authenticateToken, (req, res, next) => {
+  //console.log('GraphQL request received:', req.body);
+  next();
+}, graphqlHTTP({
   schema: schema,
   graphiql: visual, // Visual är satt till true under utveckling
-  livereload: true, // watch code chenges 
+  livereload: true, // watch code chenges
+  customFormatErrorFn: (error) => {
+    // Customize error response
+    return {
+      message: error.message,
+      locations: error.locations,
+      path: error.path,
+      // Add any additional custom fields if necessary
+    };
+  },
 }));
 
 // // Protect the documents route

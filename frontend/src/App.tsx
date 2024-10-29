@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'; 
+import { useState, useEffect } from 'react'; 
 import AppFooter from "./components/includes/AppFooter";
 import AppHeader from "./components/includes/AppHeader";
 import ErrorBoundary from './components/includes/ErrorBoundary';
@@ -18,15 +18,12 @@ function App() {
     const [loading, setLoading] = useState(true); // Initialize loading state
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null); // Initialize selected index
     const [username, setUsername] = useState<string | null>(null);
-    const [password, setPassword] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null);
-    //const [docType, setDocType] = useState<string>(sessionStorage.getItem('docType')||"")
+   
 
     useEffect(() => { 
         const storedUsername = sessionStorage.getItem('username');
         const storedToken = sessionStorage.getItem('token');
-        const storedPassword = sessionStorage.getItem('password');
-        //const storedDocType = sessionStorage.getItem('docType');
         
         if (storedUsername) {
             setUsername(storedUsername);
@@ -34,13 +31,7 @@ function App() {
         if (storedToken) {
             setToken(storedToken);
         };
-        if (storedPassword) {
-            setPassword(password);
-        };
         
-        // if(storedDocType) {
-        //     setDocType(storedDocType);
-        // };
     }, []);
 
     const loadDocuments = async () => {        
@@ -94,7 +85,7 @@ function App() {
             //GRAPHQL VARIANT
               
             
-            const result = await utils.graphQL(body);
+            const result = await utils.graphQL(body, token);
             
             if (result.status === 200) {
                 // Update documents state
@@ -162,7 +153,6 @@ function App() {
                     selectedDocumentId={selectedDocumentId || ""} // Pass the selected document ID
                     reloadDocuments={loadDocuments}
                     username={username}
-                    password={password}
                     token={token} 
                     />
             </ErrorBoundary>

@@ -118,17 +118,40 @@ router.delete('/unregister', async (req, res) => {
 });
 
 
-// Middleware to protect routes
+// // Middleware to protect routes
+// export const authenticateToken = (req, res, next) => {
+//     const token = req.headers['authorization']?.split(' ')[1];
+
+//     if (!token) return res.status(401).json({ message: 'Access denied' });
+
+//     jwt.verify(token, JWT_SECRET, (err, user) => {
+//         if (err) return res.status(403).json({ message: 'Invalid token' });
+//         req.user = user;
+//         next();
+//     });
+// };
 export const authenticateToken = (req, res, next) => {
+    console.log("user authorisation")
     const token = req.headers['authorization']?.split(' ')[1];
 
+    // Check if the token is present
     if (!token) return res.status(401).json({ message: 'Access denied' });
 
+    // Verify the token
     jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) return res.status(403).json({ message: 'Invalid token' });
+        // Check if there was an error verifying the token
+        if (err) {
+            // Handle token expiration or any other errors
+            if (err.name === 'TokenExpiredError') {
+                return res.status(401).json({ message: 'Token has expired' });
+            }
+            return res.status(403).json({ message: 'Invalid token' });
+        }
+
+        // If token is valid, attach user info to the request object
         req.user = user;
-        next();
+        console.log("authorised")
+        next(); // Proceed to the next middleware or route handler
     });
 };
-
 export default router;

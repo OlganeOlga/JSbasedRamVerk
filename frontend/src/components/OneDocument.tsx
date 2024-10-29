@@ -159,7 +159,7 @@ function OneDocument({docType, username, docOwner, id, title: intialTitle, conte
         }
 
         try {
-          console.log("try update")
+
             // // Submit the document update to the backend
             // const response = await utils.processRoute('PUT', 
             //                             `/data/update`, 
@@ -167,8 +167,7 @@ function OneDocument({docType, username, docOwner, id, title: intialTitle, conte
 
             //WITH graphql
             
-            const response1 = await utils.graphQL(body);
-            console.log("response of process route 1: ",response1)
+            const response1 = await utils.graphQL(body,token);
             if (!response1.ok) {
                 console.error('Failed to update document:', response1.message);
                 // Optionally, show error message in UI

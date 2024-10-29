@@ -27,8 +27,6 @@ const utils = {
      */
     processRoute : async function processRoute(passedMethod = 'GET', route = "/", body = null, headers = {}) {
         const url = backendUrl + route;
-        console.log("route: ",route)
-        // console.log(" url: ",url)
 
         const defaultHeaders = { 'Content-Type': 'application/json'};
         const mergeHeaders = {...defaultHeaders, ...headers};
@@ -43,12 +41,9 @@ const utils = {
         try {
             // Pass the URL and options to fetch
             const response = await fetch(url, options);
-            console.log(response)
-            
+
             if (!response.ok) {
-                // console.log("reposns not OK")
                 const errorData = await response.json();
-                //console.error('Error:', errorData.message);  // Will print: 'No username found'
              
                 return {
                     ok: response.ok,
@@ -69,49 +64,25 @@ const utils = {
         }
     },
 
-    // /**
-    //  * Function handle request to the graphql route that
-    //  * replase all previouse routes
-    //  * @asynk
-    //  * 
-    //  * @param {object} params query for the request
-    //  * @returns {object} resutl of the graphql request
-    //  */
-    // processGraphQl : async function processGraphQl(params) {
-    //     const query = params;
-    //     const respons = fetch('/graphql', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'Accept': 'application/json',
-    //         },
-    //         body: JSON.stringify({ query: "{ courses { name } }" })
-    //     })
-    //     const result = await respons.json();
-    //     console.log('data returned:', result.data);
-    //     return result;
-    // },
-    //change for GRAPHQL in cookies
-
-    
     /**
      * Fetch route functionality for making HTTP requests in a React component.
      * @async
      * 
      * @param {string} [body=''] - Request body (used only for POST/PUT requests).
+     * @param {string || null} auth uses for authorisation
      * 
      * @returns {Promise<processRoute1result>} - Returns a promise resolving to an object with the response status, data, or error message.
      */
     graphQL: async function graphQL(
-        body = null, 
+        body, auth
     )
      {
-        console.log("from proceessRoute1, body: ", body)
         const url = backendUrl + '/graphql';
     
         const mergeHeaders = {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
+                    'Authorization': `Bearer ${auth}`, // Send token
                 };
     
         const options = {
@@ -123,7 +94,6 @@ const utils = {
     
         try {
             const response = await fetch(url, options);
-            console.log("from process Route 1, respons: ", response)
     
             if (!response.ok) {
                 const errorData = await response.json();
@@ -135,7 +105,6 @@ const utils = {
             }
     
             const result = await response.json();
-            console.log(result)
             return {
                 ok: response.ok,
                 status: response.status,
