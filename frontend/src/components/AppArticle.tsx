@@ -43,7 +43,7 @@ function AppArticle({docType, usersname, documents, reloadDocuments, selectedInd
                     ))}
                 </ul>
             ) : ( // if a document is selected, render OneDocument component
-                
+                <>
                 <OneDocument
                     docType={docType}
                     username={usersname}
@@ -53,6 +53,7 @@ function AppArticle({docType, usersname, documents, reloadDocuments, selectedInd
                     content={documents[selectedIndex].content}
                     handleClose={handleClose}
                 />
+                </>
             )}
         </div>
     );

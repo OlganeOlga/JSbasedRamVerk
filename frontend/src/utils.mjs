@@ -4,13 +4,6 @@ const remoteBackend = "https://jsramverk-oleg22-g9exhtecg0d2cda5.northeurope-01.
 // Bestäm vilken backend som ska användas baserat på om vi kör lokalt eller i produktion
 const backendUrl = window.location.hostname === 'localhost' ? localBackend : remoteBackend;
 
-// const interface processRoute1result: Object {
-//     ok: boolean,
-//     status: number,
-//     result: any, // Or a more specific type based on your data structure
-//     message: string,
-// };
-
 const utils = {
 
     /**

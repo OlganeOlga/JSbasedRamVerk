@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import FormConteiner from './includes/FormConteiner';
-import utils from '../utils.mjs';
+import utils from './../utils.mjs';
 
 interface AuthProps {
     onLoginSuccess: () => void; // Callback to notify when login is successful
@@ -31,7 +31,6 @@ function Auth({ onLoginSuccess }: AuthProps) {
         try {
             const response = await utils.processRoute(method, route, { "username":username, "password":password });
 
-            console.log(response)
             if (response.ok) {
                 switch(route) {
                     case '/auth/login':
@@ -59,7 +58,6 @@ function Auth({ onLoginSuccess }: AuthProps) {
                         console.warn(`Unhandled route: ${route}`);
                 }
             } else {
-                console.error('Error:', response.message);
                 alert(response.message);
                 // Handle unsuccessful login and return to buttons
                 if (route === '/auth/login') {

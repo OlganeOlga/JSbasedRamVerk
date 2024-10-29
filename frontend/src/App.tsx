@@ -102,7 +102,6 @@ function App() {
                 setDocuments([]); // Handle no documents case
             }
         } catch (error) {
-            console.error("Error loading documents:", error);
             setDocuments([]); // Reset documents on error
         } finally {
             setLoading(false); // End loading

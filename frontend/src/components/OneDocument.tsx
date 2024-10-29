@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import {socket} from './../socket.mjs'
 //import { Socket } from "socket.io-client";
 import AddComment from "./AddComment";
-import utils from "../utils.mjs";
+import utils from "./../utils.mjs";
 import CommentInterface from './../functions/interface';
 
 // Define the shape of formData and comments
@@ -119,9 +119,7 @@ function OneDocument({docType, username, docOwner, id, title: intialTitle, conte
             console.error("No token found in session storage. User may not be authenticated.");
             return;
         }
-        // const headers = {
-        //         'Authorization': `Bearer ${token}`,
-        // };
+
         let body;
         switch(docType){
             case "":

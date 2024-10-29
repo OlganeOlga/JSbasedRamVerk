@@ -38,11 +38,11 @@ const app = express();
 const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
-  cors: {
-    // origin: ["http://localhost:3000", "https://www.student.bth.se/"],
-    origin: "*",
-    methods: ["GET", "POST"],
-  },
+    cors: {
+        // origin: ["http://localhost:3000", "https://www.student.bth.se/"],
+        origin: "*",
+        methods: ["GET", "POST"],
+    },
 });
 
 // let timeout;
@@ -120,8 +120,6 @@ app.use(express.static(path.join(process.cwd(), "public")));
 
 app.use(express.json()); // in plase of bodyParser.urlencoded and bodyParser.json
 
-// // Middleware to override the method
-// app.use(methodOverride('_method'));
 
 // don't show the log when it is test
 if (process.env.NODE_ENV !== 'test') {
@@ -129,72 +127,64 @@ if (process.env.NODE_ENV !== 'test') {
     app.use(morgan('combined')); // 'combined' outputs the Apache style LOGs
 }
 
-//app.get("/", (req, res) => users.getAll(res));
-//app.use(authenticateToken);
-//app.use('/data', mongoRemote); // import routes using remote mongoDB
 app.use('/auth', authRoutes); // Use auth routes under '/auth'
 
 // FOR GRAPHQL: import in the begint
 const schema = new GraphQLSchema({
-  query: RootQueryType,
-  mutation: RootMutationType   
+    query: RootQueryType,
+    mutation: RootMutationType   
 });
+
+//use authentication in the users request
 app.use('/graphql', authenticateToken, (req, res, next) => {
-  //console.log('GraphQL request received:', req.body);
-  next();
+  n ext();
 }, graphqlHTTP({
-  schema: schema,
-  graphiql: visual, // Visual är satt till true under utveckling
-  livereload: true, // watch code chenges
-  customFormatErrorFn: (error) => {
-    // Customize error response
-    return {
-      message: error.message,
-      locations: error.locations,
-      path: error.path,
-      // Add any additional custom fields if necessary
-    };
-  },
-}));
+    schema: schema,
+    graphiql: visual, // Visual är satt till true under utveckling
+    livereload: true, // watch code chenges
+    customFormatErrorFn: (error) => {
+        // Customize error response
+        return {
+        message: error.message,
+        locations: error.locations,
+        path: error.path,
+        // Add any additional custom fields if necessary
+        };
+    },
+    }));
 
-// // Protect the documents route
-// app.get('/documents', authenticateToken, async (req, res) => {
-//   const documents = await Document.find(); // Make sure you define Document schema properly
-//   res.json(documents);
-// });
+    // Add routes for 404 and error handling
+    // Catch 404 and forward to error handler
+    // Put this last
+    app.use((req, res, next) => {
+        var err = new Error("Not Found");
+        err.status = 404;
+        next(err);
+    });
 
-// Add routes for 404 and error handling
-// Catch 404 and forward to error handler
-// Put this last
-app.use((req, res, next) => {
-  var err = new Error("Not Found");
-  err.status = 404;
-  next(err);
-});
+    // Error handler
+    app.use((err, req, res, next) => {
+        if (res.headersSent) {
+            return next(err);
+        }
 
-// Error handler
-app.use((err, req, res, next) => {
-  if (res.headersSent) {
-      return next(err);
-  }
+        res.status(err.status || 500).json({
+            "errors": [
+                {
+                    "status": err.status,
+                    "title":  err.message,
+                    "detail": err.message
+                }
+            ]
+        });
+    });
 
-  res.status(err.status || 500).json({
-      "errors": [
-          {
-              "status": err.status,
-              "title":  err.message,
-              "detail": err.message
-          }
-      ]
-  });
-});
-
-const server = app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-});
+    const server = app.listen(port, () => {
+        console.log(`Example app listening on port ${port}`)
+    });
 
 
-// ES module-style code (Correct)
-export { app, server};
+    // ES module-style code (Correct)
+    export { app, server};
 
 
