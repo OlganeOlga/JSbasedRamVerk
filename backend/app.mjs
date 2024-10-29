@@ -10,7 +10,24 @@ import { Server } from 'socket.io';
 import roomState from "./models/socket.mjs";
 import comments from "./models/comments.mjs";
 import mongoRemote from "./routes/mongoRemote.mjs";
-import authRoutes from "./routes/auth_user.mjs";
+import authRoutes, {authenticateToken} from "./routes/auth_user.mjs";
+
+
+// GAPHQL
+import { graphqlHTTP } from 'express-graphql';
+const visual = true; // SET IT TO FALSE ONDER PRODUCTION!
+//import schema from './graphql/graphschema.mjs';
+/**
+ * vreate graphql schema in the separate file in graphql/graphschema
+ */
+import {GraphQLSchema} from "graphql";
+import RootQueryType from "./graphql/root.mjs";
+import RootMutationType from './graphql/root_mutation.mjs';
+
+
+
+
+//import users from "./models/users.mjs"
 
 // Set up the Express app
 const app = express();
@@ -34,6 +51,7 @@ io.on("connection", (socket) => {
 
   socket.on("create", async (room) => {
     await socket.join(room);
+    console.log(`Client ${socket.id} joined room: ${room}`);
     socket.currentRoom = room;
     console.log("Joined room:", room);
 
@@ -71,11 +89,64 @@ io.on("connection", (socket) => {
   });
 });
 
-// Routes
-app.use('/data', mongoRemote); // Define routes for MongoDB interactions
-app.use('/auth', authRoutes); // Define authentication routes
 
-// Error handling middleware
+// Parse application/json
+app.use(bodyParser.json());
+
+app.disable('x-powered-by');
+
+app.set("view engine", "ejs");
+
+// middelwear showing working route
+app.use((req, res, next) => {
+  console.log(req.method);
+  console.log(req.path);
+  next();
+});
+
+app.use(express.static(path.join(process.cwd(), "public")));
+
+app.use(express.json()); // in plase of bodyParser.urlencoded and bodyParser.json
+
+
+// don't show the log when it is test
+if (process.env.NODE_ENV !== 'test') {
+    // use morgan to log at command line
+    app.use(morgan('combined')); // 'combined' outputs the Apache style LOGs
+}
+
+app.use('/auth', authRoutes); // Use auth routes under '/auth'
+
+// FOR GRAPHQL: import in the begint
+const schema = new GraphQLSchema({
+    query: RootQueryType,
+    mutation: RootMutationType   
+});
+
+//use authentication in the users request
+//app.use('/graphql', authenticateToken, (req, res, next) => {// USE IF ALL WORKS
+app.use('/graphql', (req, res, next) => {
+    req.socket = io; // Assuming `io` is your Socket.IO server instance
+    next();
+}, graphqlHTTP({
+  schema: schema,
+  graphiql: visual, // Visual är satt till true under utveckling
+  livereload: true, // watch code chenges
+  context: { socket: req.socket },// pass socket to graphQL
+  customFormatErrorFn: (error) => {
+    // Customize error response
+    return {
+      message: error.message,
+      locations: error.locations,
+      path: error.path,
+      // Add any additional custom fields if necessary
+    };
+  },
+}));
+
+// Add routes for 404 and error handling
+// Catch 404 and forward to error handler
+// Put this last
 app.use((req, res, next) => {
   var err = new Error("Not Found");
   err.status = 404;

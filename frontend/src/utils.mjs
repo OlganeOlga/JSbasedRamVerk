@@ -3,6 +3,7 @@ const remoteBackend = "https://jsramverk-oleg22-g9exhtecg0d2cda5.northeurope-01.
 
 // Bestäm vilken backend som ska användas baserat på om vi kör lokalt eller i produktion
 const backendUrl = window.location.hostname === 'localhost' ? localBackend : remoteBackend;
+
 const utils = {
 
     /**
@@ -12,15 +13,13 @@ const utils = {
      * @param {string} [passedMethod] - HTTP method ('GET', 'POST', etc.)
      * @param {string} [route]
      * @param {object|null} [body=null] - Request body (used only for POST/PUT requests)
-     * @param {object} [headers={}] - Request headers
+     * @param {object} { [key: string]: string } = {} - Request headers
      * 
      * @param {string} route : express-route route
      * @returns {Promise<array>}: returns one ore more dokuments as array
      */
     processRoute : async function processRoute(passedMethod = 'GET', route = "/", body = null, headers = {}) {
         const url = backendUrl + route;
-        // console.log("route: ",route)
-        // console.log(" url: ",url)
 
         const defaultHeaders = { 'Content-Type': 'application/json'};
         const mergeHeaders = {...defaultHeaders, ...headers};
@@ -28,26 +27,25 @@ const utils = {
         const options = {
             method: passedMethod,
             headers: mergeHeaders,
-            body: body ? JSON.stringify(body) : null, 
+            body: body ? JSON.stringify(body) : null,
+            //credentials: 'include' 
         };
 
         try {
             // Pass the URL and options to fetch
-            //console.log(`Fetching data from URL: ${url} with options:`, options)
             const response = await fetch(url, options);
-            //console.log("Respons of the processRoute", response)
+
             if (!response.ok) {
                 const errorData = await response.json();
-                //console.error('Error:', errorData.message);  // Will print: 'No username found'
              
                 return {
                     ok: response.ok,
                     status: response.status,
-                    message: errorData.message
+                    message: errorData.message,
                 };
             }
             const result = await response.json();
-            //console.log(result)
+            
             return {
                 ok: response.ok,
                 status: response.status,
@@ -60,26 +58,54 @@ const utils = {
     },
 
     /**
-     * Reload documents on the page
+     * Fetch route functionality for making HTTP requests in a React component.
      * @async
      * 
-     * @param {string |null} userName name of the user
-     * @param {function} setDocuments 
-     * @param {function} setLoading
+     * @param {string} [body=''] - Request body (used only for POST/PUT requests).
+     * @param {string || null} auth uses for authorisation
      * 
-     * @returns {void}
+     * @returns {Promise<processRoute1result>} - Returns a promise resolving to an object with the response status, data, or error message.
      */
-    loadDocuments: async function loadDocuments(userName, setDocuments) {
+    graphQL: async function graphQL(
+        body, auth
+    )
+     {
+        const url = backendUrl + '/graphql';
+    
+        const mergeHeaders = {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${auth}`, // Send token
+                };
+    
+        const options = {
+            method: 'POST',
+            headers: mergeHeaders,
+            body: body, //body is already json
+            //credentials: 'include', // IMPORTANT: This ensures cookies (including HTTP-only cookies) are sent with requests
+        };
+    
         try {
-            const result = await this.processRoute('GET', `/data/${userName}`); // Call fetch function here
-            if (result.status === 200) {
-                setDocuments(result.result); // Update documents state
-            } else {
-                setDocuments([]); // Handle no documents case
+            const response = await fetch(url, options);
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                return {
+                    ok: response.ok,
+                    status: response.status,
+                    message: errorData.message
+                };
             }
+    
+            const result = await response.json();
+            return {
+                ok: response.ok,
+                status: response.status,
+                result: result
+            };
         } catch (error) {
-            console.error("Error loading documents:", error);
-            setDocuments([]); // Reset documents on error
+            console.log('Failed to fetch documents in processRoute.processRoute:', error);
+            return error;
         }
     },
 }

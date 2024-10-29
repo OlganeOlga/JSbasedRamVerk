@@ -1,3 +1,4 @@
+// import { response } from 'express';
 import database from '../db/mongo/mongoDb.mjs'
 import { ObjectId } from 'mongodb';
 
@@ -9,14 +10,14 @@ const mongoDocs = {
      *
      * @async
      * 
-     * @param {string} name  users email 
+     * @param {string} username  users email 
      *
      * @throws Error when database operation fails.
      *
      * @return {Promise<object>} The resultset as an array.
      */
-    userDocuments: async function userDocuments(name) {
-        const query = {'username': name};
+    userDocuments: async function userDocuments(username) {
+        const query = {'username': username};
 
         const options = {
             //projection: { _id: 1, title: 1, content: 1 }
@@ -24,8 +25,13 @@ const mongoDocs = {
         }
         const remoteMongo = await database.connect();
         try {
-           const result = await remoteMongo.collection.find(query, options).toArray();
-            return result[0].documents
+            const result = await remoteMongo.collection.find(query, options).toArray();
+             // Extract documents and add owner property
+            const documents = result[0].documents.map(doc => ({
+                ...doc,
+                owner: username // Add owner property with the username
+            }));
+            return documents;
         } finally {
             await remoteMongo.client.close();
         }
@@ -70,26 +76,43 @@ const mongoDocs = {
      *
      * @async
      *
+     * @param {string} username        documents username
+     * @param {string} id        documents id
      * @param {string} title        documents title
      * @param {string} content      documents content
+     * @param {string} allowedUser      share document
      *
      * @throws Error when database operation fails.
      *
      * @return {Promise<object>} The resultset as an array.
      */
-    updateDocument: async function updateDocument(username, id, title, content) {
+
+    updateDocument: async function updateDocument(username, id, title, content, allowedUser=null) {
+        console.log(typeof(id))
         const query = {
             "username": username,
-            "documents._id": new ObjectId(`${id}`)
+            "documents._id": new ObjectId(id) // Ensure you're searching by the correct document ID
         };
-        const options = { upsert: false }; // do not add document if the docuent with this title is note found
+    
+        const options = { upsert: false }; // Do not add document if the document with this ID is not found
+    
+        // Construct the update document
         const updateDoc = {
             $set: {
                 "documents.$.title": title,
                 "documents.$.content": content
-            },
-            };
+            }
+        };
+    
+        // // If an allowedUser is provided, add it to the allowed_users array
+        // if (allowedUser) {
+        //     // Use $addToSet to add the allowedUser to the allowed_users array
+        //     updateDoc.$addToSet = { "documents.$.allowed_users": allowedUser };
+        // }
+    
         const remoteMongo = await database.connect();
+        const user = await remoteMongo.collection.findOne(query);
+        console.log(user)
         try {
             return await remoteMongo.collection.updateOne(query, updateDoc, options);
         } finally {
@@ -117,8 +140,10 @@ const mongoDocs = {
         // Create the new document object to push into the `documents` array
         const document = {
             _id: new ObjectId(),  // Generate new ObjectId for the document
-            title: "New document",
-            content: ""
+            title: "new document",
+            content: "",
+            comments: [],
+            allowed_users: [],
         };
     
         try {   
@@ -135,82 +160,6 @@ const mongoDocs = {
             await remoteMongo.client.close();
         }
     },
-   
-    /**
-     * add new user in the collection 
-     *
-     * @async
-     * 
-     * @param {string} name  users email
-     * @param {string} userPassword users userPassword
-     *
-     * @throws Error when database operation fails.
-     *
-     * @return {Promise<object>} The resultset as an array.
-     */
-    addUser: async function addUser(name, userPassword) {
-        const remoteMongo = await database.connect();
-        const data = {
-            username: name,
-            password: userPassword
-        };
-        try {
-            const document = await remoteMongo.collection.insertOne(data);
-            return document;
-        } finally {
-            await remoteMongo.client.close();
-        }
-    },
-
-    /**
-     * add new user in the collection 
-     *
-     * @async
-     * 
-     * @param {string} name  users email
-     * @param {string} userPassword users userPassword
-     *
-     * @throws Error when database operation fails.
-     *
-     * @return {Promise<object>} The resultset as an array.
-     */
-    findUser: async function findUser(name, userPassword) {
-        const remoteMongo = await database.connect();
-        const data = {
-            username: name,
-            password: userPassword
-        };
-        try {
-            const user = await remoteMongo.collection.findOne({password: userPassword});
-            if(user.username === name){
-                return user;
-            } else {
-                throw new Error("Name is false")
-            }
-        } finally {
-            await remoteMongo.client.close();
-        }
-    },
-
-    /**
-     * remove document by _id from the collection 
-     *
-     * @async
-     * @param {string} id           documents id (_id)
-     *
-     * @throws Error when database operation fails.
-     *
-     * @return {Promise<object>} The resultset as an array.
-     */
-    removeById: async function removeById(id) {
-        //get database
-        const remoteMongo = await database.connect();
-        try {
-            return await remoteMongo.collection.deleteOne({_id: new ObjectId(`${id}`)})       
-        } finally {
-            await remoteMongo.client.close();
-        }
-    },
 
     /**
      * remove document by _id from the collection 
@@ -219,7 +168,7 @@ const mongoDocs = {
      * 
      * @param {string} id           documents id (_id)
      * @param {string} username  users email
-     * @param {string} password users userPassword
+     *
      * @throws Error when database operation fails.
      *
      * @return {Promise<object>} The resultset as an array.
@@ -227,6 +176,7 @@ const mongoDocs = {
     removeDocument: async function removeDocument(id, userName) {
         const query = {'username': userName};
         const remove = { documents: {_id: new ObjectId(`${id}`)}};
+        console.log(remove)
         const remoteMongo = await database.connect();
 
         try {
@@ -238,84 +188,146 @@ const mongoDocs = {
     },
 
     /**
-     * remove document vy title in the collection 
+     * shared document with user  
      *
      * @async
-     * @param {string} title           documents title
-     *
+     * @param {string} owner  name user of the document
+     * @param {string} docId id of the document
+     * @param {<string>} adress  names user with whome document is shared as array
+     * 
      * @throws Error when database operation fails.
      *
      * @return {Promise<object>} The resultset as an array.
      */
-        removeByTitle: async function removeByTitle(title) {
-            const remoteMongo = await database.connect();
-            try {
-                return await remoteMongo.collection.deleteOne({title: title});           
-            } finally {
-                await remoteMongo.client.close();
-            }
-        },
+    shareDoc: async function shareDoc(owner, docId, adress) {
+        console.log("int sherDoc of remoteDocs, typeof", typeof(docId))
+        console.log(docId);
+        const id = docId.toString();
+        const query = {
+            "username": owner,
+            "documents._id": new ObjectId(`${id}`)
+        };
 
-    /**
-     * fiend document in the collection by _id
-     *
-     * @async
-     * @param {string} id           documents id (_id)
-     *
-     * @throws Error when database operation fails.
-     *
-     * @return {Promise<object>} The resultset as an array.
-     */
-        getByID: async function getByID(id) {
-            const remoteMongo = await database.connect();
-            try {
-                return await remoteMongo.collection.findOne({_id: new ObjectId(`${id}`)});           
-            } finally {
-                await remoteMongo.client.close();
-            }
-        },
-    
-    /**
-     * Find documents in an collection by matching search criteria.
-     *
-     * @async
-     *
-     * @param {string} col        Collection.
-     * @param {string} pass   Search password.
-     *
-     * @throws Error when database operation fails.
-     *
-     * @return {Promise<array>} The resultset as an array.
-     */
-    
-    findByPassword: async function finedByPassword(col, pass) {
+        console.log("int sherDoc of remoteDocs")
+        const options = { upsert: false }; // do not add document if the docuent with this title is note found
+        
+        const updateDoc = {
+            $addToSet: {
+                "documents.$.allowed_users": adress,
+            },
+        }
+
         const remoteMongo = await database.connect();
+        
         try {
-            return await remoteMongo.collection.findOne({password: pass});
+            const response = await remoteMongo.collection.updateOne(query, updateDoc, options);
+            console.log(response)
+            return response;          
         } finally {
             await remoteMongo.client.close();
         }
     },
 
-    // /**
-    //  * Find documents in an collection by matching search criteria.
-    //  *
-    //  * @async
-    //  *
-    //  * @param {string} col        Collection.
-    //  * @param {object} criteria   Search criteria.
-    //  * @param {object} projection What to project in results.
-    //  * @param {number} limit      Limit the number of documents to retrieve.
-    //  *
-    //  * @throws Error when database operation fails.
-    //  *
-    //  * @return {Promise<array>} The resultset as an array.
-    //  */
+    //db.users.updateOne({ "username": "olga@olga", "documents._id": ObjectId("671b4a4fd2618fba0cfcd84a") },{ $addToSet: { "documents.$.alowd_users": "newUser@example.com" } });
     
-    // findInCollection: async function findInCollection(col, criteria, projection, limit = 1) {
+        /**
+     * shared document with user  
+     *
+     * @async
+     * @param {string} owner  name user of the document
+     * @param {string} docId id of the document
+     * @param {<string>} author  names user who commnts
+     * @param {string} content  comment content
+     * @throws Error when database operation fails.
+     *
+     * @return {Promise<object>} The resultset as an array.
+     */
+    commentDoc: async function commentDoc(owner, docId, author, content) {
+        console.log("int commentDoc of remoteDocs, typeof", typeof(docId))
+        const id = docId.toString();// added for using GRAPHQL
+        const query = {
+            "username": owner,
+            "documents._id": new ObjectId(`${id}`)
+        };
+
+        const options = { upsert: false }; // do not add document if the docuent with this title is note found
+        const updateDoc = {
+            $addToSet: {
+                "documents.$.comments": {
+                                            author: author,
+                                            content: content
+                                        },
+            },
+        }
+
+        const remoteMongo = await database.connect();
         
-    //     return await col.find(criteria, projection).limit(limit).toArray();
-    // },
+        try {
+            const response = await remoteMongo.collection.updateOne(query, updateDoc, options);
+            console.log(response)
+            return response;          
+        } finally {
+            await remoteMongo.client.close();
+        }
+    },
+
+    /**
+     * fined shared documents by username in the collection 
+     *
+     * @async
+     * @param {string} username  name iosf user with whom documents are shared
+     *
+     * @throws Error when database operation fails.
+     *
+     * @return {Promise<object>} The resultset as an array.
+     */
+    getShared: async function getShared(username) {
+        const remoteMongo = await database.connect();
+        console.log("in mongoDocs, search shared for: ", username)
+        // search on
+        const pipeline = [
+            { 
+                $match: {
+                    "documents.allowed_users": { $exists: true, $type: "array" }, // Ensure allowed_users exists and is an array
+                    "documents.allowed_users": username // Match documents where allowed_users contains the specified username
+                }
+            },
+            {
+                $project: {
+                    _id: 0, // Exclude the user _id from the result
+                    documents: {
+                        $filter: {
+                            input: "$documents", // Input array to filter
+                            as: "document", // Variable for each document
+                            cond: { $in: [username, "$$document.allowed_users"] } // Condition to check if 'username' is in allowed_users
+                        }
+                    },
+                    owner: "$username" // Include the owner's username in the projection
+                }
+            },
+            { 
+                $unwind: "$documents" // Unwind the documents array to get individual documents
+            },
+            { 
+                $replaceRoot: { newRoot: { // Replace the root with the documents
+                    $mergeObjects: [
+                        "$documents", // The document fields
+                        { owner: "$owner" } // Add the owner property
+                    ]
+                } 
+            }
+        }];
+
+        try {
+            const response = await remoteMongo.collection.aggregate(pipeline).toArray();
+            //returns array
+            return response;
+        } catch (e) {
+            console.log("error in remoteDocs: getShare, " , e)
+        }finally {
+            await remoteMongo.client.close();
+        }
+    },
 };
 
 export default mongoDocs;

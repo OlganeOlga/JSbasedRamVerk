@@ -5,7 +5,7 @@ let dbConnection;  // Holds a persistent connection for comments
 const comments = {
   initDbConnection: async () => {
     if (!dbConnection) {
-      dbConnection = await database.getDb(collectionName);
+      dbConnection = await database.getDb();
     }
     return dbConnection;
   },

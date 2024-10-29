@@ -34,7 +34,9 @@ router.post('/', async (req, res) => {
 
 // update a document
 router.put('/update', async (req, res) => {
+    
     const {username, id, title, content } = req.body;
+    console.log(username, id, title, content, "fron put/update")
     try {
         const result = await mongoDocs.updateDocument(username, id, title, content);
         res.json({ result });
@@ -48,11 +50,49 @@ router.delete('/delete/:id', async (req, res) => {
     const id = req.params.id;
     const {username, password} = req.body;
     try {
-        const result = await mongoDocs.removeDocument(id, username, password);
+        const result = await mongoDocs.removeDocument(id, username);
         res.json({ result });
     } catch (error) {
         res.json({ error: error });
     }
 });
+
+router.get('/shared/:username', async (req, res) => {
+    const username = req.params.username;
+    try {
+        const result = await mongoDocs.getShared(username);
+
+        //return fout status if no shared documnets
+        if (!result || result.length === 0) {
+            return res.status(404).json({ message: "No shared documents found." }); // Return 404 if no documents found
+        }
+        res.status(200).json(result);
+    } catch (error) {
+        console.log("error in route shared/username: ", error)
+        res.json({ error: error });
+    }
+})
+
+router.post('/share', async (req, res) => {
+    const {username, docId, adress } = req.body;
+    try {
+        const result = await mongoDocs.shareDoc(username, docId, adress);
+        res.json({ result });
+    } catch (error) {
+        console.log("error in /share: ", error)
+        res.json({ error: error });
+    }
+})
+
+router.post('/comment', async (req, res) => {
+    const {username, docId, adress } = req.body;
+    try {
+        const result = await mongoDocs.shareDoc(username, docId, adress);
+        res.json({ result });
+    } catch (error) {
+        console.log("error in /share: ", error)
+        res.json({ error: error });
+    }
+})
 
 export default router;

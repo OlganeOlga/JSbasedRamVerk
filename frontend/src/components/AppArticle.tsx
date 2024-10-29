@@ -1,17 +1,16 @@
 import OneDocument from './OneDocument';
-import User from '../functions/interfase'; // import interface for object Document
-import Document from '../functions/interfase'; 
-// element properties
+import Document from '../functions/interface'; 
+
 interface AppArticleProps {
+    docType: string;
     usersname:string | null;
     documents: Document[];
-    //reloadUsers: () => void;
     reloadDocuments: () => void;
     selectedIndex: number | null; // Selected document index from parent
     setSelectedIndex: (index: number | null) => void; // Function to update selectedIndex in parent
 }
 
-function AppArticle({usersname, documents, reloadDocuments, selectedIndex, setSelectedIndex }: AppArticleProps) {
+function AppArticle({docType, usersname, documents, reloadDocuments, selectedIndex, setSelectedIndex }: AppArticleProps) {
 
     // select document
     const handleSelect = (index: number) => { 
@@ -22,7 +21,6 @@ function AppArticle({usersname, documents, reloadDocuments, selectedIndex, setSe
     const handleClose = () => {
         setSelectedIndex(null);
         reloadDocuments();
-        //reloadUsers();
     };
     const selectedDocument = selectedIndex !== null && documents[selectedIndex];
 
@@ -45,14 +43,17 @@ function AppArticle({usersname, documents, reloadDocuments, selectedIndex, setSe
                     ))}
                 </ul>
             ) : ( // if a document is selected, render OneDocument component
-                
+                <>
                 <OneDocument
+                    docType={docType}
                     username={usersname}
+                    docOwner={documents[selectedIndex].owner}
                     id={documents[selectedIndex]._id}
                     title={documents[selectedIndex].title}
                     content={documents[selectedIndex].content}
                     handleClose={handleClose}
                 />
+                </>
             )}
         </div>
     );

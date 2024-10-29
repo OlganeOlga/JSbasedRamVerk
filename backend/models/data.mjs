@@ -23,7 +23,7 @@ const data = {
                 },
                 {
                     "$match": {
-                        "users.email": req.user.email
+                        "users.username": req.user.username
                     }
                 },
                 {

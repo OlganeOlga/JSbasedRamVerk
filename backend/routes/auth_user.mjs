@@ -9,7 +9,7 @@ const UserSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true }
 });
-const User = mongoose.model('User', UserSchema);
+export const User = mongoose.model('User', UserSchema);
 
 // JWT secret key (use dotenv to store the secret key)
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
@@ -17,36 +17,10 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
 const router = express.Router();
 
 // User registration route
-// router.post('/register', async (req, res) => {
-//     const { username, password } = req.body;
-//     const hashedPassword = await bcrypt.hash(password, 10);
-//     try {
-//         console.time("DB query time");
-//         const isMatch = await userFunctions.getUser(username);
-//         console.timeEnd("DB query time");
-//         if(isMatch.username) {
-//            return res.status(401);
-           
-//         } else {
-//             const user = new User({ username, password: hashedPassword });
-//             const response = await userFunctions.saveUser(user);
-//             console.log(response)
-            
-//             return response;
-//         }
-//     } catch (error) {
-       
-//         return res.status(500);
-//     }
-// });
-
 router.post('/register', async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        // // Log database query time for performance diagnostics
-        // console.time("DB query time");
-
         // Check if the user already exists
         const existingUser = await userFunctions.getUser(username);
 
@@ -92,29 +66,33 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// User login route
+//login for cookies
 router.post('/login', async (req, res) => {
+    console.log("in login route")
     const { username, password } = req.body;
     try {
         const user = await userFunctions.getUser(username);
-
-        console.log("user: ", user)
        
-        if (!user) {
-
-            console.log(user)
-            return res.status(400).send({ message: 'No username found' });
-        }
-
+        if (!user) return res.status(400).json({ message: 'No username found' });
 
         const isMatch = await bcrypt.compare(password, user.password);
         
-        if (!isMatch) return res.status(400).send({ message: 'Invalid username or password' });
+        if (!isMatch) return res.status(400).json({ message: 'Invalid username or password' });
 
         // Generate JWT token
         const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
 
-        res.json({ token });
+        // // Set the token in a cookie
+        // res.cookie('token', token, {
+        //     httpOnly: true, // Prevent access to the token via JavaScript
+        //     secure: process.env.NODE_ENV === 'production', // Send cookies over HTTPS only in production
+        //     maxAge: 60 * 60 * 1000, // Token expires in 1 hour (same as the token expiry)
+        // });
+
+        
+
+        // Send a success message (but without the token)
+        res.json({ message: 'Login successful', token: token });
     } catch (error) {
         res.status(500).json({ message: 'Error during login', error });
     }
@@ -123,6 +101,7 @@ router.post('/login', async (req, res) => {
 // User login route
 router.delete('/unregister', async (req, res) => {
     const { username, password } = req.body;
+    console.log({username, password})
     try {
         const user = await userFunctions.getUser(username);
         if (!user) return res.status(400).json({ message: 'Invalid username or password' });
@@ -138,17 +117,41 @@ router.delete('/unregister', async (req, res) => {
     }
 });
 
-// Middleware to protect routes
+
+// // Middleware to protect routes
+// export const authenticateToken = (req, res, next) => {
+//     const token = req.headers['authorization']?.split(' ')[1];
+
+//     if (!token) return res.status(401).json({ message: 'Access denied' });
+
+//     jwt.verify(token, JWT_SECRET, (err, user) => {
+//         if (err) return res.status(403).json({ message: 'Invalid token' });
+//         req.user = user;
+//         next();
+//     });
+// };
 export const authenticateToken = (req, res, next) => {
+    console.log("user authorisation")
     const token = req.headers['authorization']?.split(' ')[1];
 
+    // Check if the token is present
     if (!token) return res.status(401).json({ message: 'Access denied' });
 
+    // Verify the token
     jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) return res.status(403).json({ message: 'Invalid token' });
+        // Check if there was an error verifying the token
+        if (err) {
+            // Handle token expiration or any other errors
+            if (err.name === 'TokenExpiredError') {
+                return res.status(401).json({ message: 'Token has expired' });
+            }
+            return res.status(403).json({ message: 'Invalid token' });
+        }
+
+        // If token is valid, attach user info to the request object
         req.user = user;
-        next();
+        console.log("authorised")
+        next(); // Proceed to the next middleware or route handler
     });
 };
-
 export default router;

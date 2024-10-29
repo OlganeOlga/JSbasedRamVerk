@@ -1,4 +1,5 @@
 header.header div button.change-collection,
+header.header div button.see-shared,
 body div.main div.article form button.change-collection {
     display: inline-block; /* Make the link inline-block to apply padding and margins */
     padding: 0.75rem 1.5rem; /* Add padding inside the button */
@@ -16,12 +17,14 @@ body div.main div.article form button.change-collection {
 }
 
 header.header div button.change-collection:hover,
+header.header div button.see-shared:hover,
 body div.main div.article form button.change-collection:hover {
     background-color: rgb(182, 173, 173); /* Darker blue on hover */
     transform: scale(1.05); /* Slightly scale up the button on hover */
 }
 
 header.header div button.change-collection:active,
+header.header div button.see-shared:active,
 body div.main div.article form button.change-collection:active {
     background-color: rgb(182, 173, 173); /* Even darker blue on active (click) */
     transform: scale(0.95); /* Slightly scale down the button on click */
@@ -46,4 +49,29 @@ body div.main div.article form button.btn.btn-primary.change-collection {
     margin: 10px 0 20px 0;
     font-size: 1.5em;
     color: red;
+}
+
+body #root .auth-button {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3em;
+    justify-content: space-between;
+    margin: 9em 17em;
+}
+
+.submit-btn,
+body #root .return-btn {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.submit-btn:hover,
+body #root .return-btn:hover {
+    background-color: #c82333;
 }

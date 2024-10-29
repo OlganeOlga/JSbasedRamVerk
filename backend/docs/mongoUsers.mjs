@@ -23,13 +23,17 @@ const mongoUsers = {
             // const suppress = { users: { email: 1, password: 0 }};
             
 
-            const keyObject = await getDb.collection.find({}, { projection: { username: 1, password: 1, _id: 0 } });;
+            const keyObject = await getDb.collection.find({});;
 
             let returnObject = [];
 
-            if (keyObject.users) {
-                returnObject = keyObject.users.map(function (user) {
-                    return { name: user.username };
+            if (keyObject) {
+                returnObject = keyObject.map(function(user) {
+                    return {
+                        username: user.username,
+                        password: user.password,
+                        documents: user.documents,
+                    }
                 });
             }
 
@@ -68,6 +72,7 @@ const mongoUsers = {
             db = await getDb.connect();
             let user = [];
             user = await db.collection.findOne(query);
+            console.log("user : ", user)
             if (user){
                 return user;
             } else {
@@ -82,7 +87,6 @@ const mongoUsers = {
     },
 
     saveUser: async function saveUser(user) {
-        console.log("by save user ", user)
         let db;
         try {
             db = await getDb.connect();
@@ -98,11 +102,11 @@ const mongoUsers = {
 
     removeUser: async function removeUser(username) {
         const query = {'username': username};
+        console.log(query)
         let db;
         try {
             db = await getDb.connect();
             const result = await db.collection.deleteOne(query);
-            console.log (result)
             if (result.deletedCount === 0) {
                 throw new Error("No user found with the specified username");
             }

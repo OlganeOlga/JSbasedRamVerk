@@ -1,4 +1,4 @@
-import Document from '../functions/interfase';
+import Document from '../functions/interface';
 
 // element properties
 interface ArticleHeadProps {
