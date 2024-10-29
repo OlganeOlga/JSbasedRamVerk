@@ -165,10 +165,10 @@ const RootMutationType = new GraphQLObjectType({
             content: {type: GraphQLString}, // the content of commnt
         },
         resolve: async function(parent, args) {
-            console.log("in graphql /commentDoc,  line 170", args.docid)
+            console.log("in graphql /commentDoc,  line 170", typeof(args.docid))
             try {
                 console.log("int graphql /commentDoc")
-                const result = await docFu.removeDocument(args.owner, args.docid, args.author, args.content);
+                const result = await docFu.commentDoc(args.owner, args.docid.toString(), args.author, args.content);
                 console.log("int graphql /commentDoc ", result)
                 if(result.acknowledged & result.modifiedCount > 0) {
                     return true;

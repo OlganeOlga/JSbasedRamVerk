@@ -38,11 +38,11 @@ const app = express();
 const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
-    cors: {
-        // origin: ["http://localhost:3000", "https://www.student.bth.se/"],
-        origin: "*",
-        methods: ["GET", "POST"],
-    },
+  cors: {
+    // origin: ["http://localhost:3000", "https://www.student.bth.se/"],
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
 });
 
 // let timeout;
@@ -136,55 +136,55 @@ const schema = new GraphQLSchema({
 });
 
 //use authentication in the users request
-app.use('/graphql', authenticateToken, (req, res, next) => {
-  n ext();
+app.use('/graphql', (req, res, next) => {
+  next();
 }, graphqlHTTP({
-    schema: schema,
-    graphiql: visual, // Visual är satt till true under utveckling
-    livereload: true, // watch code chenges
-    customFormatErrorFn: (error) => {
-        // Customize error response
-        return {
-        message: error.message,
-        locations: error.locations,
-        path: error.path,
-        // Add any additional custom fields if necessary
-        };
-    },
-    }));
+  schema: schema,
+  graphiql: visual, // Visual är satt till true under utveckling
+  livereload: true, // watch code chenges
+  customFormatErrorFn: (error) => {
+    // Customize error response
+    return {
+      message: error.message,
+      locations: error.locations,
+      path: error.path,
+      // Add any additional custom fields if necessary
+    };
+  },
+}));
 
-    // Add routes for 404 and error handling
-    // Catch 404 and forward to error handler
-    // Put this last
-    app.use((req, res, next) => {
-        var err = new Error("Not Found");
-        err.status = 404;
-        next(err);
-    });
+// Add routes for 404 and error handling
+// Catch 404 and forward to error handler
+// Put this last
+app.use((req, res, next) => {
+  var err = new Error("Not Found");
+  err.status = 404;
+  next(err);
+});
 
-    // Error handler
-    app.use((err, req, res, next) => {
-        if (res.headersSent) {
-            return next(err);
-        }
+// Error handler
+app.use((err, req, res, next) => {
+  if (res.headersSent) {
+      return next(err);
+  }
 
-        res.status(err.status || 500).json({
-            "errors": [
-                {
-                    "status": err.status,
-                    "title":  err.message,
-                    "detail": err.message
-                }
-            ]
-        });
-    });
+  res.status(err.status || 500).json({
+      "errors": [
+          {
+              "status": err.status,
+              "title":  err.message,
+              "detail": err.message
+          }
+      ]
+  });
+});
 
-    const server = app.listen(port, () => {
-        console.log(`Example app listening on port ${port}`)
-    });
+const server = app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+});
 
 
-    // ES module-style code (Correct)
-    export { app, server};
+// ES module-style code (Correct)
+export { app, server};
 
 
