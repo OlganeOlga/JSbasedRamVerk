@@ -1,7 +1,5 @@
+// Import necessary modules
 import 'dotenv/config';
-
-let port = process.env.NODE_ENV === 'test'? process.env.TEST_PORT : process.env.PORT;
-
 import express from 'express';
 import bodyParser from 'body-parser';
 import path from 'path';
@@ -11,148 +9,100 @@ import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import roomState from "./models/socket.mjs";
 import comments from "./models/comments.mjs";
-
-//import comments from "comments.mjs"; // For comments sockets in future
-
 import mongoRemote from "./routes/mongoRemote.mjs";
 import authRoutes from "./routes/auth_user.mjs";
-//import authRoutes, { authenticateToken } from './routes/auth.js'; // import authentication route
 
+// Set up the Express app
 const app = express();
 const httpServer = createServer(app);
-
 const io = new Server(httpServer, {
   cors: {
-    // origin: ["http://localhost:3000", "https://www.student.bth.se/"],
-    origin: "*",
+    origin: "*", // Allow requests from any origin
     methods: ["GET", "POST"],
   },
 });
 
-let timeout;
+// Middleware
+app.use(cors()); // Enable CORS
+app.use(bodyParser.json()); // Parse JSON bodies
+app.use(express.static(path.join(process.cwd(), "public"))); // Serve static files
+app.use(morgan('combined')); // Log requests in the Apache style
 
+// Socket.io connection handling
 io.on("connection", (socket) => {
   console.log("New client connected:", socket.id);
 
-  socket.on("create", async function (room) {
-    socket.join(room);
-
+  socket.on("create", async (room) => {
+    await socket.join(room);
     socket.currentRoom = room;
-    console.log("Joined the room:", room);
+    console.log("Joined room:", room);
 
-    const docComments = await comments.getComments(socket.currentRoom);
+    try {
+      const docComments = await comments.getComments(room);
+      socket.emit("newComment", docComments); // Send existing comments to the new client
 
-    socket.emit("newComment", docComments);
-
-    if (socket.rooms.has(room)) {
       const data = await roomState.getRoomState(room);
       if (data) {
-        socket.emit("socketJoin", data);
+        socket.emit("socketJoin", data); // Emit current room state
       }
+    } catch (error) {
+      console.error("Error in create event:", error);
     }
   });
 
   socket.on("update", (data) => {
-    socket.to(socket.currentRoom).emit("serverUpdate", data);
-
-    clearTimeout(timeout);
-
-    timeout = setTimeout(function () {
-      roomState.updateRoomState(socket.currentRoom, data);
-    }, 2000);
+    socket.to(socket.currentRoom).emit("content", data); // Emit the updated content to all clients in the room
   });
 
   socket.on("comment", (data) => {
-    comments.addComment(
-      socket.currentRoom,
-      data.comment,
-      data.caretPosition.caret,
-      data.caretPosition.line
-    );
-
-    socket.to(socket.currentRoom).emit("newComment", data);
+    comments.addComment(socket.currentRoom, data.comment, data.caretPosition.caret, data.caretPosition.line);
+    socket.to(socket.currentRoom).emit("newComment", data); // Broadcast new comment to others in the room
   });
 
   socket.on("disconnect", async () => {
     console.log("Client disconnected:", socket.id);
-    const users = io.sockets.adapter.rooms.get(socket.currentRoom);
-    if (users === undefined) {
-      roomState.clearRoomState(socket.currentRoom);
+    if (socket.currentRoom) {
+      const users = io.sockets.adapter.rooms.get(socket.currentRoom);
+      if (!users) {
+        await roomState.clearRoomState(socket.currentRoom);
+        delete roomTimeouts[socket.currentRoom];
+      }
     }
   });
 });
 
-app.use(cors()); // tillåter nå app från olika platformer. Det finns mäjlighet att presissera varifån appen can nås
+// Routes
+app.use('/data', mongoRemote); // Define routes for MongoDB interactions
+app.use('/auth', authRoutes); // Define authentication routes
 
-//const allowedOrigins = ['http://localhost:3001'];
-
-// Parse application/json
-app.use(bodyParser.json());
-
-app.disable('x-powered-by');
-
-app.set("view engine", "ejs");
-
-// middelwear showing working route
-app.use((req, res, next) => {
-  console.log(req.method);
-  console.log(req.path);
-  next();
-});
-
-app.use(express.static(path.join(process.cwd(), "public")));
-
-app.use(express.json()); // in plase of bodyParser.urlencoded and bodyParser.json
-
-// // Middleware to override the method
-// app.use(methodOverride('_method'));
-
-// don't show the log when it is test
-if (process.env.NODE_ENV !== 'test') {
-    // use morgan to log at command line
-    app.use(morgan('combined')); // 'combined' outputs the Apache style LOGs
-}
-
-app.use('/data', mongoRemote); // import routes using remote mongoDB
-app.use('/auth', authRoutes); // Use auth routes under '/auth'
-
-// // Protect the documents route
-// app.get('/documents', authenticateToken, async (req, res) => {
-//   const documents = await Document.find(); // Make sure you define Document schema properly
-//   res.json(documents);
-// });
-
-// Add routes for 404 and error handling
-// Catch 404 and forward to error handler
-// Put this last
+// Error handling middleware
 app.use((req, res, next) => {
   var err = new Error("Not Found");
   err.status = 404;
   next(err);
 });
 
-// Error handler
+// Global error handler
 app.use((err, req, res, next) => {
   if (res.headersSent) {
-      return next(err);
+    return next(err);
   }
-
   res.status(err.status || 500).json({
-      "errors": [
-          {
-              "status": err.status,
-              "title":  err.message,
-              "detail": err.message
-          }
-      ]
+    "errors": [
+      {
+        "status": err.status,
+        "title": err.message,
+        "detail": err.message
+      }
+    ]
   });
 });
 
-const server = app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+// Start the server
+const port = process.env.NODE_ENV === 'test' ? process.env.TEST_PORT : process.env.PORT;
+const server = httpServer.listen(port, () => {
+  console.log(`Server is listening on port ${port}`);
 });
 
-
-// ES module-style code (Correct)
-export { app, server};
-
+// Export the app and server
+export { app, server };
