@@ -24,7 +24,7 @@ const CommentModal: React.FC<CommentModalProps> = ({ isOpen, onClose, onSubmit }
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <h2 className="modal-title">Write a Comment</h2>
+        <h2 className="modal-title">Comment</h2>
         <textarea
           value={comment}
           className="modal-comment-area"
@@ -79,7 +79,7 @@ const AddComment: React.FC<AddCommentProps> = ({ caretPosition, socket, newComme
   return (
     <div className="modal-container">
       <button className="modal-comment-button" onClick={handleModalOpen}>
-        Lägg till kommentar
+        Comments
       </button>
       <CommentModal
         isOpen={isModalOpen}

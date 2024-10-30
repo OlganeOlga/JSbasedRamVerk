@@ -28,9 +28,11 @@ function AppMain({username, documents, docType, loading, reloadDocuments, select
 
     return (
         <div className="main">
-            <ArticleHead 
+            {selectedIndex === null ? (
+                <ArticleHead 
                 documents={documents}
-                selectedIndex={selectedIndex} />
+                selectedIndex={selectedIndex} /> ): null}
+            
             <AppArticle
                 docType={docType}
                 usersname={username}

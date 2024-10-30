@@ -1,5 +1,4 @@
-header.header div button.change-collection,
-header.header div button.see-shared,
+header.header div button,
 body div.main div.article form button.change-collection {
     display: inline-block; /* Make the link inline-block to apply padding and margins */
     padding: 0.75rem 1.5rem; /* Add padding inside the button */
@@ -14,6 +13,10 @@ body div.main div.article form button.change-collection {
     transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transition effects */
     cursor: pointer; /* Pointer cursor on hover */
     margin: 10px 10px 20px 10px;
+}
+header.header div.doc_handler button {
+    font-size: 0.7rem;
+    margin: 10px;
 }
 
 header.header div button.change-collection:hover,
@@ -31,9 +34,10 @@ body div.main div.article form button.change-collection:active {
 }
 
 body div.main div.article form button.btn.btn-primary.change-collection {
-    color: rgb(48, 57, 66);
+    margin: 0;
+    padding: 10px;
+    color: #28a745;
     justify-self: end;
-    width: 200px;
 }
 
 #root .auth-button .auth {

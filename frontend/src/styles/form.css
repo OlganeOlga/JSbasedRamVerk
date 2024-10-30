@@ -1,9 +1,8 @@
 form.doc {
     display: grid;
-    flex-direction: column;
-    max-width: 600px; /* Restrict form width for readability */
-    margin: 2rem auto; /* Center form horizontally with space above and below */
-    padding: 1.5rem; /* Add padding inside the form */
+    width: 100%; /* Restrict form width for readability */
+    margin: 0.5rem auto; /* Center form horizontally with space above and below */
+     /* padding: 1.5rem;Add padding inside the form */
     background-color: #fff; /* White background for the form */
 }
 
@@ -18,9 +17,15 @@ form.doc {
     width: 100%; /* Full width for inputs and textareas */
     padding: 0.75rem; /* Padding inside the inputs */
     margin-bottom: 1rem; /* Space below each input */
-    border: 1px solid #ddd; /* Light border for inputs */
-    border-radius: 4px; /* Rounded corners for inputs */
-    box-sizing: border-box; /* Include padding and border in element's total width and height */
+    /*border: 1px solid #ddd;  Light border for inputs */
+    /*border-radius: 4px; /* Rounded corners for inputs */
+    /*box-sizing: border-box; /* Include padding and border in element's total width and height */
+    border: none;
+}
+
+.doc input[type="text"] {
+    text-align: center;
+    font-size: 1.2rem;
 }
 
 .doc textarea {
@@ -29,19 +34,20 @@ form.doc {
 }
 
 .doc input[type="submit"] {
-    display: block; /* Make the submit button block-level */
+    display: grid; /* Make the submit button block-level */
     width: 100%; /* Full width for the submit button */
     padding: 0.75rem; /* Padding inside the button */
     background-color: #0074D9; /* Blue background color for the button */
     color: #fff; /* White text color */
     border: none; /* Remove border */
     border-radius: 4px; /* Rounded corners */
-    font-size: 1rem; /* Font size for the button */
+    font-size: 1.2rem; /* Font size for the button */
     cursor: pointer; /* Pointer cursor on hover */
     transition: background-color 0.3s ease; /* Smooth transition for background color */
 }
 
 .doc input[type="submit"]:hover {
+    border: none;
     background-color: #0056b3; /* Darker blue on hover */
 }
 

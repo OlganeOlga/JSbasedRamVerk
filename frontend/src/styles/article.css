@@ -1,12 +1,17 @@
+.article {
+    display: grid;
+    grid-template-columns: 20% 80%;
+}
+
 .article ul.list-group {
     /*ändrar fält med dokument*/
+    grid-column: span 2;
     list-style-type: none;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 20px;
     padding: 10px;
-    height: 70%;
-
+    /* height: 70%; */
     max-width: 800px; /* Max width for readability */
     margin: 0 auto; /* Center the article block horizontally */
     padding: 1rem; /* Padding inside the article block */
@@ -44,4 +49,25 @@
     color: #0056b3; /* Darker blue color on hover */
     background-color: rgb(182, 173, 173); /* Even darker blue on active (click) */
     transform: scale(0.95); /* Slightly scale down the button on click */
+}
+
+.article .doc .button-div {
+    width: 200px;
+    display: block; /* set in the good position*/
+    position: relative; /* Allows absolute positioning of the button */
+    left: 30em;
+    z-index: 10;
+    overflow: hidden; /* Ensures hidden area is not visible */
+    height: 40px; /* Set a specific height for the button container */
+}
+
+.article .doc .button-div .hidden-button {
+    position: absolute; /* Position button absolutely within the button-div */
+    top: 0;
+    left: -80%; /* Adjust to only show a small part of the button */
+    transition: left 0.3s ease-in-out; /* Smooth transition when hovering */
+}
+
+.article .doc .button-div .button-div:hover .hidden-button {
+    left: 0; /* Reveal the button when hovered */
 }

@@ -95,7 +95,7 @@ function AppHeader({
             {/* Conditionally render "Create Document" and "Logout" buttons based on login status */}
             {token && (
                 <>
-                    <div>
+                    <div className='doc_handler'>
                         {selectedIndex === null ? (
                         <>
                             <ButtonConteiner
@@ -137,7 +137,7 @@ function AppHeader({
                             <form className='shareForm' onSubmit={shareDoc}>
                                 <div className="input-group">
                                     <label className="share"> 
-                                        With whom will you share your document?
+                                        Share document
                                         <input
                                             type="email"
                                             name='adress'

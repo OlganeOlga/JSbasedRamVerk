@@ -108,12 +108,6 @@ function App() {
     };
 
     const getDocuments = (async() => {
-        if (sessionStorage.getItem('username')) {
-            setUsername(sessionStorage.getItem('username'));
-        }
-        if (sessionStorage.getItem('token')) {
-            setToken(sessionStorage.getItem('token'));
-        }
         if (!token) return; // Prevent calling if username is not set
         setLoading(true); // Start loading
 
@@ -136,7 +130,9 @@ function App() {
     const handleLoginSuccess = () => {
         const storedToken = sessionStorage.getItem("token");
         if (storedToken) {
+            setUsername(sessionStorage.getItem('username'));
             setToken(storedToken); // Update token in state after login
+            getDocuments(); // show documents
         }
     };
 

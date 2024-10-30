@@ -66,11 +66,14 @@
   }
   
   .modal-comment-button {
+    font-size: 1rem;
+    font-weight: bold;
     background-color: #28a745; /* Green background */
     color: white;
     border: none;
     border-radius: 4px;
-    padding: 10px 15px;
+    padding: 10px;
+    margin-top: 10px;
     cursor: pointer;
     transition: background-color 0.3s ease;
   }

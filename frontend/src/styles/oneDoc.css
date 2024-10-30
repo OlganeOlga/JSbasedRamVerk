@@ -1,0 +1,32 @@
+.form-wrapper {
+    display: flex;
+    align-items: flex-start; /* Aligns form and button at the top */
+    gap: 10px; /* Space between form and button */
+}
+
+.doc {
+    flex: 1; /* Form takes up remaining space */
+    max-width: 100%; /* Full width in the container */
+}
+
+.button-div {
+    flex-shrink: 0; /* Prevents the button from shrinking */
+}
+
+.btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+}
+
+/* Responsive styling for smaller screens */
+@media (max-width: 600px) {
+    .form-wrapper {
+        flex-direction: column; /* Stack form and button vertically */
+        align-items: stretch;
+    }
+
+    .button-div {
+        display: flex;
+        justify-content: flex-end;
+    }
+}

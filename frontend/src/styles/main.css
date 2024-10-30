@@ -1,9 +1,12 @@
 .main {
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
     grid-area: main;
-    width: 96%;
-    max-width: 64rem;
-    margin: 1.4rem auto;
+    width: 100%;
+    padding: 0 20px;
+    /* max-width: 64rem; */
+    /* margin: 1.4rem auto; */
+    margin: 0;
     flex: 1 0 auto;
 }
 

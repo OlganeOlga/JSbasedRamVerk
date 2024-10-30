@@ -39,7 +39,6 @@ body #root {
     font-optical-sizing: auto;
     font-weight: normal;
     font-style: normal;
-    height: 100%;
     display: grid;
     grid-template-areas:
         "header header header"
@@ -47,4 +46,5 @@ body #root {
         "footer footer footer";
     grid-template-rows: auto 1fr auto;
     grid-template-columns: 1fr;
+    overflow-y: hidden;
 }
