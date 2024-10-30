@@ -21,6 +21,11 @@ interface ServerData {
   data: FormData;
 }
 
+interface DocumentUpdateData {
+    title: string;
+    content: string;
+}
+
 interface SocketUpdateData {
   title: string;
   content: string;
@@ -64,17 +69,40 @@ function OneDocument({docType, username, docOwner, id, title: intialTitle, conte
         // Emit the create event to join the room
         socket.emit("create", roomId);
 
+        // Listen for updates to the document title and content
+        socket.on("documentUpdate", (data: DocumentUpdateData) => {
+            setTitle(data.title);
+            setContent(data.content);
+        });
+
         // Listen for comments from other users
-        socket.on("newComment", (data: any) => {
+        socket.on("newComment", (data: Comment) => {
             handelSocketComment(data);
         });
 
         // Clean up the socket connection and listeners when the component unmounts
         return () => {
+            socket.off('documentUpdate'); // Remove the document update listener
             socket.off('newComment'); // Remove the new comment listener
             socket.disconnect(); // Disconnect the socket
         };
-    }, [docOwner, id]); // Dependencies include docOwner and id
+    }, [docOwner, id]);
+
+    const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const newTitle = event.target.value;
+        setTitle(newTitle);
+        
+        // Emit the updated title and content to the server
+        socket.emit("documentUpdate", { title: newTitle, content });
+    };
+
+    const handleContentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const newContent = event.target.value;
+        setContent(newContent);
+        
+        // Emit the updated title and content to the server
+        socket.emit("documentUpdate", { title, content: newContent });
+    };
 
   
     // const currentPath =
@@ -233,19 +261,15 @@ function OneDocument({docType, username, docOwner, id, title: intialTitle, conte
                     <input type='hidden'name="id" value={id} />
                     <input className='title'
                         type="text"
-                        name="newTitle"
                         value={title}
-                        onChange={(e) => 
-                            setTitle(e.target.value)}>
-                    </input>
-                    
-                    <input className='content'
-                        type="text"
-                        name="newContent"
+                        onChange={handleTitleChange}
+                        placeholder="Document Title"
+                    />
+                    <textarea className='content'
                         value={content}
-                        onChange={(e) => 
-                            setContent(e.target.value)}>
-                    </input>
+                        onChange={handleContentChange}
+                        placeholder="Document Content"
+                    />
 
                     {/* Combined Submit and Back to List button */}
                 </div>

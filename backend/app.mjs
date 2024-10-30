@@ -41,6 +41,7 @@ const io = new Server(httpServer, {
 // Define roomTimeouts at the top level
 const roomTimeouts = {}; // To hold timeout IDs for each room
 
+
 // Middleware
 app.use(cors()); // Enable CORS
 app.use(bodyParser.json()); // Parse JSON bodies
@@ -52,50 +53,55 @@ io.on("connection", (socket) => {
   console.log("New client connected:", socket.id);
 
   socket.on("create", async (room) => {
+    if (!room) {
+      console.error("Room ID is undefined");
+      return; // Avoid proceeding if room is not defined
+    }
     await socket.join(room);
     console.log(`Client ${socket.id} joined room: ${room}`);
     socket.currentRoom = room;
-    console.log("Joined room:", room);
 
     try {
       const docComments = await comments.getComments(room);
-      socket.emit("newComment", docComments); // Send existing comments to the new client
+      socket.emit("newComment", docComments);
 
       const data = await roomState.getRoomState(room);
       if (data) {
-        socket.emit("socketJoin", data); // Emit current room state
+        socket.emit("socketJoin", data);
       }
-      // Setting a timeout for the room
-        roomTimeouts[room] = setTimeout(async () => {
-            await roomState.clearRoomState(room);
-            delete roomTimeouts[room]; // Remove the reference after timeout
-        }, 300000); // Adjust the timeout duration as necessary
+
+      // Set room timeout
+      roomTimeouts[room] = setTimeout(async () => {
+        await roomState.clearRoomState(room);
+        delete roomTimeouts[room];
+      }, 300000); // 5 minutes
     } catch (error) {
       console.error("Error in create event:", error);
     }
   });
 
-  socket.on("update", (data) => {
-    socket.to(socket.currentRoom).emit("content", data); // Emit the updated content to all clients in the room
+  // Handle document updates from clients
+  socket.on("documentUpdate", (data) => {
+    // Broadcast the updated title and content to other clients in the room
+    socket.to(socket.currentRoom).emit("documentUpdate", data);
   });
 
   socket.on("comment", (data) => {
     comments.addComment(socket.currentRoom, data.comment, data.caretPosition.caret, data.caretPosition.line);
-    socket.to(socket.currentRoom).emit("newComment", data); // Broadcast new comment to others in the room
+    socket.to(socket.currentRoom).emit("newComment", data);
   });
 
   socket.on("disconnect", async () => {
     console.log("Client disconnected:", socket.id);
     if (socket.currentRoom) {
       const users = io.sockets.adapter.rooms.get(socket.currentRoom);
-      if (!users) {
+      if (!users || users.size === 0) {
         await roomState.clearRoomState(socket.currentRoom);
         delete roomTimeouts[socket.currentRoom];
       }
     }
   });
 });
-
 
 // Parse application/json
 app.use(bodyParser.json());
