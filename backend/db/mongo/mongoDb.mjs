@@ -16,8 +16,6 @@ const database = {
     if (process.env.NODE_ENV === 'test') {
       uri = "mongodb://localhost:27017/test";
     }
-
-    console.log(uri);
     
     const client = new MongoClient(uri, {
       serverApi: {
@@ -29,8 +27,6 @@ const database = {
 
     try {
       await client.connect();
-      console.log("dbName: ", process.env.DB_NAME);
-      console.log("colName: ", process.env.COLLECTION_NAME);
       const db = client.db(process.env.DB_NAME);
       const users = db.collection(process.env.COLLECTION_NAME);
       return { db, client, collection: users }; // Return the db, client, and collection

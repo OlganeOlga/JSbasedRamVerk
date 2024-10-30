@@ -384,10 +384,58 @@ Updaterar `node.js.yml` med
         npm test´´
 
 
-### Arbetar med VIdareutveckling/Autentisering
+### Arbetar med VIdareutveckling
 
-Ändrar databasschema. Det är sparad i `backend/db/mongo/databas_shema.json`.
+Ändrar databasschema. Det är sparad i `backend/db/mongo/db_schema.json`.
 
-Uppdaterar funktionalitet, att user kan bifoga, updatera och ta bort dokument.
+Uppdaterar funktionalitet, att användare kan bifoga, dela, updatera och ta bort dokument.
+Jag updaterar routes i backend/routes/mongoRemote.mjs. 
+Nu anpassas routes till mera kompleserad shema. 
+Routes: 
+- GET-route '/:user '- nå användare med namn; '/shared/:user' - nå alla dokumentersom är delad med user
+- POST-routes '/' - skaffa en dokunent till användare; '/share/ - bifoga alowed_users till en dokument; '/comment' - bifoga en kommentar till en dokument
+- PUT-route: '/update' - ändra dokument
+- DELETE-rote '/delete' - ta bort en dokumnet
+Alla dokument kan nås bara med only användarenamn eftersom authentication äre kollad med 'authenticateToken'-function från routes/auth_user.mjs.
 
-Nu återstå det: skaffa nya users och logga in.....
+På frontend routes nås genom  processRoute middlewear somm finns i src/utils.mjs
+
+### Authentikation
+
+Authentikation görs med routes/auth_user.mjs.
+- '/login', 
+- '/register',
+- '/remove'
+
+Detta fil innehåller även authenisering middlewear 'authenticateToken'.
+Token skaffas i '/register' route och skickas till forntend. Det finns även expiration tid på token.
+På användare sidan finns det Auth component som använder i sin tur FormConteiner.
+Auth component visas först ifall det finns ingen token eller token är inte gäller.
+
+För usthentication användes det 'bcryptjs' och 'jsonwebtoken' packages.
+Den första används för att krypterar password under registrering av nu användare och jamfära password med det krypterad uder inloggning.
+Den andra hjälper arr skaffar en ny token samt tidstip när tocken faler att vara geldig.
+
+### GraphQL
+Eftersom jag skaffade GraphQl parallelt med authentication, så ersätte jag alla andra route med '/graphql' i app.mjs.
+'AuthenticaneToken' passad till '/graphql' i production mode, så det går inte använda visualisering av schemas i production mode.
+Följande paketer används: 'gaphql' och 'graphql-http'.
+Alla shemor skaffas i 'graphql/root.mjs' och 'graphql/root_mutation.mjs'.
+Root innehåller shemor som inte ändrar databas, och i mutation liggera alla shemor som ändra dokumenter.
+Notera användare skaffas eller tas bort bara med auth routes.
+
+På användare sidan skiskas nu alla förfrågan som gäller dokument med hjälp av graphQL from src/utils.mjs.
+
+Det finns mojlighet att testa shemor med unde utveckling mode på Localhost:3000/graphql.
+
+### Socket
+
+
+# Inför publicering på studentserver:
+## På server sidan
+- Ändra url till databas till remote,
+- Andra visual mode av GraphQl till false (för användarens säkerhets skull)
+- Ser till att "authenticaneToken" passerad finns med i app.user('/graphql' ...)
+## På användare sidan
+- Ändra url på vilket app lisnar i src/utils
+- Ser till all Socket lussnar på samma url

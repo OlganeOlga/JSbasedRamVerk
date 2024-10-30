@@ -24,8 +24,6 @@ router.post('/register', async (req, res) => {
         // Check if the user already exists
         const existingUser = await userFunctions.getUser(username);
 
-        //console.timeEnd("DB query time");
-
         // If the user already exists, return a 409 Conflict status with a descriptive message
         if (existingUser) {
             return res.status(409).json({
@@ -68,7 +66,6 @@ router.post('/register', async (req, res) => {
 
 //login for cookies
 router.post('/login', async (req, res) => {
-    console.log("in login route")
     const { username, password } = req.body;
     try {
         const user = await userFunctions.getUser(username);
@@ -80,16 +77,7 @@ router.post('/login', async (req, res) => {
         if (!isMatch) return res.status(400).json({ message: 'Invalid username or password' });
 
         // Generate JWT token
-        const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
-
-        // // Set the token in a cookie
-        // res.cookie('token', token, {
-        //     httpOnly: true, // Prevent access to the token via JavaScript
-        //     secure: process.env.NODE_ENV === 'production', // Send cookies over HTTPS only in production
-        //     maxAge: 60 * 60 * 1000, // Token expires in 1 hour (same as the token expiry)
-        // });
-
-        
+        const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });      
 
         // Send a success message (but without the token)
         res.json({ message: 'Login successful', token: token });
@@ -99,9 +87,8 @@ router.post('/login', async (req, res) => {
 });
 
 // User login route
-router.delete('/unregister', async (req, res) => {
+router.delete('/remove', async (req, res) => {
     const { username, password } = req.body;
-    console.log({username, password})
     try {
         const user = await userFunctions.getUser(username);
         if (!user) return res.status(400).json({ message: 'Invalid username or password' });
@@ -117,21 +104,7 @@ router.delete('/unregister', async (req, res) => {
     }
 });
 
-
-// // Middleware to protect routes
-// export const authenticateToken = (req, res, next) => {
-//     const token = req.headers['authorization']?.split(' ')[1];
-
-//     if (!token) return res.status(401).json({ message: 'Access denied' });
-
-//     jwt.verify(token, JWT_SECRET, (err, user) => {
-//         if (err) return res.status(403).json({ message: 'Invalid token' });
-//         req.user = user;
-//         next();
-//     });
-// };
 export const authenticateToken = (req, res, next) => {
-    console.log("user authorisation")
     const token = req.headers['authorization']?.split(' ')[1];
 
     // Check if the token is present
@@ -150,7 +123,6 @@ export const authenticateToken = (req, res, next) => {
 
         // If token is valid, attach user info to the request object
         req.user = user;
-        console.log("authorised")
         next(); // Proceed to the next middleware or route handler
     });
 };

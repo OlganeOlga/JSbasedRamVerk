@@ -10,11 +10,11 @@ function Auth({ onLoginSuccess }: AuthProps) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     // State to track which form to display
-    const [currentForm, setCurrentForm] = useState<'buttons' | 'login' | 'register' | 'unregister'>('buttons');
+    const [currentForm, setCurrentForm] = useState<'buttons' | 'login' | 'register' | 'remove'>('buttons');
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
 
-    const handleFormChange = (form: 'buttons' | 'login' | 'register' | 'unregister') => {
+    const handleFormChange = (form: 'buttons' | 'login' | 'register' | 'remove') => {
         setCurrentForm(form);
         setError(''); // Clear error when switching forms
         setMessage('');
@@ -47,7 +47,7 @@ function Auth({ onLoginSuccess }: AuthProps) {
                         handleFormChange('login'); // Switch to login form after successful registration
                         break;
         
-                    case '/auth/unregister':
+                    case '/auth/remove':
                         sessionStorage.clear(); // Clear local storage on account removal
                         setMessage('User successfully removed. All your data are removed!');
                         alert('User successfully removed. All your data are removed!');
@@ -86,7 +86,7 @@ function Auth({ onLoginSuccess }: AuthProps) {
                 <div className='auth-button'>
                     <button type='button' className="auth" onClick={() => handleFormChange('login')}>Login</button>
                     <button type='button' className="auth" onClick={() => handleFormChange('register')}>Register</button>
-                    <button type='button' className="auth" onClick={() => handleFormChange('unregister')}>Remove Account</button>
+                    <button type='button' className="auth" onClick={() => handleFormChange('remove')}>Remove Account</button>
                 </div>
             )}
             
@@ -137,18 +137,18 @@ function Auth({ onLoginSuccess }: AuthProps) {
                 </div>
             )}
 
-            {currentForm === 'unregister' && (
+            {currentForm === 'remove' && (
                 <div className='auth-options'>
                 <FormConteiner key="1"
-                    formName={'unregister'}
+                    formName={'remove'}
                     buttonText={'Remove Account'}
-                    errorString={'Failed to unregister. Please check your credentials.'}
+                    errorString={'Failed to remove. Please check your credentials.'}
                     greeting={'Remove your account'}
                     conditionsHeader={'CAUTION!'}
                     conditionsText={[<><h3 key="condition-1">IT IS YOUR RESPONSIBILITY TO SAVE YOUR DATA </h3>
                         <h3 key="condition-2">IF YOUR PROCEED All YOUR DATA WILL BE REMOVED </h3>
                         <h3 key="condition-3">All your credential will be also removed.</h3></>]}
-                    handleSubmit={(e) => handleSubmit(e, '/auth/unregister', 'DELETE')} // Pass down the handleSubmit
+                    handleSubmit={(e) => handleSubmit(e, '/auth/remove', 'DELETE')} // Pass down the handleSubmit
                     username={username}
                     password={password}
                     setUsername={setUsername}

@@ -88,7 +88,6 @@ const mongoDocs = {
      */
 
     updateDocument: async function updateDocument(username, id, title, content, allowedUser=null) {
-        console.log(typeof(id))
         const query = {
             "username": username,
             "documents._id": new ObjectId(id) // Ensure you're searching by the correct document ID
@@ -112,7 +111,6 @@ const mongoDocs = {
     
         const remoteMongo = await database.connect();
         const user = await remoteMongo.collection.findOne(query);
-        console.log(user)
         try {
             return await remoteMongo.collection.updateOne(query, updateDoc, options);
         } finally {
@@ -176,7 +174,6 @@ const mongoDocs = {
     removeDocument: async function removeDocument(id, userName) {
         const query = {'username': userName};
         const remove = { documents: {_id: new ObjectId(`${id}`)}};
-        console.log(remove)
         const remoteMongo = await database.connect();
 
         try {
@@ -200,15 +197,11 @@ const mongoDocs = {
      * @return {Promise<object>} The resultset as an array.
      */
     shareDoc: async function shareDoc(owner, docId, adress) {
-        console.log("int sherDoc of remoteDocs, typeof", typeof(docId))
-        console.log(docId);
         const id = docId.toString();
         const query = {
             "username": owner,
             "documents._id": new ObjectId(`${id}`)
         };
-
-        console.log("int sherDoc of remoteDocs")
         const options = { upsert: false }; // do not add document if the docuent with this title is note found
         
         const updateDoc = {
@@ -221,7 +214,6 @@ const mongoDocs = {
         
         try {
             const response = await remoteMongo.collection.updateOne(query, updateDoc, options);
-            console.log(response)
             return response;          
         } finally {
             await remoteMongo.client.close();
@@ -243,7 +235,6 @@ const mongoDocs = {
      * @return {Promise<object>} The resultset as an array.
      */
     commentDoc: async function commentDoc(owner, docId, author, content) {
-        console.log("int commentDoc of remoteDocs, typeof", typeof(docId))
         const id = docId.toString();// added for using GRAPHQL
         const query = {
             "username": owner,
@@ -264,7 +255,6 @@ const mongoDocs = {
         
         try {
             const response = await remoteMongo.collection.updateOne(query, updateDoc, options);
-            console.log(response)
             return response;          
         } finally {
             await remoteMongo.client.close();
@@ -283,7 +273,6 @@ const mongoDocs = {
      */
     getShared: async function getShared(username) {
         const remoteMongo = await database.connect();
-        console.log("in mongoDocs, search shared for: ", username)
         // search on
         const pipeline = [
             { 

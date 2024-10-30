@@ -7,19 +7,19 @@ import cors from 'cors';
 import morgan from 'morgan';
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
-import roomState from "./models/socket.mjs";
-import comments from "./models/comments.mjs";
-import mongoRemote from "./routes/mongoRemote.mjs";
+import roomState from "./docs/socket.mjs";
+import comments from "./docs/comments.mjs";
+//import mongoRemote from "./routes/mongoRemote.mjs";
 import authRoutes, {authenticateToken} from "./routes/auth_user.mjs";
 
 
 // GAPHQL
 import { graphqlHTTP } from 'express-graphql';
-const visual = true; // SET IT TO FALSE ONDER PRODUCTION!
+
+// SET IT TO FALSE ONDER PRODUCTION!
+const visual = true; 
+
 //import schema from './graphql/graphschema.mjs';
-/**
- * vreate graphql schema in the separate file in graphql/graphschema
- */
 import {GraphQLSchema} from "graphql";
 import RootQueryType from "./graphql/root.mjs";
 import RootMutationType from './graphql/root_mutation.mjs';
@@ -38,6 +38,8 @@ const io = new Server(httpServer, {
     methods: ["GET", "POST"],
   },
 });
+// Define roomTimeouts at the top level
+const roomTimeouts = {}; // To hold timeout IDs for each room
 
 // Middleware
 app.use(cors()); // Enable CORS
@@ -63,6 +65,11 @@ io.on("connection", (socket) => {
       if (data) {
         socket.emit("socketJoin", data); // Emit current room state
       }
+      // Setting a timeout for the room
+        roomTimeouts[room] = setTimeout(async () => {
+            await roomState.clearRoomState(room);
+            delete roomTimeouts[room]; // Remove the reference after timeout
+        }, 300000); // Adjust the timeout duration as necessary
     } catch (error) {
       console.error("Error in create event:", error);
     }
@@ -124,15 +131,16 @@ const schema = new GraphQLSchema({
 });
 
 //use authentication in the users request
-//app.use('/graphql', authenticateToken, (req, res, next) => {// USE IF ALL WORKS
-app.use('/graphql', (req, res, next) => {
-    req.socket = io; // Assuming `io` is your Socket.IO server instance
+app.use('/graphql', authenticateToken, (req, res, next) => {// PRODUCTION MODE
+//app.use('/graphql', (req, res, next) => {// DEVELOPING MODE
+    //req.io = io; // Assuming `io` is your Socket.IO server instance
+    //console.log('Socket instance attached to request:', req.socket)
     next();
 }, graphqlHTTP({
   schema: schema,
   graphiql: visual, // Visual är satt till true under utveckling
   livereload: true, // watch code chenges
-  context: { socket: req.socket },// pass socket to graphQL
+  //context: { socket: req.io },// pass socket to graphQL
   customFormatErrorFn: (error) => {
     // Customize error response
     return {

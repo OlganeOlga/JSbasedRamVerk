@@ -8,7 +8,6 @@ router.use(express.json());
 
 // get all dcuments from a user as JSON
 router.get("/:user",async(req, res) => {
-    console.log("use GET in MongoRemote")
     const user = req.params.user;
     try {
         const docs = await mongoDocs.userDocuments(user);
@@ -22,8 +21,7 @@ router.get("/:user",async(req, res) => {
 
 // add an new unnamed document
 router.post('/', async (req, res) => {
-    console.log("user POST in MongoRemote")
-    const {username, password} = req.body
+    const {username} = req.body
         try {
             const result = await mongoDocs.newDocument(username);
             res.json({ result });
@@ -34,9 +32,7 @@ router.post('/', async (req, res) => {
 
 // update a document
 router.put('/update', async (req, res) => {
-    
     const {username, id, title, content } = req.body;
-    console.log(username, id, title, content, "fron put/update")
     try {
         const result = await mongoDocs.updateDocument(username, id, title, content);
         res.json({ result });
@@ -48,7 +44,7 @@ router.put('/update', async (req, res) => {
 // remove a document
 router.delete('/delete/:id', async (req, res) => {
     const id = req.params.id;
-    const {username, password} = req.body;
+    const {username} = req.body;
     try {
         const result = await mongoDocs.removeDocument(id, username);
         res.json({ result });

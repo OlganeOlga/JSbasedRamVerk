@@ -72,7 +72,6 @@ const mongoUsers = {
             db = await getDb.connect();
             let user = [];
             user = await db.collection.findOne(query);
-            console.log("user : ", user)
             if (user){
                 return user;
             } else {
@@ -102,7 +101,6 @@ const mongoUsers = {
 
     removeUser: async function removeUser(username) {
         const query = {'username': username};
-        console.log(query)
         let db;
         try {
             db = await getDb.connect();

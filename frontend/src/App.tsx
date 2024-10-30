@@ -7,7 +7,6 @@ import AppMain from "./components/AppMain";
 import Auth from './components/Auth';
 import utils from './utils.mjs';
 import Document from './functions/interface'; // import interface for object Document
-import { socket } from './socket.mjs';
 
 function App() {
     // //socet variables

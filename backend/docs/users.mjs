@@ -80,12 +80,9 @@ const users = {
     },
 
     createUser:async function (user) {
-        console.log("in create user models/users")
         const db = await database.connect();
         try {
             const result = await db.collection.insertOne(user);
-            //return result.deletedCount > 0; // Return true if a user was deleted
-            console.log(result)
             return result;
         } catch (error) {
             console.error("Error in deleteUser function:", error);

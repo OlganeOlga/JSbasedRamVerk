@@ -12,7 +12,7 @@ interface FormConteinerProps {
     setUsername: (username: string) => void;
     setPassword: (password: string) => void;
     handleSubmit: (e: React.FormEvent) => Promise<void>,
-    handleFormChange: (form: 'buttons' | 'login' | 'register' | 'unregister') => void; // New prop
+    handleFormChange: (form: 'buttons' | 'login' | 'register' | 'remove') => void; // New prop
 }
 
 function FormConteiner({ formName,

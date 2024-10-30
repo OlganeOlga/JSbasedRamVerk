@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef, } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-// import  io, { Socket}  from "socket.io-client";
 import {socket} from './../socket.mjs'
-//import { Socket } from "socket.io-client";
 import AddComment from "./AddComment";
 import utils from "../utils.mjs";
-import CommentInterface from './../functions/interface';
+//import CommentInterface from './../functions/interface';
 
 // Define the shape of formData and comments
 interface FormData {
@@ -41,7 +39,7 @@ interface OneDocumentProps {
 
 
 function OneDocument({docType, username, docOwner, id, title: intialTitle, content: initialContent, handleClose }: OneDocumentProps) {
-    const SERVER_URL = "http://localhost:3000";
+    //const SERVER_URL = "http://localhost:3000";
     // declare variabels and function to change them
     const [title, setTitle] = useState(intialTitle);
     const [content, setContent] = useState(initialContent);
@@ -55,23 +53,46 @@ function OneDocument({docType, username, docOwner, id, title: intialTitle, conte
   
     //const { id } = useParams<{ id: string }>(); // Explicit typing for useParams
     const navigate = useNavigate();
+    // useEffect hook to manage socket connection and room creation
+    useEffect(() => {
+        // Connect the socket when the component mounts
+        socket.connect();
+
+        // Create a unique room ID
+        const roomId = `${docOwner}_${id}`; // Using owner ID and document ID for the room
+
+        // Emit the create event to join the room
+        socket.emit("create", roomId);
+
+        // Listen for comments from other users
+        socket.on("newComment", (data: any) => {
+            handelSocketComment(data);
+        });
+
+        // Clean up the socket connection and listeners when the component unmounts
+        return () => {
+            socket.off('newComment'); // Remove the new comment listener
+            socket.disconnect(); // Disconnect the socket
+        };
+    }, [docOwner, id]); // Dependencies include docOwner and id
+
   
-    const currentPath =
-      process.env.NODE_ENV === "production"
-        ? "https://jsramverk-oleg22-g9exhtecg0d2cda5.northeurope-01.azurewebsites.net/"
-        : "http://localhost:3000";
+    // const currentPath =
+    //   process.env.NODE_ENV === "production"
+    //     ? "https://jsramverk-oleg22-g9exhtecg0d2cda5.northeurope-01.azurewebsites.net/"
+    //     : "http://localhost:3000";
   
     //const socketRef = useRef<typeof Socket | null>(null); // Add type for socketRef
   
-    const handelSocketUpdate = (update: string, data: SocketUpdateData) => {
-      const path = update === "socketJoin" ? data : data;
+    // const handelSocketUpdate = (update: string, data: SocketUpdateData) => {
+    //   const path = update === "socketJoin" ? data : data;
   
       
-      setFormData({
-        title: path.title,
-        content: path.content,
-      });
-    };
+    //   setFormData({
+    //     title: path.title,
+    //     content: path.content,
+    //   });
+    // };
     useEffect(() => {
        // Connect the socket when the component mounts
        socket.connect();
@@ -103,7 +124,7 @@ function OneDocument({docType, username, docOwner, id, title: intialTitle, conte
           setComments((prevComments) => [...prevComments, ...data]);
         }
       };
-    
+
     const handleSubmitAndClose = async (event: React.FormEvent) => {
         event.preventDefault(); // Prevent page refresh
         setIsSubmitting(true);  // Set the submitting state to true (optional)
@@ -150,12 +171,6 @@ function OneDocument({docType, username, docOwner, id, title: intialTitle, conte
         }
 
         try {
-
-            // // Submit the document update to the backend
-            // const response = await utils.processRoute('PUT', 
-            //                             `/data/update`, 
-            //                             body);
-
             //WITH graphql
             
             const response1 = await utils.graphQL(body,token);
@@ -172,18 +187,18 @@ function OneDocument({docType, username, docOwner, id, title: intialTitle, conte
         }
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setFormData({
-          ...formData,
-          [name]: value,
-        });
+    // const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    //     const { name, value } = e.target;
+    //     setFormData({
+    //       ...formData,
+    //       [name]: value,
+    //     });
     
-        socket.emit("update", {
-          ...formData,
-          [name]: value,
-        });
-    };
+    //     socket.emit("update", {
+    //       ...formData,
+    //       [name]: value,
+    //     });
+    // };
 
     const handleCarotMove = (e: React.MouseEvent<HTMLTextAreaElement>) => {
         const target = e.target as HTMLTextAreaElement;
