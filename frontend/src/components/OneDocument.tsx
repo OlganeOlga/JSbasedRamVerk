@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+//import { useParams, useNavigate } from "react-router-dom";
 import {socket} from './../socket.mjs'
 import AddComment from "./AddComment";
 import utils from "../utils.mjs";
@@ -93,13 +93,13 @@ function OneDocument({docType, username, docOwner, id, title: intialTitle, conte
     const handelSocketComment = (data: any) => {
         if (data.comment) {
             const newComment: Comment = {
-                author: data.comment.author || username || "Anonymous", // Use the author's name from the data if available
+                author: data.comment.author,
                 content: data.comment.content,
             };
             setComments((prevComments) => [...prevComments, newComment]);
         } else {
             const newComments: Comment[] = data.map((item: any) => ({
-                author: item.author || "Anonymous", // Default author if not provided
+                author: item.author,
                 content: item.content,
             }));
             setComments((prevComments) => [...prevComments, ...newComments]);
@@ -178,7 +178,7 @@ function OneDocument({docType, username, docOwner, id, title: intialTitle, conte
                     socket={socket}
                     newComment={handelSocketComment}
                 />
-                <div>
+                <div className="comments">
                     {comments.map((comment, index) => (
                     <div className="comment" key={index}>
                         {/* <h3>
@@ -191,12 +191,10 @@ function OneDocument({docType, username, docOwner, id, title: intialTitle, conte
                 </div>
             </div>
             <form className='doc form-wrapper' onSubmit={handleSubmitAndClose}> {/* change when the form submitted */}
-                <div className='button-div'>
                     <button type="submit" value="Submit" className='btn btn-primary change-collection' disabled={isSubmitting}>
                         {isSubmitting ? 'Submitting...' : 'Save and close'}
                     </button>
-                </div>
-                <div className='input-div'>
+                
                     <input type='hidden'name="id" value={id} />
                     <input className='title'
                         type="text"
@@ -211,7 +209,7 @@ function OneDocument({docType, username, docOwner, id, title: intialTitle, conte
                     />
 
                     {/* Combined Submit and Back to List button */}
-                </div>
+                
             </form>
         </>
 )};

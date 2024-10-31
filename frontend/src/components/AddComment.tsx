@@ -26,6 +26,7 @@ const CommentModal: React.FC<CommentModalProps> = ({ isOpen, user, onClose, onSu
 	};
 
 	return (
+		<>
 		<div className="modal-overlay">
 		<div className="modal-content">
 			<h2 className="modal-title">Comment</h2>
@@ -46,6 +47,7 @@ const CommentModal: React.FC<CommentModalProps> = ({ isOpen, user, onClose, onSu
 			</div>
 		</div>
 		</div>
+		</>
 	);
 	};
 
@@ -73,10 +75,10 @@ const CommentModal: React.FC<CommentModalProps> = ({ isOpen, user, onClose, onSu
 
 		// Emit comment and caret position
 		if (socket) {
-		socket.emit("comment", { comment, caretPosition });
-		newComment({ comment, caretPosition });
+			socket.emit("comment", { comment, caretPosition });
+			newComment({ comment, caretPosition });
 		} else {
-		console.error("Socket connection may not be initialized.");
+			console.error("Socket connection may not be initialized.");
 		}
 	};
 

@@ -1,9 +1,10 @@
 
 
 #root .auth-options {
+    padding: 30px;
     display: grid;
     grid-row: 2;
     grid-column: span 2;
     grid-template-rows: 5px 1fr;
-
+    grid-template-columns: 1fr 2fr 1fr;
 }

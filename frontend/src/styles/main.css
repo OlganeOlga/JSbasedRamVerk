@@ -1,6 +1,5 @@
 .main {
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden;
     grid-area: main;
     width: 100%;
     padding: 0 20px;

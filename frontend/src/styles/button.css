@@ -18,6 +18,13 @@ header.header div.doc_handler button {
     font-size: 0.7rem;
     margin: 10px;
 }
+body div.main div.article form button.change-collection{
+    margin: onset;
+    grid-row: 1;
+    grid-column: 2;
+    height: 3em;
+    margin: 5px;
+}
 
 header.header div button.change-collection:hover,
 header.header div button.see-shared:hover,

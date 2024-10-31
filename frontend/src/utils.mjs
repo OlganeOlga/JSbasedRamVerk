@@ -1,5 +1,5 @@
 const localBackend = "http://localhost:3000";
-const remoteBackend = "https://jsramverk-oleg22-g9exhtecg0d2cda5.northeurope-01.azurewebsites.net/";
+const remoteBackend = "https://jaramverk-olga22-noahh-djczc2fnbcgheeb2.swedencentral-01.azurewebsites.net/";
 
 // Bestäm vilken backend som ska användas baserat på om vi kör lokalt eller i produktion
 //const backendUrl = window.location.hostname === 'localhost' ? localBackend : remoteBackend;

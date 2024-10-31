@@ -1,11 +1,26 @@
 form.doc {
     display: grid;
     grid-template-columns: 80% 20%;
+    grid-template-rows: 10% 90%;
     gap: 0;
     width: 100%; /* Restrict form width for readability */
     margin: 0.5rem auto; /* Center form horizontally with space above and below */
      /* padding: 1.5rem;Add padding inside the form */
     background-color: #fff; /* White background for the form */
+}
+
+.doc.form-wrapper .input-div {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: start;
+    height: 50%;
+}
+
+.doc.form-wrapper .content {
+    overflow-y: auto;
+    height: 53%;
+    grid-row: 2;
+    grid-column: span 2;
 }
 
 .doc label {
@@ -35,24 +50,6 @@ form.doc {
     resize: vertical; /* Allow vertical resizing only */
 }
 
-.doc input[type="submit"] {
-    display: grid; /* Make the submit button block-level */
-    width: 100%; /* Full width for the submit button */
-    padding: 0.75rem; /* Padding inside the button */
-    background-color: #0074D9; /* Blue background color for the button */
-    color: #fff; /* White text color */
-    border: none; /* Remove border */
-    border-radius: 4px; /* Rounded corners */
-    font-size: 1.2rem; /* Font size for the button */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s ease; /* Smooth transition for background color */
-}
-
-.doc input[type="submit"]:hover {
-    border: none;
-    background-color: #0056b3; /* Darker blue on hover */
-}
-
 #root lable.check {
     display: grid;
     grid-template-columns: 20px 1fr;
@@ -69,4 +66,8 @@ header.header div form.shareForm {
     padding: 10px 10px 0 10px;
     border: solid;
     border-color: #0074D9;
+}
+
+.auth-options .remove-form-container {
+    grid-column: 2;
 }
