@@ -8,11 +8,7 @@ import Auth from './components/Auth';
 import utils from './utils.mjs';
 import Document from './functions/interface'; // import interface for object Document
 
-function App() {
-    // //socet variables
-    // const [isConnected, setIsConnected] = useState(socket.connected);
-    // const [fooEvents, setFooEvents] = useState([]);
-    
+function App() {  
     const [documents, setDocuments] = useState<Document[]>([]); // Initialize state for documents
     const [loading, setLoading] = useState(true); // Initialize loading state
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null); // Initialize selected index
@@ -34,7 +30,6 @@ function App() {
     }, []);
 
     const loadDocuments = async () => {        
-        //let route = "/data/" + doctype + username;
         let body;
         let docType = sessionStorage.getItem("docType") || "";
         switch(docType) {
@@ -79,11 +74,6 @@ function App() {
 
         setLoading(true); // Start loading
         try {
-            //const result = await utils.processRoute('GET', route); // Call fetch function here
-
-            //GRAPHQL VARIANT
-              
-            
             const result = await utils.graphQL(body, token);
             
             if (result.status === 200) {

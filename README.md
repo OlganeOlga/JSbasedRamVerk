@@ -437,5 +437,5 @@ Det finns mojlighet att testa shemor med unde utveckling mode på Localhost:3000
 - Andra visual mode av GraphQl till false (för användarens säkerhets skull)
 - Ser till att "authenticaneToken" passerad finns med i app.user('/graphql' ...)
 ## På användare sidan
-- Ändra url på vilket app lisnar i src/utils
-- Ser till all Socket lussnar på samma url
+- Ändra url på vilket app lyssnar i src/utils
+- Ser till all Socket lyssnar på samma url

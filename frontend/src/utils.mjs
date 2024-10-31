@@ -2,7 +2,8 @@ const localBackend = "http://localhost:3000";
 const remoteBackend = "https://jsramverk-oleg22-g9exhtecg0d2cda5.northeurope-01.azurewebsites.net/";
 
 // Bestäm vilken backend som ska användas baserat på om vi kör lokalt eller i produktion
-const backendUrl = window.location.hostname === 'localhost' ? localBackend : remoteBackend;
+//const backendUrl = window.location.hostname === 'localhost' ? localBackend : remoteBackend;
+const backendUrl = remoteBackend;
 
 const utils = {
 
@@ -28,7 +29,6 @@ const utils = {
             method: passedMethod,
             headers: mergeHeaders,
             body: body ? JSON.stringify(body) : null,
-            //credentials: 'include' 
         };
 
         try {
@@ -82,7 +82,6 @@ const utils = {
             method: 'POST',
             headers: mergeHeaders,
             body: body, //body is already json
-            //credentials: 'include', // IMPORTANT: This ensures cookies (including HTTP-only cookies) are sent with requests
         };
     
         try {

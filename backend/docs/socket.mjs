@@ -7,7 +7,6 @@ const roomState = {
 
   updateRoomState: async (roomId, update) => {
     try {
-      console.log("Updating room state for roomId:", roomId);
       const { collection } = await roomState.initDbConnection();
       const checker = await collection.findOne({ roomId });
       if (!checker) {

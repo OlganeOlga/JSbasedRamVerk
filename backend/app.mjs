@@ -18,7 +18,7 @@ import authRoutes, {authenticateToken} from "./routes/auth_user.mjs";
 import { graphqlHTTP } from 'express-graphql';
 
 // SET IT TO FALSE ONDER PRODUCTION!
-const visual = true; 
+const visual = process.env.VISUAL; 
 
 import {GraphQLSchema} from "graphql";
 import RootQueryType from "./graphql/root.mjs";
