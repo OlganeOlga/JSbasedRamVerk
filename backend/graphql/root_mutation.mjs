@@ -107,6 +107,8 @@ const RootMutationType = new GraphQLObjectType({
         async resolve(parent, { username, inputid, title, content}) {
             
             try {
+            console.log("at updateDoc, args: ", username)
+
                 // Perform the update in MongoDB
                 const result = await docFu.updateDocument( username, 
                                                             inputid,

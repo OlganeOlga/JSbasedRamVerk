@@ -11,13 +11,16 @@ const comments = {
   },
 
   addComment: async (roomId, comment, caret, row) => {
+    console.log("in addComment")
     const db = await comments.initDbConnection();
+    console.log("in addComment connect to db")
     await db.collection.insertOne({
       roomId: roomId,
       comment: comment,
       caret: caret,
       row: row,
     });
+    console.log("in addComment finish")
   },
 
   getComments: async (roomId) => {

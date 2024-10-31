@@ -52,13 +52,13 @@
 }
 
 .article .doc .button-div {
+    grid-column: 2;
     width: 200px;
-    display: block; /* set in the good position*/
-    position: relative; /* Allows absolute positioning of the button */
+    display: flex;
     left: 30em;
     z-index: 10;
-    overflow: hidden; /* Ensures hidden area is not visible */
-    height: 40px; /* Set a specific height for the button container */
+    overflow: hidden;
+    height: 40px;/*Set a specific height for the button container */
 }
 
 .article .doc .button-div .hidden-button {

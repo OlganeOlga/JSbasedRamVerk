@@ -9,6 +9,7 @@ import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import roomState from "./docs/socket.mjs";
 import comments from "./docs/comments.mjs";
+import mongoDocs from './docs/remoteDocs.mjs';
 //import mongoRemote from "./routes/mongoRemote.mjs";
 import authRoutes, {authenticateToken} from "./routes/auth_user.mjs";
 
@@ -86,7 +87,10 @@ io.on("connection", (socket) => {
     socket.to(socket.currentRoom).emit("documentUpdate", data);
   });
 
-  socket.on("comment", (data) => {
+  socket.on("comment", async (data) => {
+    const adress = socket.currentRoom.split("_");
+    const result = await mongoDocs.commentDoc(adress[0], adress[1],"author", data.comment);
+    console.log("fron socken.on comment", result)
     comments.addComment(socket.currentRoom, data.comment, data.caretPosition.caret, data.caretPosition.line);
     socket.to(socket.currentRoom).emit("newComment", data);
   });

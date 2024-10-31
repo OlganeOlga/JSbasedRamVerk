@@ -1,5 +1,7 @@
 form.doc {
     display: grid;
+    grid-template-columns: 80% 20%;
+    gap: 0;
     width: 100%; /* Restrict form width for readability */
     margin: 0.5rem auto; /* Center form horizontally with space above and below */
      /* padding: 1.5rem;Add padding inside the form */
@@ -63,6 +65,7 @@ form.doc {
 }
 
 header.header div form.shareForm {
+    width: 250px;
     padding: 10px 10px 0 10px;
     border: solid;
     border-color: #0074D9;

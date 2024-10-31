@@ -13,8 +13,9 @@ interface AppArticleProps {
 function AppArticle({docType, usersname, documents, reloadDocuments, selectedIndex, setSelectedIndex }: AppArticleProps) {
 
     // select document
-    const handleSelect = (index: number) => { 
+    const handleSelect = (index: number) => {
         setSelectedIndex(index); // Update the parent component's selectedIndex
+        console.log(documents[index].comments)
     };
 
     // remove selection and reload documents
@@ -47,7 +48,7 @@ function AppArticle({docType, usersname, documents, reloadDocuments, selectedInd
                 <OneDocument
                     docType={docType}
                     username={usersname}
-                    docOwner={documents[selectedIndex].owner}
+                    docOwner={documents[selectedIndex]?.owner ?? usersname}
                     id={documents[selectedIndex]._id}
                     title={documents[selectedIndex].title}
                     content={documents[selectedIndex].content}
