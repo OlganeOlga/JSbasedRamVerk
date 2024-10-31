@@ -73,7 +73,6 @@ function AppHeader({
 
             //USE GRAPHQL
             const response = await utils.graphQL(body, token)
-            console.log(response)
             if (response.status === 200) {
                 alert('Document deleted successfully!');
                 handleClose();

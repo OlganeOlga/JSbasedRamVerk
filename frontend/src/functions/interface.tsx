@@ -18,3 +18,8 @@ export interface Comment {
     author: string | null;
     content: string;
 }
+
+export interface DocumentUpdateData {
+    title: string;
+    content: string;
+}

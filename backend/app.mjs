@@ -10,7 +10,7 @@ import { Server } from 'socket.io';
 import roomState from "./docs/socket.mjs";
 import comments from "./docs/comments.mjs";
 import mongoDocs from './docs/remoteDocs.mjs';
-//import mongoRemote from "./routes/mongoRemote.mjs";
+
 import authRoutes, {authenticateToken} from "./routes/auth_user.mjs";
 
 
@@ -20,15 +20,9 @@ import { graphqlHTTP } from 'express-graphql';
 // SET IT TO FALSE ONDER PRODUCTION!
 const visual = true; 
 
-//import schema from './graphql/graphschema.mjs';
 import {GraphQLSchema} from "graphql";
 import RootQueryType from "./graphql/root.mjs";
 import RootMutationType from './graphql/root_mutation.mjs';
-
-
-
-
-//import users from "./models/users.mjs"
 
 // Set up the Express app
 const app = express();
@@ -42,7 +36,6 @@ const io = new Server(httpServer, {
 // Define roomTimeouts at the top level
 const roomTimeouts = {}; // To hold timeout IDs for each room
 
-
 // Middleware
 app.use(cors()); // Enable CORS
 app.use(bodyParser.json()); // Parse JSON bodies
@@ -51,60 +44,57 @@ app.use(morgan('combined')); // Log requests in the Apache style
 
 // Socket.io connection handling
 io.on("connection", (socket) => {
-  console.log("New client connected:", socket.id);
+    socket.on("create", async (room) => {
+        if (!room) {
+            console.error("Room ID is undefined");
+            return; // Avoid proceeding if room is not defined
+        }
+        await socket.join(room);
 
-  socket.on("create", async (room) => {
-    if (!room) {
-      console.error("Room ID is undefined");
-      return; // Avoid proceeding if room is not defined
-    }
-    await socket.join(room);
-    console.log(`Client ${socket.id} joined room: ${room}`);
-    socket.currentRoom = room;
+        socket.currentRoom = room;
 
-    try {
-      const docComments = await comments.getComments(room);
-      socket.emit("newComment", docComments);
+        try {
+        const docComments = await comments.getComments(room);
+            socket.emit("newComment", docComments);
 
-      const data = await roomState.getRoomState(room);
-      if (data) {
-        socket.emit("socketJoin", data);
-      }
+            const data = await roomState.getRoomState(room);
+            if (data) {
+                socket.emit("socketJoin", data);
+            }
 
-      // Set room timeout
-      roomTimeouts[room] = setTimeout(async () => {
-        await roomState.clearRoomState(room);
-        delete roomTimeouts[room];
-      }, 300000); // 5 minutes
-    } catch (error) {
-      console.error("Error in create event:", error);
-    }
-  });
+            // Set room timeout
+            roomTimeouts[room] = setTimeout(async () => {
+                await roomState.clearRoomState(room);
+                delete roomTimeouts[room];
+            }, 300000); // 5 minutes
+        } catch (error) {
+            console.error("Error in create event:", error);
+        }
+    });
 
-  // Handle document updates from clients
-  socket.on("documentUpdate", (data) => {
-    // Broadcast the updated title and content to other clients in the room
-    socket.to(socket.currentRoom).emit("documentUpdate", data);
-  });
+    // Handle document updates from clients
+    socket.on("documentUpdate", (data) => {
+        // Broadcast the updated title and content to other clients in the room
+        socket.to(socket.currentRoom).emit("documentUpdate", data);
+    });
 
-  socket.on("comment", async (data) => {
-    const adress = socket.currentRoom.split("_");
-    const result = await mongoDocs.commentDoc(adress[0], adress[1], data.comment.author, data.comment.content);
-    console.log("fron socken.on comment", result)
-    comments.addComment(socket.currentRoom, data.comment, data.caretPosition.caret, data.caretPosition.line);
-    socket.to(socket.currentRoom).emit("newComment", data);
-  });
+    socket.on("comment", async (data) => {
+        const adress = socket.currentRoom.split("_");
+        await mongoDocs.commentDoc(adress[0], adress[1], data.comment.author, data.comment.content);
+    
+        comments.addComment(socket.currentRoom, data.comment, data.caretPosition.caret, data.caretPosition.line);
+        socket.to(socket.currentRoom).emit("newComment", data);
+    });
 
-  socket.on("disconnect", async () => {
-    console.log("Client disconnected:", socket.id);
-    if (socket.currentRoom) {
-      const users = io.sockets.adapter.rooms.get(socket.currentRoom);
-      if (!users || users.size === 0) {
-        await roomState.clearRoomState(socket.currentRoom);
-        delete roomTimeouts[socket.currentRoom];
-      }
-    }
-  });
+    socket.on("disconnect", async () => {
+        if (socket.currentRoom) {
+        const users = io.sockets.adapter.rooms.get(socket.currentRoom);
+        if (!users || users.size === 0) {
+            await roomState.clearRoomState(socket.currentRoom);
+            delete roomTimeouts[socket.currentRoom];
+        }
+        }
+    });
 });
 
 // Parse application/json
@@ -142,15 +132,11 @@ const schema = new GraphQLSchema({
 
 //use authentication in the users request
 app.use('/graphql', authenticateToken, (req, res, next) => {// PRODUCTION MODE
-//app.use('/graphql', (req, res, next) => {// DEVELOPING MODE
-    //req.io = io; // Assuming `io` is your Socket.IO server instance
-    //console.log('Socket instance attached to request:', req.socket)
     next();
 }, graphqlHTTP({
   schema: schema,
   graphiql: visual, // Visual är satt till true under utveckling
   livereload: true, // watch code chenges
-  //context: { socket: req.io },// pass socket to graphQL
   customFormatErrorFn: (error) => {
     // Customize error response
     return {
@@ -190,7 +176,7 @@ app.use((err, req, res, next) => {
 // Start the server
 const port = process.env.NODE_ENV === 'test' ? process.env.TEST_PORT : process.env.PORT;
 const server = httpServer.listen(port, () => {
-  console.log(`Server is listening on port ${port}`);
+    console.log(`Server is listening on port ${port}`);
 });
 
 // Export the app and server

@@ -3,35 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import {socket} from './../socket.mjs'
 import AddComment from "./AddComment";
 import utils from "../utils.mjs";
-import {Comment} from './../functions/interface';
-
-// Define the shape of formData and comments
-interface FormData {
-    title: string;
-    content: string;
-}
-
-// interface Comment {
-//     // _id: string,
-//     author: string | null,
-//     content: string;
-//     // caret: number;
-//     // row: number;
-// }
-
-interface ServerData {
-    data: FormData;
-}
-
-interface DocumentUpdateData {
-    title: string;
-    content: string;
-}
-
-interface SocketUpdateData {
-    title: string;
-    content: string;
-}
+import {Comment, DocumentUpdateData} from './../functions/interface';
 
 // interfase for element
 interface OneDocumentProps {
@@ -45,33 +17,20 @@ interface OneDocumentProps {
     handleClose: () => void;
 }
 
-
 function OneDocument({docType, username, docOwner, id, title: intialTitle, content: initialContent, initialComments, handleClose }: OneDocumentProps) {
-    //const SERVER_URL = "http://localhost:3000";
     // declare variabels and function to change them
     const [title, setTitle] = useState(intialTitle);
     const [content, setContent] = useState(initialContent);
     const [isSubmitting, setIsSubmitting] = useState(false); // For submit state (optional)
-    // const [formData, setFormData] = useState<FormData>({
-    //   title: "",
-    //   content: "",
-    // });
+  
     const [caretPosition, setCaretPosition] = useState({caret: 0, line: 0, x: 0, y: 0 });
     const [comments, setComments] = useState<Comment[]>(initialComments);
 
-    // const addComment = (newComment: Comment) => {
-    //     setComments([...comments, newComment]);
-    // };
-  
-    //const { id } = useParams<{ id: string }>(); // Explicit typing for useParams
-    //const navigate = useNavigate();
     // useEffect hook to manage socket connection and room creation
     useEffect(() => {
         // Connect the socket when the component mounts
         socket.connect();
-        console.log("username: ", username);
-        console.log("docOwner: ", docOwner);
-
+     
         // Create a unique room ID
         const roomId = `${docOwner}_${id}`; // Using owner ID and document ID for the room
 
@@ -130,27 +89,6 @@ function OneDocument({docType, username, docOwner, id, title: intialTitle, conte
            socket.disconnect(); // Disconnect the socket
        };
     }, []);
-
-    // const handelSocketComment = (data: any) => {
-    //     if (data.comment) {
-    //         const newComment: Comment = {
-    //             author: username,
-    //             content: data.comment,
-    //             // Add other fields if necessary
-    //             // caret: data.caretPosition?.caret, // Uncomment if using caret
-    //             // row: data.caretPosition?.line, // Uncomment if using row
-    //         };
-    //         setComments((prevComments) => [...prevComments, newComment]);
-    //     } else {
-    //         // If 'data' is an array of comments, ensure it matches the Comment type
-    //         const newComments: Comment[] = data.map((item: any) => ({
-    //             author: item.author,
-    //             content: item.content,
-    //             // Add other fields if necessary
-    //         }));
-    //         setComments((prevComments) => [...prevComments, ...newComments]);
-    //     }
-    // };
 
     const handelSocketComment = (data: any) => {
         if (data.comment) {
@@ -230,21 +168,6 @@ function OneDocument({docType, username, docOwner, id, title: intialTitle, conte
         }
     };
 
-    // const handleCarotMove = (e: React.MouseEvent<HTMLTextAreaElement>) => {
-    //     const target = e.target as HTMLTextAreaElement;
-    //     const value = target.value;
-    //     const caretPosition = target.selectionStart;
-    //     const lineNumber = value.substring(0, caretPosition).split("\n").length;
-    
-    //     const caretPositionInLine =
-    //       lineNumber === 1
-    //         ? caretPosition
-    //         : caretPosition - (value.lastIndexOf("\n", caretPosition - 1) + 1);
-    
-    //     const x = e.clientX; // Example using mouse event coordinates
-    //     const y = e.clientY;
-    //     setCaretPosition({ caret: caretPositionInLine, line: lineNumber, x:x, y:y });
-    //   };
     // element
     return (
         <> {/* wrap all in the one eleemnt */}

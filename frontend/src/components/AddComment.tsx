@@ -68,8 +68,7 @@ const CommentModal: React.FC<CommentModalProps> = ({ isOpen, user, onClose, onSu
 	};
 
 	const handleModalSubmit = (comment: Comment) => {
-		console.log("Submitted comment:", comment);
-		console.log("Cursor's position was:", caretPosition);
+
 		setModalOpen(false);
 
 		// Emit comment and caret position

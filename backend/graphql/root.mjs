@@ -86,7 +86,6 @@ const RootQueryType = new GraphQLObjectType({
                     }
                     return documents ;
                 } catch (error) {
-                    console.log("error in route graphql shared/username: ", error);
                     throw new Error("error in route graphql shared/username: ", error);
                 }
             }

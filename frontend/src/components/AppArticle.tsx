@@ -15,7 +15,6 @@ function AppArticle({docType, usersname, documents, reloadDocuments, selectedInd
     // select document
     const handleSelect = (index: number) => {
         setSelectedIndex(index); // Update the parent component's selectedIndex
-        console.log(documents[index].comments)
     };
 
     // remove selection and reload documents
