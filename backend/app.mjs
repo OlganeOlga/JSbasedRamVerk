@@ -89,7 +89,7 @@ io.on("connection", (socket) => {
 
   socket.on("comment", async (data) => {
     const adress = socket.currentRoom.split("_");
-    const result = await mongoDocs.commentDoc(adress[0], adress[1],"author", data.comment);
+    const result = await mongoDocs.commentDoc(adress[0], adress[1], data.comment.author, data.comment.content);
     console.log("fron socken.on comment", result)
     comments.addComment(socket.currentRoom, data.comment, data.caretPosition.caret, data.caretPosition.line);
     socket.to(socket.currentRoom).emit("newComment", data);

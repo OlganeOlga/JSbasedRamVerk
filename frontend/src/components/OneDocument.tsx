@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import {socket} from './../socket.mjs'
 import AddComment from "./AddComment";
 import utils from "../utils.mjs";
-//import CommentInterface from './../functions/interface';
+import {Comment} from './../functions/interface';
 
 // Define the shape of formData and comments
 interface FormData {
@@ -11,13 +11,13 @@ interface FormData {
     content: string;
 }
 
-interface Comment {
-    // _id: string,
-    author: string | null,
-    content: string;
-    // caret: number;
-    // row: number;
-}
+// interface Comment {
+//     // _id: string,
+//     author: string | null,
+//     content: string;
+//     // caret: number;
+//     // row: number;
+// }
 
 interface ServerData {
     data: FormData;
@@ -41,11 +41,12 @@ interface OneDocumentProps {
     id: string;
     title: string;
     content: string;
+    initialComments: Comment[];
     handleClose: () => void;
 }
 
 
-function OneDocument({docType, username, docOwner, id, title: intialTitle, content: initialContent, handleClose }: OneDocumentProps) {
+function OneDocument({docType, username, docOwner, id, title: intialTitle, content: initialContent, initialComments, handleClose }: OneDocumentProps) {
     //const SERVER_URL = "http://localhost:3000";
     // declare variabels and function to change them
     const [title, setTitle] = useState(intialTitle);
@@ -56,11 +57,11 @@ function OneDocument({docType, username, docOwner, id, title: intialTitle, conte
     //   content: "",
     // });
     const [caretPosition, setCaretPosition] = useState({caret: 0, line: 0, x: 0, y: 0 });
-    const [comments, setComments] = useState<Comment[]>([]);
+    const [comments, setComments] = useState<Comment[]>(initialComments);
 
-    const addComment = (newComment: Comment) => {
-        setComments([...comments, newComment]);
-    };
+    // const addComment = (newComment: Comment) => {
+    //     setComments([...comments, newComment]);
+    // };
   
     //const { id } = useParams<{ id: string }>(); // Explicit typing for useParams
     //const navigate = useNavigate();
@@ -129,21 +130,43 @@ function OneDocument({docType, username, docOwner, id, title: intialTitle, conte
            socket.disconnect(); // Disconnect the socket
        };
     }, []);
+
+    // const handelSocketComment = (data: any) => {
+    //     if (data.comment) {
+    //         const newComment: Comment = {
+    //             author: username,
+    //             content: data.comment,
+    //             // Add other fields if necessary
+    //             // caret: data.caretPosition?.caret, // Uncomment if using caret
+    //             // row: data.caretPosition?.line, // Uncomment if using row
+    //         };
+    //         setComments((prevComments) => [...prevComments, newComment]);
+    //     } else {
+    //         // If 'data' is an array of comments, ensure it matches the Comment type
+    //         const newComments: Comment[] = data.map((item: any) => ({
+    //             author: item.author,
+    //             content: item.content,
+    //             // Add other fields if necessary
+    //         }));
+    //         setComments((prevComments) => [...prevComments, ...newComments]);
+    //     }
+    // };
+
     const handelSocketComment = (data: any) => {
         if (data.comment) {
-          setComments((prevComments) => [
-            ...prevComments,
-            {
-                author: username,
-                content: data.comment,
-            //   caret: data.caretPosition.caret,
-            //   row: data.caretPosition.line,
-            },
-          ]);
+            const newComment: Comment = {
+                author: data.comment.author || username || "Anonymous", // Use the author's name from the data if available
+                content: data.comment.content,
+            };
+            setComments((prevComments) => [...prevComments, newComment]);
         } else {
-          setComments((prevComments) => [...prevComments, ...data]);
+            const newComments: Comment[] = data.map((item: any) => ({
+                author: item.author || "Anonymous", // Default author if not provided
+                content: item.content,
+            }));
+            setComments((prevComments) => [...prevComments, ...newComments]);
         }
-      };
+    }
 
     const handleSubmitAndClose = async (event: React.FormEvent) => {
         event.preventDefault(); // Prevent page refresh
@@ -227,6 +250,7 @@ function OneDocument({docType, username, docOwner, id, title: intialTitle, conte
         <> {/* wrap all in the one eleemnt */}
             <div className="comment_handler">
                 <AddComment
+                    user={username}
                     caretPosition={caretPosition}
                     socket={socket}
                     newComment={handelSocketComment}

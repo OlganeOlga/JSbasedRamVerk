@@ -52,6 +52,7 @@ function AppArticle({docType, usersname, documents, reloadDocuments, selectedInd
                     id={documents[selectedIndex]._id}
                     title={documents[selectedIndex].title}
                     content={documents[selectedIndex].content}
+                    initialComments={documents[selectedIndex].comments}
                     handleClose={handleClose}
                 />
                 </>

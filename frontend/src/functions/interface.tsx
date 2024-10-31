@@ -4,19 +4,17 @@ export default interface Document {
     title: string;
     content: string;
     allowd_users: [string];
-    comments:[Comment]
+    comments:Comment[]
 };
 
 
-export default interface User {
+export interface User {
     username: string;
     password: string;
     documents: [Document];
 };
 
-export default interface CommentInterface {
-    author: string;
+export interface Comment {
+    author: string | null;
     content: string;
 }
-
-  
