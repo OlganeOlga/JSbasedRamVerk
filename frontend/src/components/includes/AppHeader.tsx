@@ -133,10 +133,10 @@ function AppHeader({
                         <>
                         {sessionStorage.getItem("docType") === null || sessionStorage.getItem("docType") === "" ? (
                             <form className='shareForm' onSubmit={shareDoc}>
-                                <div className="input-group">
-                                    <label className="share"> 
-                                        Share document
+                                
+                                    {/* <label className="share">  */}
                                         <input
+                                            className='share-input'
                                             type="email"
                                             name='adress'
                                             placeholder="write email"
@@ -144,8 +144,8 @@ function AppHeader({
                                             onChange={(e) => setAdress(e.target.value)}
                                             required
                                         />
-                                    </label>
-                                </div>
+                                     {/* </label> */}
+                                
                                 <ButtonConteiner
                                     buttonType='submit'
                                     buttonName='see-shared'

@@ -1,5 +1,12 @@
+body div.main div.article form.doc.form-wrapper button.btn-primary.change-collection {
+    grid-row: 1;
+    grid-column: 2;
+    height: 3em;
+    padding: 3px;
+}
+
 header.header div button,
-body div.main div.article form button.change-collection {
+body div.main form button.change-collection {
     display: inline-block; /* Make the link inline-block to apply padding and margins */
     padding: 0.75rem 1.5rem; /* Add padding inside the button */
     font-size: 1rem; /* Set the font size */
@@ -18,13 +25,7 @@ header.header div.doc_handler button {
     font-size: 0.7rem;
     margin: 10px;
 }
-body div.main div.article form button.change-collection{
-    margin: onset;
-    grid-row: 1;
-    grid-column: 2;
-    height: 3em;
-    margin: 5px;
-}
+
 
 header.header div button.change-collection:hover,
 header.header div button.see-shared:hover,

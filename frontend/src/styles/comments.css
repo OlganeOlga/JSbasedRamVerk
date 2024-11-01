@@ -85,4 +85,10 @@
   .modal-comment-button:hover {
     background-color: #218838; /* Darker green on hover */
   }
+
+  .article .comment_handler .comments .comment h3,
+  .article .comment_handler .comments .comment p
+  {
+    font-size: 0.7rem;
+  }
   

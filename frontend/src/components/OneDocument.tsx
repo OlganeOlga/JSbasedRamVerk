@@ -184,7 +184,7 @@ function OneDocument({docType, username, docOwner, id, title: intialTitle, conte
                         {/* <h3>
                         Rad {comment.row} | char {comment.caret}
                         </h3> */}
-                        <h3>{comment.author}</h3>
+                        <h3>{comment.author} write: </h3>
                         <p>{comment.content}</p>
                     </div>
                     ))}

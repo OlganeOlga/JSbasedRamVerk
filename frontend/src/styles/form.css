@@ -1,7 +1,7 @@
 form.doc {
     display: grid;
     grid-template-columns: 80% 20%;
-    grid-template-rows: 10% 90%;
+    grid-template-rows: 30% 70%;
     gap: 0;
     width: 100%; /* Restrict form width for readability */
     margin: 0.5rem auto; /* Center form horizontally with space above and below */
@@ -18,7 +18,7 @@ form.doc {
 
 .doc.form-wrapper .content {
     overflow-y: auto;
-    height: 53%;
+    min-height: 45%;
     grid-row: 2;
     grid-column: span 2;
 }
@@ -62,10 +62,19 @@ form.doc {
 }
 
 header.header div form.shareForm {
-    width: 250px;
-    padding: 10px 10px 0 10px;
+    /* padding: 10px; */
+    /* width: 250px; */
+    /* padding: 10px 10px 0 10px; */
     border: solid;
     border-color: #0074D9;
+    height: 60px;
+    display: flex;
+    border-radius: 4px;
+}
+
+header.header div form.shareForm .share-input {
+    margin: 10px;
+    padding: 3px;
 }
 
 .auth-options .remove-form-container {
