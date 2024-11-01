@@ -79,9 +79,10 @@ io.on("connection", (socket) => {
     });
 
     socket.on("comment", async (data) => {
+      console.log("posting comment")
         const adress = socket.currentRoom.split("_");
-        await mongoDocs.commentDoc(adress[0], adress[1], data.comment.author, data.comment.content);
-    
+        const comment = await mongoDocs.commentDoc(adress[0], adress[1], data.comment.author, data.comment.content);
+        console.log(comment)
         comments.addComment(socket.currentRoom, data.comment, data.caretPosition.caret, data.caretPosition.line);
         socket.to(socket.currentRoom).emit("newComment", data);
     });

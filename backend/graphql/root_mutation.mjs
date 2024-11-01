@@ -107,13 +107,12 @@ const RootMutationType = new GraphQLObjectType({
         async resolve(parent, { username, inputid, title, content}) {
             
             try {
-            console.log("at updateDoc, args: ", username)
-
                 // Perform the update in MongoDB
                 const result = await docFu.updateDocument( username, 
                                                             inputid,
                                                             title,
                                                             content);
+                console.log("result: ",result)
 
                 if (!result.modifiedCount) {
                     throw new Error("Document not found or update failed.");
@@ -164,7 +163,6 @@ commentDoc: {
     },
     resolve: async function(parent, args, context) {
       try {
-        console.log("in graphql /commentDoc, try to add comments");
         const result = await docFu.commentDoc(args.owner, args.docid.toString(), args.author, args.content);
         
         // Emit the new comment to the specific room using Socket.IO
@@ -193,14 +191,12 @@ commentDoc: {
         },
         resolve: async function(parent, args) {
             try {
-                console.log("int graphql /deleteDoc")
                 const result = await docFu.removeDocument(args.id, args.username);
                 if(result. acknowledged) {
                     return true;
                 };
                 return false;
             } catch (error) {
-                console.log("error in /comment: ", error);
                 throw new Error(`error in /comment: ${error}`);
             }
         }

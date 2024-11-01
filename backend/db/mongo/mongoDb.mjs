@@ -3,7 +3,7 @@ import { MongoClient, ServerApiVersion } from 'mongodb';
 
 // Connect to remote mongo-database
 let uri = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@${process.env.DB_CLUSTER}.topue.mongodb.net/admin?retryWrites=true&w=majority&appName=texteditor`;
-uri = "mongodb://localhost:27017";
+//uri = "mongodb://localhost:27017";
 // Create an object to manage the database connection
 const database = {
     connect: async function() {

@@ -76,17 +76,11 @@ function App() {
         setLoading(true); // Start loading
         try {
             const result = await utils.graphQL(body, token);
-            console.log("from loadDocuments, result: ", result.result.data.user.documents)
             if (result.status === 200) {
-                // Update documents state
-                switch(docType){
-                    case "":
-                        setDocuments(result.result.data.user.documents);
-                        break;
-                    case "shared/":
-                        setDocuments(result.result.data.sharedWithUser);
-                        break; 
-                    }
+                const docs = docType === "" 
+                ? result.result.data.user.documents 
+                : result.result.data.sharedWithUser;
+                setDocuments(docs);
                 
             } else {
                 setDocuments([]); // Handle no documents case
@@ -98,30 +92,16 @@ function App() {
         }
     };
 
-    // const getDocuments = (async() => {
-    //     if (!token) return; // Prevent calling if username is not set
-
-    //     try {
-    //         const res = await loadDocuments();
-    //         console.log("reultat från getDocuments i App.tsx", res)
-    //     } catch (error) {
-    //         console.error("Error loading documents:", error);
-    //     } finally {
-    //         setLoading(false); // End loading
-    //     }
-    // });
 
     useEffect(() => {
         if (token) {
-            const docs = loadDocuments(); // Load documents if the token exists
-            console.log("in useEffects 117, ", docs)
+            loadDocuments(); // Load documents if the token exists
         }
-    }, [token, username, loadDocuments]); // Re-run when token or username changes
+    }, []); // Re-run when token or username changes
 
     // Handle successful login
     const handleLoginSuccess = () => {
         const storedToken = sessionStorage.getItem("token");
-        console.log("Sucsees in loggin", storedToken)
         if (storedToken) {
             setUsername(sessionStorage.getItem('username'));
             setToken(storedToken); // Update token in state after login

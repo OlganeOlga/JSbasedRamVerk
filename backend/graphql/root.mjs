@@ -29,11 +29,7 @@ const RootQueryType = new GraphQLObjectType({
                 username: {type: GraphQLString}
             },
             resolve: async function(parent, args) {
-
-                //console.log("i get User graphql")
-
                 let user = await userFu.getUser(args.username);
-                //console.log(user)
                 return user;
             }
         },
