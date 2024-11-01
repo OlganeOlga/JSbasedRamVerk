@@ -73,36 +73,36 @@ function App() {
         }
 
         setLoading(true); // Start loading
-        try {
-            const result = await utils.graphQL(body, token);
-            
-            if (result.status === 200) {
-                // Update documents state
-                switch(docType){
-                    case "":
-                        setDocuments(result.result.data.user.documents);
-                        break;
-                    case "shared/":
-                        setDocuments(result.result.data.sharedWithUser);
-                        break; 
-                    }
+            try {
+                const result = await utils.graphQL(body, token);
                 
-            } else {
-                setDocuments([]); // Handle no documents case
+                if (result.status === 200) {
+                    // Update documents state
+                    switch(docType){
+                        case "":
+                            setDocuments(result.result.data.user.documents);
+                            break;
+                        case "shared/":
+                            setDocuments(result.result.data.sharedWithUser);
+                            break; 
+                        }
+                    
+                } else {
+                    setDocuments([]); // Handle no documents case
+                }
+            } catch (error) {
+                setDocuments([]); // Reset documents on error
+            } finally {
+                setLoading(false); // End loading
             }
-        } catch (error) {
-            setDocuments([]); // Reset documents on error
-        } finally {
-            setLoading(false); // End loading
-        }
-    };
+        };
 
     const getDocuments = (async() => {
         if (!token) return; // Prevent calling if username is not set
-        setLoading(true); // Start loading
 
         try {
             const res = await loadDocuments();
+            console.log("reultat från getDocuments i App.tsx", res)
         } catch (error) {
             console.error("Error loading documents:", error);
         } finally {
@@ -114,7 +114,7 @@ function App() {
         if (token) {
             getDocuments(); // Load documents if the token exists
         }
-    }, [token, username]); // Re-run when token or username changes
+    }, [token, username, getDocuments]); // Re-run when token or username changes
 
     // Handle successful login
     const handleLoginSuccess = () => {
