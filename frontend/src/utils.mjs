@@ -2,8 +2,8 @@ const localBackend = "http://localhost:3000";
 const remoteBackend = "https://jaramverk-olga22-noahh-djczc2fnbcgheeb2.swedencentral-01.azurewebsites.net/";
 
 //Bestäm vilken backend som ska användas baserat på om vi kör lokalt eller i produktion
-const backendUrl = window.location.hostname === 'localhost' ? localBackend : remoteBackend;
-//const backendUrl = remoteBackend;
+//const backendUrl = window.location.hostname === 'localhost' ? localBackend : remoteBackend;
+const backendUrl = remoteBackend;
 
 const utils = {
 
@@ -85,9 +85,7 @@ const utils = {
         };
     
         try {
-            console.log("in GraphQL of utils")
             const response = await fetch(url, options);
-            console.log("in GraphQL of utils: : ", response)
             if (!response.ok) {
                 const errorData = await response.json();
                 return {
