@@ -27,9 +27,9 @@ function App() {
             setToken(storedToken);
         };
         
-    }, []);
+    });
 
-    const loadDocuments = async () => {  
+    const loadDocuments = async () => {
         if (!token) return;       
         let body;
         let docType = sessionStorage.getItem("docType") || "";
@@ -97,7 +97,7 @@ function App() {
         if (token) {
             loadDocuments(); // Load documents if the token exists
         }
-    }, []); // Re-run when token or username changes
+    }, [token, username]); // Re-run when token or username changes
 
     // Handle successful login
     const handleLoginSuccess = () => {
